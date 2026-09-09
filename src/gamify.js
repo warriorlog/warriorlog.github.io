@@ -172,6 +172,15 @@ export function regionXpForSession(session, spec, g, sessionXp) {
 
 export const regionLevel = (xp, g) => Math.floor(Math.sqrt(Math.max(0, xp) / (g.region_level?.divisor ?? 40)));
 
+/** Where every ladder started, so day-zero capability is not mistaken for progress. */
+function baselineLadders(user, spec) {
+  const out = {};
+  for (const ex of spec.exercises ?? []) {
+    out[ex.id] = { step_id: user.floor?.[ex.id] ?? ex.ladder?.[0]?.id };
+  }
+  return out;
+}
+
 // ---------------------------------------------------------------- the flame
 export const DAY_STATUS = ['trained', 'rest', 'shield', 'recovery', 'away', 'none', 'pending'];
 
@@ -373,8 +382,13 @@ export function progress(user, spec, g, today = dayKey()) {
   const climbXp = user.climbs.length * (xp.ladder_advance ?? 100);
   xpTotal += climbXp; if (climbXp) bySource.climbs = climbXp;
 
+  // Armour reflects what you can wear today, so a stronger starter is placed
+  // straight into Bronze. XP is for what you EARN, though, so only tiers gained
+  // above the placement baseline are paid for.
   const gear = gearTiers(user, spec, g);
-  const gearXp = Object.values(gear).reduce((n, x) => n + x.tier * (xp.gear_tier ?? 150), 0);
+  const baseline = gearTiers({ ...user, ladders: baselineLadders(user, spec), benchmarks: {} }, spec, g);
+  const gearXp = Object.entries(gear)
+    .reduce((n, [id, x]) => n + Math.max(0, x.tier - (baseline[id]?.tier ?? 0)) * (xp.gear_tier ?? 150), 0);
   xpTotal += gearXp; if (gearXp) bySource.armour = gearXp;
 
   const fl = flame(user, g, today);

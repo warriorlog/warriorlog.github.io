@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--
+  script-src is locked to 'self': there is no inline script and no CDN, so the
+  only code that can run is code in this repo. style-src allows inline because
+  the UI sets CSS custom properties (bar widths, region fills) on elements;
+  styles cannot exfiltrate anything and the token only ever travels to
+  api.github.com in an Authorization header.
+-->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.github.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+<title>Warriorlog</title>
+<meta name="theme-color" content="#0b0f14">
+<meta name="description" content="A shared training log for two warriors.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Warriorlog">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="stylesheet" href="./style.css">
+<script src="./config.js"></script>
+</head>
+<body>
+<div id="app" class="app"><div class="boot">Lighting the forge…</div></div>
+<div id="toasts" class="toasts" aria-live="polite"></div>
+<script type="module" src="./src/app.js"></script>
+</body>
+</html>
