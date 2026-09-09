@@ -10,19 +10,21 @@ const TABS = [
 ];
 
 /**
- * Which tabs to show. Ten systems on day one is how an app gets deleted in week
- * two, so each one appears the first time it has something real to say. Nothing
- * is ever taken away again, and the current screen always stays reachable.
+ * Which tabs to show. Only Duo is held back, because it is the one screen with
+ * genuinely nothing in it until a second person joins. Body and Journal are
+ * useful from the first minute — the silhouette already shows what the placement
+ * quiz earned, and the journal explains the week ahead.
+ *
+ * An earlier version also hid those two until the first session. It made the app
+ * appear to lose features on a reload, which is a far worse first impression
+ * than one extra tab.
  */
 export function visibleTabs(state) {
-  const u = state.users?.[state.me];
-  const sessions = u?.sessions?.length ?? 0;
   const partner = state.users?.[state.me === 'sean' ? 'cat' : 'sean'];
   const partnerActive = !!(partner?.quizDone || partner?.sessions?.length);
 
-  const on = new Set(['home', 'settings']);
-  if (sessions >= 1) { on.add('body'); on.add('journal'); }
-  if (partnerActive && sessions >= 1) on.add('duo');
+  const on = new Set(['home', 'body', 'journal', 'settings']);
+  if (partnerActive) on.add('duo');
   on.add(state.route?.name === 'complete' ? 'home' : state.route?.name);
   return TABS.filter(t => on.has(t.id));
 }

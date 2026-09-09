@@ -508,7 +508,7 @@ function expandItem(item, spec, user, ctx, sched, override, usedSets = {}) {
     implement_id: cur.implement_id, cardio,
     substitutes: item.substitutes ?? null,
     counts_for_progression: item.counts_for_progression !== false,
-    next_unlock: cur.advance ? describeAdvance(cur, spec) : null,
+    next_unlock: describeAdvance(cur, spec),
     rows,
   }];
 }
@@ -575,7 +575,7 @@ function lastValues(user, exId, stepId) {
 /** Plain words for what the next rung costs — shown on the card, never a formula. */
 export function describeAdvance(step, spec = null) {
   const a = step.advance;
-  if (!a) return null;
+  if (!a || step.terminal) return null;
   const n = a.consecutive ?? 2;
   const times = n === 1 ? 'once' : `${n} sessions in a row`;
   const extra = (a.requires ?? []).map(r => describeRule(r, '', spec)).filter(Boolean);

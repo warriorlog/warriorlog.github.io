@@ -354,3 +354,26 @@ test('a household with no dumbbell pairs and a small vest still gets a full prog
     assert.ok(ladders[e.id]?.step_id, `${e.id}: no usable step without dumbbell pairs`);
   }
 });
+
+test('a rung that never advances says so, instead of faking a huge target', () => {
+  // Four single-rung exercises used `sessions_gte: 99999` to mean "terminal",
+  // and the home screen rendered it as "practise it 99999 times".
+  for (const s of allSteps) {
+    const a = s.advance;
+    if (!a) continue;
+    // A top rung may keep a target to keep hitting; what it must not do is
+    // invent an unreachable one to mean "this never advances".
+    assert.ok(!(a.rule === 'sessions_gte' && a.value >= 1000),
+      `${s.id}: a sentinel target of ${a.value} leaks into the interface; mark the step terminal instead`);
+  }
+});
+
+test('nothing that cannot progress ever promises a rung', async () => {
+  const { describeAdvance } = await import('../src/engine.js');
+  for (const ex of program.exercises) {
+    for (const step of ex.ladder) {
+      if (!step.terminal) continue;
+      assert.equal(describeAdvance(step, spec), null, `${step.id}: terminal but still describes an unlock`);
+    }
+  }
+});

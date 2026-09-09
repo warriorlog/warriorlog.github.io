@@ -11,14 +11,17 @@ const state = ({ me = 'sean', sessions = 0, partner = {}, route = 'home' } = {})
 });
 const ids = (s) => visibleTabs(s).map(t => t.id);
 
-test('day one shows only today and settings', () => {
-  assert.deepEqual(ids(state()), ['home', 'settings']);
+test('a solo user sees every screen that has something in it', () => {
+  // Body and Journal are useful from the first minute: the silhouette already
+  // shows what the placement quiz earned. An earlier version hid them until the
+  // first session, which made the app appear to lose features on a reload.
+  assert.deepEqual(ids(state()), ['home', 'body', 'journal', 'settings']);
 });
 
-test('the body and the journal appear once there is something in them', () => {
-  const after = ids(state({ sessions: 1 }));
-  assert.ok(after.includes('body'));
-  assert.ok(after.includes('journal'));
+test('the tab bar never shrinks as you use the app', () => {
+  const before = ids(state({ sessions: 0 }));
+  const after = ids(state({ sessions: 12, partner: { quizDone: true } }));
+  for (const tab of before) assert.ok(after.includes(tab), `${tab} disappeared once there was more history`);
 });
 
 test('the duo tab waits for a partner who has actually joined', () => {

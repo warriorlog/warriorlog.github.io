@@ -364,11 +364,6 @@
             "minutes": 6,
             "rpe_max": 4
           },
-          "advance": {
-            "rule": "sessions_gte",
-            "value": 99999,
-            "consecutive": 1
-          },
           "terminal": true
         }
       ]
@@ -415,11 +410,6 @@
           "cardio": {
             "minutes": 6,
             "rpe_max": 4
-          },
-          "advance": {
-            "rule": "sessions_gte",
-            "value": 99999,
-            "consecutive": 1
           },
           "terminal": true
         }
@@ -1060,11 +1050,6 @@
           "requires": [
             "bw"
           ],
-          "advance": {
-            "rule": "sessions_gte",
-            "value": 99999,
-            "consecutive": 1
-          },
           "terminal": true
         }
       ],
@@ -1113,11 +1098,6 @@
           "requires": [
             "bw"
           ],
-          "advance": {
-            "rule": "sessions_gte",
-            "value": 99999,
-            "consecutive": 1
-          },
           "terminal": true
         }
       ],

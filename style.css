@@ -490,3 +490,24 @@ button { border: 0; background: none; cursor: pointer; touch-action: manipulatio
   .jr-wk { grid-template-columns: 24px 1fr; gap: 6px; }
   .jr-past-meta .tiny { display: none; }
 }
+
+/* A grid column defaults to max-content, which lets a long row of set chips
+   push past the card instead of wrapping inside it. Pin every journal grid to
+   a shrinkable column. */
+.jr-sets, .jr-badges, .jr-past-list, .jr-cal { grid-template-columns: minmax(0, 1fr); }
+.jr-group, .jr-badge, .jr-sess, .jr-past { min-width: 0; }
+.jr-group .chips { min-width: 0; }
+/* `.truncate` can only ellipsize when it is allowed to shrink below its text. */
+.jr .row-between > .truncate, .jr .row-between > .tiny { min-width: 0; }
+.jr-group .row-between > strong { flex: 1 1 auto; }
+.jr-group .row-between > .tiny { flex: 0 1 auto; text-align: right; }
+/* Same rule one level down: a nowrap label inside a grid item would otherwise
+   stretch its own track to max-content and push the card open. */
+.jr-group, .jr-badge { grid-template-columns: minmax(0, 1fr); }
+.jr-pr > .grow, .jr-sess > summary > .grow { min-width: 0; }
+.drow .dend { display: flex; align-items: center; gap: 8px; flex: none; }
+.drow .grow { min-width: 0; }
+/* A long rung name must not squeeze the exercise it belongs to down to one
+   letter; both halves of a report row get a share and both ellipsize. */
+.jr-row > .truncate { flex: 1 1 40%; }
+.jr-row > .pill { flex: 0 1 auto; max-width: 62%; overflow: hidden; text-overflow: ellipsis; }

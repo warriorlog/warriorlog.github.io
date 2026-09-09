@@ -40,6 +40,17 @@ const VARIANTS = {
   bb_vest_stepups_3min: { vest10: 'Step-ups in the vest', unweighted: 'Step-ups, no vest' },
 };
 
+/** Six words of column-header, for the result table where space is tight. */
+const COMPACT = {
+  bb_mile_time: 'One-mile trial',
+  bb_pushups_2min: 'Push-ups, 2 min',
+  bb_hollow_hold: 'Hollow hold',
+  bb_swings_5min: 'Swings, 5 min',
+  bb_goblet_bw: 'Goblet squats',
+  bb_vest_stepups_3min: 'Step-ups, 3 min',
+};
+export const compactName = (id, fallback) => COMPACT[id] ?? shortName(fallback);
+
 export function variantLabel(card) {
   const base = VARIANTS[card.id]?.[card.variant?.id] ?? shortName(card.name);
   const lb = card.load?.lb;
@@ -136,6 +147,16 @@ export function segments(mineDamage, theirDamage, hp) {
   };
 }
 
+/**
+ * What this test read at the LAST battle. testCard's `previous` is simply the
+ * newest result, which after today's log is today's log — not the thing a person
+ * means when they ask what they did last time.
+ */
+export function priorResult(user, benchmarkId, battleN) {
+  return (user?.benchmarkHistory ?? [])
+    .filter(h => h.benchmark_id === benchmarkId && (h.battle_n ?? 0) < battleN).slice(-1)[0] ?? null;
+}
+
 /** Each of my results this battle, next to the same test at the last one. */
 export function battleDeltas(user, b) {
   const hist = user?.benchmarkHistory ?? [];
@@ -175,7 +196,7 @@ export function render(state) {
     ${phase === 'before' ? reach(b) : ''}
     ${coop(b, partnerName, phase)}
     <div class="tiny">The six tests</div>
-    ${raw(cardsFor(b, phase))}
+    ${raw(cardsFor(b, u))}
     ${lastTime(state, u, b)}
     <p class="faint small">${t('boss.no_defeat')}</p>
     ${sheet ? raw(sheetHtml(state, b)) : ''}
@@ -186,12 +207,17 @@ function hero(state, b, phase) {
   const s = segments(b.mine.damage, b.solo ? null : (b.theirs?.damage ?? 0), b.hp);
   const left = Math.round((s.remaining / Math.max(1, b.hp)) * 100);
   const saturday = fmtDay(addDaysSafe(b.window_start, 5));
-  const line = phase === 'before'
-    ? (b.days_away === 1 ? 'The battle is tomorrow' : `${b.days_away} days until the battle`)
-    : phase === 'open'
-      ? (b.days_away > 0 ? 'The window is open — battle day is Saturday'
-        : `The window is open · ${Math.max(0, daysTo(b.window_end))} days left to log`)
-      : `Battle ${b.n} · week ${b.week}`;
+  // Driven by the calendar rather than by the phase, so a sealed battle read on a
+  // quiet Tuesday still says something true. Never a clock, never a warning.
+  const daysLeft = daysTo(b.window_end);
+  const line = !b.in_window
+    ? (b.days_away > 1 ? `${b.days_away} days until the battle`
+      : b.days_away === 1 ? 'The battle is tomorrow'
+        : b.days_away === 0 ? 'The battle is today' : 'This battle is in the books')
+    : b.days_away > 1 ? 'The window is open · battle day is Saturday'
+      : b.days_away === 1 ? 'The window is open · the battle is tomorrow'
+        : daysLeft > 0 ? `The window is open · ${daysLeft} more days to log`
+          : 'The last day of the window';
 
   return html`<section class="card bhero stack">
     <div class="kicker row">
@@ -204,7 +230,7 @@ function hero(state, b, phase) {
       <div class="grow">
         <h1>${b.boss.name}</h1>
         <div class="small muted">${line}</div>
-        <div class="tiny">Saturday ${saturday} · week ${b.week}</div>
+        <div class="tiny">Battle day · Saturday ${saturday}</div>
       </div>
     </div>
     <div class="hpbar" role="img" aria-label="${b.hp - Math.min(b.hp, s.total)} of ${b.hp} hit points remaining">
@@ -245,8 +271,7 @@ function coop(b, partnerName, phase = 'open') {
   const quiet = phase === 'before';
   const note = b.solo
     ? (quiet ? t('boss.coop.solo') : `${t('boss.coop.solo')} It stands at half strength for one warrior, so this is winnable alone.`)
-    : (quiet ? 'Synergy counts the smaller of the two hits a second time.'
-      : `Synergy is the smaller of the two, counted a second time — ${t('boss.coop.explain')}`);
+    : t('boss.coop.explain');
 
   return html`<section class="card${quiet ? ' card-tight' : ''} stack">
     <div class="row-between"><h3>Co-op damage</h3><span class="tiny">${s.total} of ${b.hp} HP</span></div>
@@ -258,7 +283,13 @@ function coop(b, partnerName, phase = 'open') {
 
 function reach(b) {
   const picks = closestTiers(b.cards, 2);
-  if (!picks.length) return raw('');
+  if (!picks.length) {
+    if (!b.cards.some(c => !c.locked)) return raw('');
+    return html`<section class="card card-tight stack">
+      <div class="tiny">Within reach</div>
+      <div class="small">You already hold every tier your current variants can reach. The tiers above them open as the ladders climb — full push-ups, the full hollow, a loaded goblet, the vest.</div>
+    </section>`;
+  }
   const rows = picks.map(g => {
     const need = `${fmtValue(g.unit, g.need)}${g.unit === 'reps' ? ' reps' : ''}`;
     const tail = g.have == null
@@ -274,20 +305,21 @@ function reach(b) {
   </section>`;
 }
 
-function cardsFor(b, phase) {
-  return [...b.cards].sort((x, y) => (x.order ?? 0) - (y.order ?? 0)).map(c => testCardHtml(c, b, phase)).join('');
+function cardsFor(b, user) {
+  return [...b.cards].sort((x, y) => (x.order ?? 0) - (y.order ?? 0)).map(c => testCardHtml(c, b, user)).join('');
 }
 
-function testCardHtml(card, b, phase) {
+function testCardHtml(card, b, user) {
   const logged = (b.mine.results ?? []).find(r => r.benchmark_id === card.id) ?? null;
   const tier = logged ? logged.tier : card.tier;
   const rows = tierRows(card);
   const track = rows.map(r => `<span class="bt" data-on="${r.reached ? '1' : '0'}" data-open="${r.open ? '1' : '0'}">
       <b>${esc(r.name)}</b><i>${r.i === 0 ? 'log it' : esc(fmtValue(card.unit, r.raw))}</i></span>`).join('');
   const capped = rows.some(r => !r.open);
-  const prev = card.previous
-    ? `${esc(fmtValue(card.unit, card.previous.value))}${card.previous.tier != null ? ` · ${esc(tierName(card.previous.tier))}` : ''}`
-    : 'nothing on the board yet';
+  const prior = priorResult(user, card.id, b.n);
+  const prev = prior
+    ? `${esc(fmtValue(card.unit, prior.value))}${prior.tier != null ? ` · ${esc(tierName(prior.tier))}` : ''}`
+    : (logged ? 'first time on the board' : 'nothing on the board yet');
 
   if (card.locked) {
     return `<section class="card bcard locked stack">
@@ -307,7 +339,7 @@ function testCardHtml(card, b, phase) {
     <details class="bproto"><summary>Full protocol</summary><p class="small muted">${esc(card.protocol)}</p></details>
     <div class="btiers">${track}</div>
     ${capped ? `<div class="faint small">Caps at ${esc(tierName(card.variant?.tier_cap ?? 3))} · the harder variant opens the top tiers.</div>` : ''}
-    <div class="row-between small"><span class="muted">Last time</span><strong>${prev}</strong></div>
+    <div class="row-between small"><span class="muted">Last battle</span><strong>${prev}</strong></div>
     ${logged ? `<div class="row-between small"><span class="muted">This battle</span><strong class="xpfloat">${esc(fmtValue(card.unit, logged.value))} · ${esc(tierName(logged.tier))}</strong></div>` : ''}
     <button class="btn ${logged ? 'ghost' : 'secondary'}" data-action="open" data-key="open-${esc(card.id)}" data-id="${esc(card.id)}">${logged ? 'Log it again' : 'Log a result'}</button>
   </section>`;
@@ -330,11 +362,13 @@ function resultCard(state, b, u, phase) {
         : d.imp_pct > 0 ? `+${d.imp_pct}% on ${fmtValue(unit, d.before.value)}`
           : `holding ${fmtValue(unit, d.before.value)}`;
     return `<div class="drow">
-      <div class="grow"><strong>${esc(shortName(card?.name ?? d.benchmark_id))}</strong>
-        <div class="tiny">${esc(delta)}</div></div>
-      <div class="dval">${esc(now)}</div>
-      <div class="pill ${climbed ? 'go' : ''}">${esc(tierName(d.tier))}${climbed ? ' ▲' : ''}</div>
-      <div class="dstrike">+${d.strike}</div>
+      <div class="grow"><strong>${esc(compactName(d.benchmark_id, card?.name ?? d.benchmark_id))}</strong>
+        <div class="faint small">${esc(delta)}</div></div>
+      <div class="dend">
+        <span class="dval">${esc(now)}</span>
+        <span class="pill ${climbed ? 'go' : ''}">${esc(tierName(d.tier))}${climbed ? ' ▲' : ''}</span>
+        <span class="dstrike">+${d.strike}</span>
+      </div>
     </div>`;
   }).join('');
 
@@ -385,8 +419,8 @@ function sheetHtml(state, b) {
         ${chips.map(([by, label]) => `<button class="chip" data-action="jump" data-by="${by}" data-key="jump${by}-${sheet.value}">${label}</button>`).join('')}
       </div>
       <div style="height:12px"></div>
-      <div class="small muted center">${card.previous ? `Last time ${esc(fmtValue(card.unit, card.previous.value))} · ` : ''}${esc(t('boss.test.tier', { tier: soldier?.name ?? 'Soldier', value: fmtValue(card.unit, soldier?.raw) }))}</div>
-      ${mult !== 1 ? `<div class="faint small center">Scored at ${mult} per rep on this variant.</div>` : ''}
+      <div class="small muted center">${card.previous ? `Your last result ${esc(fmtValue(card.unit, card.previous.value))} · ` : ''}${esc(t('boss.test.tier', { tier: soldier?.name ?? 'Soldier', value: fmtValue(card.unit, soldier?.raw) }))}</div>
+      ${mult !== 1 ? `<div class="faint small center">Scored at ${mult} per ${clock ? 'second' : 'rep'} on this variant.</div>` : ''}
       <div style="height:14px"></div>
       <button class="btn" data-action="save" data-key="save-${esc(card.id)}">Land the strike</button>
       <div style="height:8px"></div>

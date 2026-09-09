@@ -27,6 +27,15 @@ const GATE_NAMES = { hinge: 'hinge', bell: '53 lb bell', run: 'run' };
 
 export const plural = (n, word, many = `${word}s`) => `${n} ${n === 1 ? word : many}`;
 
+/**
+ * Percentage width for a progress bar. Zero stays zero — a 2% stub beside
+ * "0 of 7" reads as a stray dot rather than as nothing yet.
+ */
+export function barWidth(done, target) {
+  if (!(target > 0) || !(done > 0)) return 0;
+  return Math.min(100, Math.max(4, Math.round((done / target) * 100)));
+}
+
 /** Seconds as a readable clock: 45s, 5:00, 12:00. */
 export function clock(sec) {
   const s = Math.round(Number(sec) || 0);
@@ -379,9 +388,8 @@ function emptyHero(state) {
 }
 
 // ------------------------------------------------------------ weekly report
-function reportCard(state, w, { featured = false, open = true } = {}) {
+function reportCard(state, w, { featured = false } = {}) {
   if (!w) return raw('');
-  const g = state.gam;
   const cls = `card stack jr-report${w.perfect ? ' jr-perfect' : ''}`;
   const kicker = w.perfect ? '<span class="pill jr-halo-pill">Perfect Week</span>'
     : w.held ? '<span class="pill go">Held the line</span>'
@@ -396,19 +404,18 @@ function reportCard(state, w, { featured = false, open = true } = {}) {
       <h3>${tr(state, 'journal.report.title', 'Weekly Report').replace(/ · .*$/, '')}</h3>
       <span class="tiny">${dateRange(w.start)}</span>
     </div>
-    ${raw(reportBody(state, w, g))}
+    ${raw(reportBody(state, w))}
   </section>`;
 }
 
-function reportBody(state, w, g) {
+function reportBody(state, w) {
   const parts = [];
 
   // Quests -------------------------------------------------------------
-  const pct = w.prescribed ? Math.round((Math.min(w.done, w.prescribed) / w.prescribed) * 100) : 0;
   parts.push(`<div class="jr-block">
     <div class="row-between"><span class="tiny">Quests</span>
       <strong>${w.done} of ${w.prescribed}</strong></div>
-    <div class="levelbar"><i style="width:${Math.max(2, pct)}%"></i></div>
+    <div class="levelbar"><i style="width:${barWidth(w.done, w.prescribed)}%"></i></div>
     <div class="faint small">${esc(questNote(w))}</div>
   </div>`);
 
@@ -449,11 +456,10 @@ function reportBody(state, w, g) {
   }
 
   // Zone-2 -------------------------------------------------------------
-  const zpct = w.zone2.target ? Math.round((Math.min(w.zone2.done, w.zone2.target) / w.zone2.target) * 100) : 0;
   parts.push(`<div class="jr-block">
     <div class="row-between"><span class="tiny">Zone-2</span>
       <strong>${w.zone2.done} of ${w.zone2.target} min</strong></div>
-    <div class="levelbar"><i style="width:${Math.max(2, zpct)}%;background:linear-gradient(90deg,#2b5f96,var(--cool))"></i></div>
+    <div class="levelbar"><i style="width:${barWidth(w.zone2.done, w.zone2.target)}%;background:linear-gradient(90deg,#2b5f96,var(--cool))"></i></div>
   </div>`);
 
   // Duel line ----------------------------------------------------------
@@ -502,7 +508,7 @@ function pastReports(state, weeks) {
       <span class="jr-past-meta">${w.perfect ? '<span class="pill jr-halo-pill">Perfect</span>' : ''}
         <span class="tiny">${w.done}/${w.prescribed}</span><span class="xpfloat">+${w.xp.toLocaleString()}</span></span>
     </summary>
-    <div class="stack jr-past-body">${reportBody(state, w, state.gam)}</div>
+    <div class="stack jr-past-body">${reportBody(state, w)}</div>
   </details>`).join('');
   return html`<details class="card stack jr-archive">
     <summary><h3>Past reports</h3><span class="tiny">${weeks.length} on record</span></summary>
@@ -637,8 +643,12 @@ function badgeBoard(state, p, metrics) {
 
 function badgeRow(state, b, metrics) {
   const text = criterionText(b.criterion, state.spec, state.gam);
-  const prog = b.earned ? null : criterionProgress(b.criterion, metrics);
-  const pct = prog ? Math.round((prog.current / prog.target) * 100) : 0;
+  // A bar that reads "1 of 1" beside an unlit badge would look like a bug. Some
+  // criteria (Perfect Week among them) are counted here before the badge engine
+  // counts them, so a full bar is dropped rather than shown contradicting itself.
+  const measured = b.earned ? null : criterionProgress(b.criterion, metrics);
+  const prog = measured && measured.current < measured.target ? measured : null;
+  const pct = prog ? barWidth(prog.current, prog.target) : 0;
   return `<div class="jr-badge${b.earned ? ' lit' : ''}" data-rarity="${esc(b.rarity)}">
     <div class="jr-badge-top">
       <span class="jr-dot" data-rarity="${esc(b.rarity)}"></span>
@@ -646,7 +656,7 @@ function badgeRow(state, b, metrics) {
       ${b.duo ? '<span class="pill cool">Duo</span>' : ''}
     </div>
     <div class="tiny jr-crit">${esc(text)}</div>
-    ${prog ? `<div class="levelbar jr-bar"><i style="width:${Math.max(2, Math.min(100, pct))}%"></i></div>
+    ${prog ? `<div class="levelbar jr-bar"><i style="width:${pct}%"></i></div>
       <div class="faint small">${esc((state.copy?.['badges.progress'] ?? '{current} of {target}')
         .replace('{current}', prog.current.toLocaleString()).replace('{target}', prog.target.toLocaleString()))}</div>` : ''}
   </div>`;
@@ -662,7 +672,10 @@ export async function act(action, data) {
   const el = document.getElementById(`s-${data.session}`);
   if (!el) return;
   el.open = true;
-  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // Deliberately not `behavior: 'smooth'`: it is a silent no-op in several
+  // webviews, which would leave the tap doing nothing visible. The flash below
+  // is what tells the eye where it landed.
+  el.scrollIntoView({ block: 'center' });
   el.classList.add('jr-flash');
-  setTimeout(() => el.classList.remove('jr-flash'), 1200);
+  setTimeout(() => el.classList.remove('jr-flash'), 1400);
 }
