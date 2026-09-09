@@ -46,6 +46,16 @@ export function variantLabel(card) {
   return lb && card.variant?.uses_load_rule ? `${base} · ${lb} lb` : base;
 }
 
+/**
+ * Why this test is shut, in the words that actually apply: a variant that locks
+ * itself carries the rung you still have to earn, which is more use than the
+ * benchmark's general health-screen note.
+ */
+export function lockNote(card) {
+  const v = card.variant;
+  return (v?.locked && v?.lock_note) ? v.lock_note : (card.locked_note ?? 'Not open yet.');
+}
+
 /** The protocol in short form: the first sentence of this variant's own how-to. */
 export function shortProtocol(card) {
   const src = card.variant?.how ?? card.protocol ?? '';
@@ -162,8 +172,8 @@ export function render(state) {
     ${hero(state, b, phase)}
     ${b.training_camp ? camp() : ''}
     ${phase === 'result' || phase === 'sealed' ? resultCard(state, b, u, phase) : ''}
-    ${coop(b, partnerName)}
     ${phase === 'before' ? reach(b) : ''}
+    ${coop(b, partnerName, phase)}
     <div class="tiny">The six tests</div>
     ${raw(cardsFor(b, phase))}
     ${lastTime(state, u, b)}
@@ -177,9 +187,9 @@ function hero(state, b, phase) {
   const left = Math.round((s.remaining / Math.max(1, b.hp)) * 100);
   const saturday = fmtDay(addDaysSafe(b.window_start, 5));
   const line = phase === 'before'
-    ? (b.days_away === 1 ? 'The battle is tomorrow' : `${b.days_away} days until the battle · Saturday ${saturday}`)
+    ? (b.days_away === 1 ? 'The battle is tomorrow' : `${b.days_away} days until the battle`)
     : phase === 'open'
-      ? (b.days_away > 0 ? `Battle day is Saturday ${saturday} · the window is open now`
+      ? (b.days_away > 0 ? 'The window is open — battle day is Saturday'
         : `The window is open · ${Math.max(0, daysTo(b.window_end))} days left to log`)
       : `Battle ${b.n} · week ${b.week}`;
 
@@ -194,6 +204,7 @@ function hero(state, b, phase) {
       <div class="grow">
         <h1>${b.boss.name}</h1>
         <div class="small muted">${line}</div>
+        <div class="tiny">Saturday ${saturday} · week ${b.week}</div>
       </div>
     </div>
     <div class="hpbar" role="img" aria-label="${b.hp - Math.min(b.hp, s.total)} of ${b.hp} hit points remaining">
@@ -216,7 +227,7 @@ function camp() {
   </div>`;
 }
 
-function coop(b, partnerName) {
+function coop(b, partnerName, phase = 'open') {
   const s = segments(b.mine.damage, b.solo ? null : (b.theirs?.damage ?? 0), b.hp);
   const bars = [
     `<i class="s-mine" style="width:${s.pct.mine}%"></i>`,
@@ -231,13 +242,17 @@ function coop(b, partnerName) {
        <span><i class="s-theirs"></i>${esc(partnerName)} ${s.theirs}</span>
        <span><i class="s-syn"></i>Synergy +${s.synergy}</span>`;
 
-  return html`<section class="card stack">
+  const quiet = phase === 'before';
+  const note = b.solo
+    ? (quiet ? t('boss.coop.solo') : `${t('boss.coop.solo')} It stands at half strength for one warrior, so this is winnable alone.`)
+    : (quiet ? 'Synergy counts the smaller of the two hits a second time.'
+      : `Synergy is the smaller of the two, counted a second time — ${t('boss.coop.explain')}`);
+
+  return html`<section class="card${quiet ? ' card-tight' : ''} stack">
     <div class="row-between"><h3>Co-op damage</h3><span class="tiny">${s.total} of ${b.hp} HP</span></div>
     <div class="coopbar">${raw(bars)}${raw(s.total > b.hp ? `<u style="left:${s.pct.hp}%"></u>` : '')}</div>
     <div class="blegend">${raw(legend)}</div>
-    ${b.solo
-      ? html`<p class="faint small">${t('boss.coop.solo')} The boss stands at half strength while you fight it alone, so a solo battle is winnable on its own.</p>`
-      : html`<p class="faint small">Synergy is the smaller of the two counted a second time — ${t('boss.coop.explain')}</p>`}
+    <p class="faint small">${note}</p>
   </section>`;
 }
 
@@ -277,7 +292,7 @@ function testCardHtml(card, b, phase) {
   if (card.locked) {
     return `<section class="card bcard locked stack">
       <div class="row-between"><h3>🔒 ${esc(shortName(card.name))}</h3><span class="pill">Test ${card.order}</span></div>
-      <div class="small muted">${esc(card.locked_note)}</div>
+      <div class="small muted">${esc(lockNote(card))}</div>
       <div class="faint small">It costs you nothing while it waits — the other tests carry this battle.</div>
     </section>`;
   }
@@ -288,10 +303,10 @@ function testCardHtml(card, b, phase) {
         <div class="small">${esc(variantLabel(card))}</div></div>
       ${tier != null ? `<span class="pill go">${esc(tierName(tier))}</span>` : `<span class="pill">Test ${card.order}</span>`}
     </div>
-    <div class="faint small">${esc(shortProtocol(card))}</div>
+    <div class="muted small">${esc(shortProtocol(card))}</div>
     <details class="bproto"><summary>Full protocol</summary><p class="small muted">${esc(card.protocol)}</p></details>
     <div class="btiers">${track}</div>
-    ${capped ? `<div class="faint small">This variant tops out at ${esc(tierName(card.variant?.tier_cap ?? 3))}; the harder variant opens the rest.</div>` : ''}
+    ${capped ? `<div class="faint small">Caps at ${esc(tierName(card.variant?.tier_cap ?? 3))} · the harder variant opens the top tiers.</div>` : ''}
     <div class="row-between small"><span class="muted">Last time</span><strong>${prev}</strong></div>
     ${logged ? `<div class="row-between small"><span class="muted">This battle</span><strong class="xpfloat">${esc(fmtValue(card.unit, logged.value))} · ${esc(tierName(logged.tier))}</strong></div>` : ''}
     <button class="btn ${logged ? 'ghost' : 'secondary'}" data-action="open" data-key="open-${esc(card.id)}" data-id="${esc(card.id)}">${logged ? 'Log it again' : 'Log a result'}</button>
