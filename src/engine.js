@@ -321,18 +321,17 @@ export function prescribe(spec, user, day, opts = {}) {
 
   const blocks = [];
   const rows = [];
+  const usedSets = {};                 // exercise_id -> sets already numbered today
   for (const b of template.blocks ?? []) {
     const items = [];
     for (const raw of b.items ?? []) {
-      for (const item of expandItem(raw, spec, user, ctx, sched, override)) {
+      for (const item of expandItem(raw, spec, user, ctx, sched, override, usedSets)) {
         // A fallback can land on a movement the block already trains (the locked
         // swing falls back to the hinge, which Thursday also programs directly).
         // Add the sets to the existing card rather than showing it twice.
         const twin = items.find(x => x.step_id === item.step_id
           && x.counts_for_progression === item.counts_for_progression);
         if (twin) {
-          const offset = twin.sets;
-          for (const r of item.rows) r.set_index += offset;
           twin.sets += item.sets;
           twin.rows.push(...item.rows);
           twin.locked_note ??= item.locked_note;
@@ -357,7 +356,7 @@ export function prescribe(spec, user, day, opts = {}) {
 }
 
 /** One template item becomes one or more real exercise cards (or its fallback). */
-function expandItem(item, spec, user, ctx, sched, override) {
+function expandItem(item, spec, user, ctx, sched, override, usedSets = {}) {
   const ex = spec.byExercise?.[item.exercise_id];
   if (!ex) return [];
   const steps = user.stepsByExercise?.[ex.id] ?? resolveSteps(ex, ctx.equipment);
@@ -370,7 +369,7 @@ function expandItem(item, spec, user, ctx, sched, override) {
     const blocked = blockedBy(cur, ctx);
     const out = [];
     for (const f of item.fallback_when_locked ?? []) {
-      out.push(...expandItem({ ...f, fallback_when_locked: [] }, spec, user, ctx, sched, override));
+      out.push(...expandItem({ ...f, fallback_when_locked: [] }, spec, user, ctx, sched, override, usedSets));
     }
     if (out.length) out[0].locked_note = { exercise_id: ex.id, step_id: cur.id, blocked };
     return out;
@@ -392,7 +391,9 @@ function expandItem(item, spec, user, ctx, sched, override) {
   }
 
   const last = lastValues(user, ex.id, cur.id);
-  const rows = buildRows(ex, cur, sets, item, last, { vestLb, cardio });
+  const startIndex = (usedSets[ex.id] ?? 0) + 1;
+  usedSets[ex.id] = (usedSets[ex.id] ?? 0) + sets;
+  const rows = buildRows(ex, cur, sets, item, last, { vestLb, cardio, startIndex });
 
   return [{
     exercise_id: ex.id, name: ex.name, step_id: cur.id, step_name: cur.name,
@@ -411,17 +412,20 @@ function expandItem(item, spec, user, ctx, sched, override) {
 const phaseNumber = (spec, phase) => (spec.phases ?? []).findIndex(p => p.id === phase?.id) + 1;
 
 /** Every loggable row of a plan. XP paid and XP available both count these. */
-function buildRows(ex, step, sets, item, last, { vestLb, cardio }) {
+function buildRows(ex, step, sets, item, last, { vestLb, cardio, startIndex = 1 }) {
   const rows = [];
   const sides = step.sides === 'each' ? ['L', 'R'] : [null];
   const parts = step.parts?.length ? step.parts : [null];
   const unit = cardio && step.unit === 'min' ? 'min' : step.unit;
 
-  for (let i = 1; i <= sets; i++) {
+  for (let n = 0; n < sets; n++) {
+    const i = startIndex + n;
     for (const part of parts) {
       for (const side of sides) {
-        const A = part?.A ?? step.A;
-        const B = part?.B ?? step.B;
+        // A cardio row is judged against the minutes this block actually asks
+        // for, not the ladder step's own duration.
+        const A = cardio?.minutes ?? part?.A ?? step.A;
+        const B = cardio?.minutes ?? part?.B ?? step.B;
         const key = `${i}|${side ?? ''}|${part?.key ?? ''}`;
         rows.push({
           exercise_id: ex.id, step_id: step.id, set_index: i,
@@ -430,7 +434,8 @@ function buildRows(ex, step, sets, item, last, { vestLb, cardio }) {
           target: prefillFor(last?.[key], A, B),
           last: last?.[key] ?? null,
           implement_id: step.implement_id, vest_lb: vestLb || undefined,
-          minutes: cardio?.minutes, mph: cardio?.mph, incline: cardio?.incline,
+          minutes: cardio?.minutes ?? (unit === 'min' ? (part?.A ?? step.A) : undefined),
+          mph: cardio?.mph, incline: cardio?.incline,
           rounds: cardio?.rounds, work_sec: cardio?.work_sec, rest_sec: cardio?.rest_sec ?? item.rest_sec,
           counts_for_progression: item.counts_for_progression !== false,
           prescribed: true,

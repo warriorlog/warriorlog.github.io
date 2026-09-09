@@ -9359,7 +9359,8 @@
           },
           "terminal": true
         }
-      ]
+      ],
+      "no_xp": true
     },
     {
       "id": "cooldown_flow",
@@ -9411,7 +9412,8 @@
           },
           "terminal": true
         }
-      ]
+      ],
+      "no_xp": true
     }
   ],
   "benchmarks": [

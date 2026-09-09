@@ -236,3 +236,30 @@ test('gates block entry to a step, and name what is still missing', () => {
   assert.equal(E.blockedBy(steps[1], locked).step_id, 'push_up.knee');
   assert.equal(E.blockedBy(steps[1], open), null);
 });
+
+test('an exercise programmed twice in one day gets distinct set numbers', () => {
+  // Tuesday runs prone_ytw in the warm-up and again in the finisher. A set is
+  // identified by (session, exercise, set_index, side, part), so if both cards
+  // started at set 1 the second card's sets would overwrite the first under
+  // last-write-wins and silently disappear from the log.
+  const cat = userWith(CAT);
+  for (const day of ['2026-09-14', '2026-09-15', '2026-09-16', '2026-09-17', '2026-09-18', '2026-09-19']) {
+    const plan = E.prescribe(spec, cat, day, { equipment: EQ });
+    const keys = plan.rows.map(r => `${r.exercise_id}|${r.set_index}|${r.side ?? ''}|${r.part ?? ''}`);
+    assert.equal(new Set(keys).size, keys.length, `${day}: two rows share a set identity`);
+  }
+});
+
+test('a session logged exactly as prescribed hits every target', async () => {
+  const cat = userWith(CAT);
+  const plan = E.prescribe(spec, cat, '2026-09-15', { equipment: EQ });
+  const session = {
+    type: 'full', plan: { rows: plan.rows },
+    sets: plan.rows.filter(r => r.prescribed !== false).map(r => ({
+      exercise_id: r.exercise_id, step_id: r.step_id, set_index: r.set_index,
+      side: r.side, part: r.part, unit: r.unit, value: r.unit === 'min' ? r.minutes : r.B, checklist_ok: true,
+    })),
+  };
+  const { fidelity } = await import('../src/gamify.js');
+  assert.equal(fidelity(session, spec).pct, 1);
+});

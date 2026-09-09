@@ -13,7 +13,11 @@
         "Land midfoot and stand tall; do not lean into the console."
       ],
       "stop_if": "Chest pain, dizziness, unusual breathlessness, calf cramp or shin/knee pain above 3/10 - stop the belt, walk it off, and log a pain flag. Chest pain or dizziness means the session ends and you get medically cleared before the next one.",
-      "region_weights": { "heart": 0.7, "calves": 0.15, "thighs": 0.15 },
+      "region_weights": {
+        "heart": 0.7,
+        "calves": 0.15,
+        "thighs": 0.15
+      },
       "ladder": [
         {
           "id": "treadmill_zone2.flat_20",
@@ -24,10 +28,23 @@
           "sides": "both",
           "A": 20,
           "B": 20,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.0, "incline": 0, "minutes": 20, "rpe_max": 4 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.0,
+            "incline": 0,
+            "minutes": 20,
+            "rpe_max": 4
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 20,
@@ -45,10 +62,23 @@
           "sides": "both",
           "A": 25,
           "B": 25,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.0, "incline": 1, "minutes": 25, "rpe_max": 4 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.0,
+            "incline": 1,
+            "minutes": 25,
+            "rpe_max": 4
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 25,
@@ -66,10 +96,23 @@
           "sides": "both",
           "A": 30,
           "B": 30,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.0, "incline": 2, "minutes": 30, "rpe_max": 4 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.0,
+            "incline": 2,
+            "minutes": 30,
+            "rpe_max": 4
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 30,
@@ -87,10 +130,23 @@
           "sides": "both",
           "A": 30,
           "B": 30,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.2, "incline": 4, "minutes": 30, "rpe_max": 4 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.2,
+            "incline": 4,
+            "minutes": 30,
+            "rpe_max": 4
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 30,
@@ -108,10 +164,23 @@
           "sides": "both",
           "A": 33,
           "B": 33,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.4, "incline": 6, "minutes": 33, "rpe_max": 4 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.4,
+            "incline": 6,
+            "minutes": 33,
+            "rpe_max": 4
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 33,
@@ -129,20 +198,43 @@
           "sides": "both",
           "A": 33,
           "B": 33,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.5, "incline": 8, "minutes": 33, "rpe_max": 4 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.5,
+            "incline": 8,
+            "minutes": 33,
+            "rpe_max": 4
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 33,
             "rpe_max": 4,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 },
-              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "knee",
+                "days": 14
+              },
+              {
+                "rule": "no_pain_flag_days",
+                "region": "shin",
+                "days": 14
+              }
             ],
-            "unlocks": ["vest_walk"]
+            "unlocks": [
+              "vest_walk"
+            ]
           },
           "terminal": false
         },
@@ -155,18 +247,39 @@
           "sides": "both",
           "A": 36,
           "B": 36,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.5, "incline": 10, "minutes": 36, "rpe_max": 4 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.5,
+            "incline": 10,
+            "minutes": 36,
+            "rpe_max": 4
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 36,
             "rpe_max": 4,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 },
-              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "knee",
+                "days": 14
+              },
+              {
+                "rule": "no_pain_flag_days",
+                "region": "shin",
+                "days": 14
+              }
             ]
           },
           "terminal": false
@@ -180,10 +293,23 @@
           "sides": "both",
           "A": 36,
           "B": 36,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.5, "incline": 12, "minutes": 36, "rpe_max": 4 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.5,
+            "incline": 12,
+            "minutes": 36,
+            "rpe_max": 4
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 36,
@@ -206,7 +332,11 @@
         "If the session is running long this is the first thing the time guard trims, down to 4 minutes."
       ],
       "stop_if": "Chest pain, dizziness or any pain above 3/10 - stop the belt and finish the session with the cooldown flow instead.",
-      "region_weights": { "heart": 0.7, "calves": 0.15, "thighs": 0.15 },
+      "region_weights": {
+        "heart": 0.7,
+        "calves": 0.15,
+        "thighs": 0.15
+      },
       "ladder": [
         {
           "id": "zone2_finisher.finisher",
@@ -217,10 +347,23 @@
           "sides": "both",
           "A": 4,
           "B": 4,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.0, "incline": 2, "minutes": 6, "rpe_max": 4 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.0,
+            "incline": 2,
+            "minutes": 6,
+            "rpe_max": 4
+          },
           "advance": {
             "rule": "sessions_gte",
             "value": 99999,
@@ -243,7 +386,11 @@
         "Stay tall and quiet on the feet; if the cushion slides, march in place instead."
       ],
       "stop_if": "Chest pain, dizziness, or knee/shin/ankle pain above 3/10. Swap step-marching for flat marching in place at the first hint of knee complaint.",
-      "region_weights": { "heart": 0.7, "calves": 0.15, "thighs": 0.15 },
+      "region_weights": {
+        "heart": 0.7,
+        "calves": 0.15,
+        "thighs": 0.15
+      },
       "ladder": [
         {
           "id": "march_step_zone2.march",
@@ -254,10 +401,21 @@
           "sides": "both",
           "A": 6,
           "B": 6,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["bw"],
-          "cardio": { "minutes": 6, "rpe_max": 4 },
+          "requires": [
+            "bw"
+          ],
+          "cardio": {
+            "minutes": 6,
+            "rpe_max": 4
+          },
           "advance": {
             "rule": "sessions_gte",
             "value": 99999,
@@ -281,7 +439,11 @@
         "Hard minutes climb slowly on purpose: 6, 8, 8, 9, 10, 10, and each rung takes two clean sessions."
       ],
       "stop_if": "Chest pain, dizziness, unusual breathlessness, or any shin, knee or Achilles pain - end the block, walk 2 min easy, and log a pain flag. If you answered yes to anything on the health screen, intervals stay locked until you confirm medical clearance.",
-      "region_weights": { "heart": 0.75, "thighs": 0.15, "calves": 0.1 },
+      "region_weights": {
+        "heart": 0.75,
+        "thighs": 0.15,
+        "calves": 0.1
+      },
       "ladder": [
         {
           "id": "treadmill_intervals.walk_6",
@@ -292,17 +454,41 @@
           "sides": "both",
           "A": 6,
           "B": 6,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 2.8, "incline": 2, "minutes": 19, "rounds": 6, "work_sec": 60, "rest_sec": 90, "mph_work": 4.0, "hard_min": 6 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 2.8,
+            "incline": 2,
+            "minutes": 19,
+            "rounds": 6,
+            "work_sec": 60,
+            "rest_sec": 90,
+            "mph_work": 4.0,
+            "hard_min": 6
+          },
           "advance": {
             "rule": "rounds_gte",
             "value": 6,
             "consecutive": 2,
             "requires": [
-              { "rule": "weeks_elapsed_gte", "value": 3 },
-              { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w30_4" }
+              {
+                "rule": "weeks_elapsed_gte",
+                "value": 3
+              },
+              {
+                "rule": "ladder_at_or_past",
+                "exercise": "treadmill_zone2",
+                "step_id": "treadmill_zone2.w30_4"
+              }
             ]
           },
           "terminal": false
@@ -316,17 +502,42 @@
           "sides": "both",
           "A": 8,
           "B": 8,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 2.8, "incline": 2, "minutes": 24, "rounds": 8, "work_sec": 60, "rest_sec": 90, "mph_work": 4.0, "hard_min": 8 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 2.8,
+            "incline": 2,
+            "minutes": 24,
+            "rounds": 8,
+            "work_sec": 60,
+            "rest_sec": 90,
+            "mph_work": 4.0,
+            "hard_min": 8
+          },
           "advance": {
             "rule": "rounds_gte",
             "value": 8,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 },
-              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "shin",
+                "days": 14
+              },
+              {
+                "rule": "no_pain_flag_days",
+                "region": "knee",
+                "days": 14
+              }
             ]
           },
           "terminal": false
@@ -340,17 +551,42 @@
           "sides": "both",
           "A": 8,
           "B": 8,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.0, "incline": 1, "minutes": 20, "rounds": 8, "work_sec": 60, "rest_sec": 60, "mph_work": 5.0, "hard_min": 8 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.0,
+            "incline": 1,
+            "minutes": 20,
+            "rounds": 8,
+            "work_sec": 60,
+            "rest_sec": 60,
+            "mph_work": 5.0,
+            "hard_min": 8
+          },
           "advance": {
             "rule": "rounds_gte",
             "value": 8,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 },
-              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "shin",
+                "days": 14
+              },
+              {
+                "rule": "no_pain_flag_days",
+                "region": "knee",
+                "days": 14
+              }
             ]
           },
           "terminal": false
@@ -364,17 +600,42 @@
           "sides": "both",
           "A": 9,
           "B": 9,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.0, "incline": 1, "minutes": 22, "rounds": 9, "work_sec": 60, "rest_sec": 60, "mph_work": 5.5, "hard_min": 9 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.0,
+            "incline": 1,
+            "minutes": 22,
+            "rounds": 9,
+            "work_sec": 60,
+            "rest_sec": 60,
+            "mph_work": 5.5,
+            "hard_min": 9
+          },
           "advance": {
             "rule": "rounds_gte",
             "value": 9,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 },
-              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "shin",
+                "days": 14
+              },
+              {
+                "rule": "no_pain_flag_days",
+                "region": "knee",
+                "days": 14
+              }
             ]
           },
           "terminal": false
@@ -388,18 +649,46 @@
           "sides": "both",
           "A": 10,
           "B": 10,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.0, "incline": 1, "minutes": 24, "rounds": 10, "work_sec": 60, "rest_sec": 60, "mph_work": 6.0, "hard_min": 10 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.0,
+            "incline": 1,
+            "minutes": 24,
+            "rounds": 10,
+            "work_sec": 60,
+            "rest_sec": 60,
+            "mph_work": 6.0,
+            "hard_min": 10
+          },
           "advance": {
             "rule": "rpe_min",
             "value": 9,
             "consecutive": 2,
             "requires": [
-              { "rule": "rounds_gte", "value": 10 },
-              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 },
-              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+              {
+                "rule": "rounds_gte",
+                "value": 10
+              },
+              {
+                "rule": "no_pain_flag_days",
+                "region": "shin",
+                "days": 14
+              },
+              {
+                "rule": "no_pain_flag_days",
+                "region": "knee",
+                "days": 14
+              }
             ]
           },
           "terminal": false
@@ -413,17 +702,42 @@
           "sides": "both",
           "A": 5,
           "B": 5,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["treadmill"],
-          "cardio": { "mph": 3.0, "incline": 1, "minutes": 24, "rounds": 5, "work_sec": 120, "rest_sec": 120, "mph_work": 6.0, "hard_min": 10 },
+          "requires": [
+            "treadmill"
+          ],
+          "cardio": {
+            "mph": 3.0,
+            "incline": 1,
+            "minutes": 24,
+            "rounds": 5,
+            "work_sec": 120,
+            "rest_sec": 120,
+            "mph_work": 6.0,
+            "hard_min": 10
+          },
           "advance": {
             "rule": "rounds_gte",
             "value": 5,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 },
-              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "shin",
+                "days": 14
+              },
+              {
+                "rule": "no_pain_flag_days",
+                "region": "knee",
+                "days": 14
+              }
             ]
           },
           "terminal": true
@@ -444,7 +758,12 @@
         "Stand tall. The moment you start leaning forward from the waist, take weight out of the vest."
       ],
       "stop_if": "Never above 3.5 mph in the vest - if the plan and the belt disagree, the belt loses. Stop for low-back, hip, knee or shoulder pain above 3/10, for any numbness or tingling in the arms, or if the vest starts riding up on every step. Take the vest off before you step off the belt.",
-      "region_weights": { "heart": 0.6, "calves": 0.15, "thighs": 0.15, "core": 0.1 },
+      "region_weights": {
+        "heart": 0.6,
+        "calves": 0.15,
+        "thighs": 0.15,
+        "core": 0.1
+      },
       "ladder": [
         {
           "id": "vest_walk.v10_6",
@@ -455,20 +774,42 @@
           "sides": "both",
           "A": 30,
           "B": 30,
-          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 10, "cap_lb": 30 },
+          "load": {
+            "kind": "bw_vest",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": 10,
+            "cap_lb": 30
+          },
           "implement_id": "vest",
-          "requires": ["treadmill", "vest"],
-          "entry_requires": [
-            { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w33_8" }
+          "requires": [
+            "treadmill",
+            "vest"
           ],
-          "cardio": { "mph": 3.3, "incline": 6, "minutes": 30, "rpe_max": 5 },
+          "entry_requires": [
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "treadmill_zone2",
+              "step_id": "treadmill_zone2.w33_8"
+            }
+          ],
+          "cardio": {
+            "mph": 3.3,
+            "incline": 6,
+            "minutes": 30,
+            "rpe_max": 5
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 30,
             "rpe_max": 5,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "low_back",
+                "days": 14
+              }
             ]
           },
           "terminal": false
@@ -482,20 +823,42 @@
           "sides": "both",
           "A": 33,
           "B": 33,
-          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 10, "cap_lb": 30 },
+          "load": {
+            "kind": "bw_vest",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": 10,
+            "cap_lb": 30
+          },
           "implement_id": "vest",
-          "requires": ["treadmill", "vest"],
-          "entry_requires": [
-            { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w33_8" }
+          "requires": [
+            "treadmill",
+            "vest"
           ],
-          "cardio": { "mph": 3.3, "incline": 8, "minutes": 33, "rpe_max": 5 },
+          "entry_requires": [
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "treadmill_zone2",
+              "step_id": "treadmill_zone2.w33_8"
+            }
+          ],
+          "cardio": {
+            "mph": 3.3,
+            "incline": 8,
+            "minutes": 33,
+            "rpe_max": 5
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 33,
             "rpe_max": 5,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "low_back",
+                "days": 14
+              }
             ]
           },
           "terminal": false
@@ -509,20 +872,42 @@
           "sides": "both",
           "A": 33,
           "B": 33,
-          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 15, "cap_lb": 30 },
+          "load": {
+            "kind": "bw_vest",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": 15,
+            "cap_lb": 30
+          },
           "implement_id": "vest",
-          "requires": ["treadmill", "vest"],
-          "entry_requires": [
-            { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w33_8" }
+          "requires": [
+            "treadmill",
+            "vest"
           ],
-          "cardio": { "mph": 3.3, "incline": 8, "minutes": 33, "rpe_max": 5 },
+          "entry_requires": [
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "treadmill_zone2",
+              "step_id": "treadmill_zone2.w33_8"
+            }
+          ],
+          "cardio": {
+            "mph": 3.3,
+            "incline": 8,
+            "minutes": 33,
+            "rpe_max": 5
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 33,
             "rpe_max": 5,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "low_back",
+                "days": 14
+              }
             ]
           },
           "terminal": false
@@ -536,21 +921,47 @@
           "sides": "both",
           "A": 36,
           "B": 36,
-          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 15, "cap_lb": 30 },
+          "load": {
+            "kind": "bw_vest",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": 15,
+            "cap_lb": 30
+          },
           "implement_id": "vest",
-          "requires": ["treadmill", "vest"],
-          "entry_requires": [
-            { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w33_8" }
+          "requires": [
+            "treadmill",
+            "vest"
           ],
-          "cardio": { "mph": 3.4, "incline": 10, "minutes": 36, "rpe_max": 5 },
+          "entry_requires": [
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "treadmill_zone2",
+              "step_id": "treadmill_zone2.w33_8"
+            }
+          ],
+          "cardio": {
+            "mph": 3.4,
+            "incline": 10,
+            "minutes": 36,
+            "rpe_max": 5
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 36,
             "rpe_max": 5,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 },
-              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "low_back",
+                "days": 14
+              },
+              {
+                "rule": "no_pain_flag_days",
+                "region": "knee",
+                "days": 14
+              }
             ]
           },
           "terminal": false
@@ -564,20 +975,42 @@
           "sides": "both",
           "A": 36,
           "B": 36,
-          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 20, "cap_lb": 30 },
+          "load": {
+            "kind": "bw_vest",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": 20,
+            "cap_lb": 30
+          },
           "implement_id": "vest",
-          "requires": ["treadmill", "vest"],
-          "entry_requires": [
-            { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w33_8" }
+          "requires": [
+            "treadmill",
+            "vest"
           ],
-          "cardio": { "mph": 3.4, "incline": 12, "minutes": 36, "rpe_max": 5 },
+          "entry_requires": [
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "treadmill_zone2",
+              "step_id": "treadmill_zone2.w33_8"
+            }
+          ],
+          "cardio": {
+            "mph": 3.4,
+            "incline": 12,
+            "minutes": 36,
+            "rpe_max": 5
+          },
           "advance": {
             "rule": "cardio_done",
             "value": 36,
             "rpe_max": 5,
             "consecutive": 2,
             "requires": [
-              { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }
+              {
+                "rule": "no_pain_flag_days",
+                "region": "low_back",
+                "days": 14
+              }
             ]
           },
           "terminal": true
@@ -597,7 +1030,15 @@
         "Wall tibialis raises on lower days protect the shins as the incline walking and running ramp up."
       ],
       "stop_if": "Any sharp pain during a rehearsal set - skip that pattern for the day and tell the app, rather than warming up harder to push through it.",
-      "region_weights": { "heart": 0.2, "shoulders": 0.15, "back": 0.15, "core": 0.15, "glutes": 0.15, "thighs": 0.15, "calves": 0.05 },
+      "region_weights": {
+        "heart": 0.2,
+        "shoulders": 0.15,
+        "back": 0.15,
+        "core": 0.15,
+        "glutes": 0.15,
+        "thighs": 0.15,
+        "calves": 0.05
+      },
       "ladder": [
         {
           "id": "warmup_flow.standard",
@@ -608,9 +1049,17 @@
           "sides": "both",
           "A": 6,
           "B": 6,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["bw"],
+          "requires": [
+            "bw"
+          ],
           "advance": {
             "rule": "sessions_gte",
             "value": 99999,
@@ -618,7 +1067,8 @@
           },
           "terminal": true
         }
-      ]
+      ],
+      "no_xp": true
     },
     {
       "id": "cooldown_flow",
@@ -632,7 +1082,16 @@
         "Stretch to a 4/10 tension, never into pain - this is the part of the session that tells your nervous system the work is over."
       ],
       "stop_if": "Sharp, pinching or nervy pain, or numbness anywhere - come out of the stretch immediately. Never stretch a joint you flagged pain on today.",
-      "region_weights": { "heart": 0.25, "neck_traps": 0.05, "chest": 0.1, "back": 0.15, "core": 0.05, "glutes": 0.2, "thighs": 0.15, "calves": 0.05 },
+      "region_weights": {
+        "heart": 0.25,
+        "neck_traps": 0.05,
+        "chest": 0.1,
+        "back": 0.15,
+        "core": 0.05,
+        "glutes": 0.2,
+        "thighs": 0.15,
+        "calves": 0.05
+      },
       "ladder": [
         {
           "id": "cooldown_flow.standard",
@@ -643,9 +1102,17 @@
           "sides": "both",
           "A": 3,
           "B": 3,
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
-          "requires": ["bw"],
+          "requires": [
+            "bw"
+          ],
           "advance": {
             "rule": "sessions_gte",
             "value": 99999,
@@ -653,7 +1120,8 @@
           },
           "terminal": true
         }
-      ]
+      ],
+      "no_xp": true
     }
   ]
 }
