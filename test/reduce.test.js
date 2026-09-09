@@ -188,3 +188,20 @@ test('setKey separates sides and parts of the same set number', () => {
   assert.notEqual(setKey({ ...base, side: 'L' }), setKey({ ...base, side: 'R' }));
   assert.notEqual(setKey({ ...base, part: 'y' }), setKey({ ...base, part: 't' }));
 });
+
+test('a pain flag carries its region, so the rules that watch for it can see it', () => {
+  const events = [
+    ev(TYPES.PAIN, { exercise_id: 'treadmill_intervals', region: 'shin', level: 5 }, 'sean', at(40), { day: '2026-09-14' }),
+    ev(TYPES.PAIN, { exercise_id: 'push_up', level: 2 }, 'sean', at(41), { day: '2026-09-15' }),
+  ];
+  const { users } = reduce(events, spec, { equipment });
+  assert.equal(users.sean.painFlags[0].region, 'shin');
+  assert.equal(users.sean.painFlags[1].region, 'other', 'an unspecified region still records something the rules can read');
+});
+
+test('a live shin flag holds the running ladder shut', async () => {
+  const { evalRule } = await import('../src/engine.js');
+  const rule = { rule: 'no_pain_flag_days', region: 'shin', days: 14 };
+  assert.equal(evalRule(rule, { sets: [] }, { painFlags: [{ region: 'shin', daysAgo: 3 }] }), false);
+  assert.equal(evalRule(rule, { sets: [] }, { painFlags: [{ region: 'shin', daysAgo: 20 }] }), true);
+});

@@ -100,7 +100,7 @@ export function reduce(events, program, opts = {}) {
         u.benchmarkHistory.push({ ...d, day: e.day });
         u.benchmarks[d.benchmark_id] = { ...d, day: e.day };
         break;
-      case TYPES.PAIN: u.painFlags.push({ ...d, day: e.day }); break;
+      case TYPES.PAIN: u.painFlags.push({ ...d, region: d.region ?? 'other', day: e.day }); break;
       case TYPES.METRIC: u.metrics.push({ ...d, day: e.day }); break;
       case TYPES.PLEDGE: u.pledges.push({ ...d, day: e.day }); break;
       case TYPES.REACTION: u.reactions.push({ ...d, day: e.day }); break;

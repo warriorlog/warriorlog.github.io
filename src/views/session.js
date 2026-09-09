@@ -140,7 +140,32 @@ function restTimer() {
   </div>`;
 }
 
+const PAIN_REGIONS = [
+  ['low_back', 'Low back'], ['shoulder', 'Shoulder'], ['knee', 'Knee'], ['wrist', 'Wrist'],
+  ['neck', 'Neck'], ['shin', 'Shin'], ['hip', 'Hip'], ['elbow', 'Elbow'], ['other', 'Somewhere else'],
+];
+
+function painSheet(sh) {
+  return `<div class="sheet-backdrop" data-action="close-sheet" data-key="close">
+    <div class="sheet" data-stop>
+      <h3>Where did it hurt?</h3>
+      <p class="faint small">This never leaves your phone. It is here so the app can back you off before something small becomes something slow.</p>
+      <div class="chips">${PAIN_REGIONS.map(([v, label]) =>
+        `<button class="chip" data-action="pain-region" data-key="pr-${v}" data-v="${v}" aria-pressed="${sh.region === v}">${label}</button>`).join('')}</div>
+      <div style="height:14px"></div>
+      <div class="tiny">How bad, out of 10?</div>
+      <div class="chips">${[[1, 'Twinge (1-2)'], [4, 'Real (3-5)'], [7, 'Sharp (6+)']].map(([v, label]) =>
+        `<button class="chip" data-action="pain-level" data-key="pl-${v}" data-v="${v}" aria-pressed="${sh.level === v}">${label}</button>`).join('')}</div>
+      <div style="height:14px"></div>
+      <button class="btn" data-action="pain-save" data-key="pain-save"${sh.region ? '' : ' aria-disabled="true"'}>Log it</button>
+      <div style="height:8px"></div>
+      <p class="faint small">Sharp pain means stop for today, whatever the plan says.</p>
+    </div>
+  </div>`;
+}
+
 function stepper(sh, state) {
+  if (sh.mode === 'pain') return painSheet(sh);
   const unit = sh.unit === 'sec' ? 'seconds' : sh.unit === 'min' ? 'minutes' : sh.unit === 'rounds' ? 'rounds' : 'reps';
   return `<div class="sheet-backdrop" data-action="close-sheet" data-key="close">
     <div class="sheet" data-stop>
@@ -234,9 +259,26 @@ export async function act(action, data, state) {
     }
 
     case 'pain': {
+      if (sheet) sheet = { ...sheet, mode: 'pain', region: null, level: 4 };
+      rerender();
+      return;
+    }
+
+    case 'pain-region': { if (sheet) { sheet.region = data.v; rerender(); } return; }
+    case 'pain-level': { if (sheet) { sheet.level = Number(data.v); rerender(); } return; }
+
+    case 'pain-save': {
       const r = find(sheet?.rowKey);
+      const region = sheet?.region ?? 'other';
+      const level = sheet?.level ?? 4;
       sheet = null;
-      if (r) await dispatch(TYPES.PAIN, { exercise_id: r.exercise_id, step_id: r.step_id, region: 'other', level: 4 });
+      if (r) {
+        await dispatch(TYPES.PAIN, { exercise_id: r.exercise_id, step_id: r.step_id, region, level });
+        const { toast } = await import('../app.js');
+        toast(level >= 3
+          ? 'Noted. Stop this exercise for today. Two of these in a week and the app steps you back a rung.'
+          : 'Noted. Keep an eye on it.');
+      }
       return;
     }
 
