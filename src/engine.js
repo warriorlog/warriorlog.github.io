@@ -278,10 +278,268 @@ export function scheduleFor(spec, day, programStart) {
   };
 }
 
-/** Sets after the on-ramp / deload multiplier, never below the floor. */
+/**
+ * Sets after the on-ramp / deload multiplier. The floor may never ADD sets: a
+ * one-set warm-up flow stays one set, or a deload week would prescribe more work
+ * than a normal one.
+ */
 export function scaledSets(sets, { deload, onRamp }, spec) {
   const m = onRamp ? (spec.on_ramp?.set_multiplier ?? 0.6)
     : deload ? (spec.deload?.set_multiplier ?? 0.6) : 1;
-  if (m === 1) return sets;
-  return Math.max(spec.deload?.min_sets ?? 2, Math.floor(sets * m));
+  if (m === 1 || sets <= 1) return sets;
+  return Math.min(sets, Math.max(spec.deload?.min_sets ?? 2, Math.floor(sets * m)));
+}
+
+// ---------------------------------------------------------------- prescribe
+/**
+ * Today's plan. Frozen into session.started at Start, so the targets cannot move
+ * under the user mid-session and "% of targets hit" stays reproducible after any
+ * later change to the program data.
+ */
+export function prescribe(spec, user, day, opts = {}) {
+  const programStart = user.profile?.program_start ?? opts.programStart ?? day;
+  const sched = scheduleFor(spec, day, programStart);
+  const eq = { ...(opts.equipment ?? {}), ...(user.equipment ?? {}) };
+  const restDow = user.profile?.rest_dow ?? spec.defaults?.rest_dow ?? 0;
+  const template = sched.template;
+
+  if (!template || !template.minutes) {
+    return { day, week: sched.week, rest: true, template_id: template?.id ?? 'sun_rest',
+             kindle: template?.kindle ?? null, blocks: [], rows: [], est_minutes: 0 };
+  }
+
+  const override = spec.week_overrides?.[String(sched.week)] ?? null;
+  if (override?.days?.[String(dow(day))] === 'off') {
+    return { day, week: sched.week, rest: true, off: true, template_id: template.id, blocks: [], rows: [], est_minutes: 0 };
+  }
+
+  const ctx = {
+    day, spec, equipment: eq, weekIndex: sched.week,
+    ladders: user.ladders, floor: user.floor,
+    painFlags: opts.painFlags ?? [], benchmarks: user.benchmarks ?? {},
+  };
+
+  const blocks = [];
+  const rows = [];
+  for (const b of template.blocks ?? []) {
+    const items = [];
+    for (const raw of b.items ?? []) {
+      for (const item of expandItem(raw, spec, user, ctx, sched, override)) {
+        // A fallback can land on a movement the block already trains (the locked
+        // swing falls back to the hinge, which Thursday also programs directly).
+        // Add the sets to the existing card rather than showing it twice.
+        const twin = items.find(x => x.step_id === item.step_id
+          && x.counts_for_progression === item.counts_for_progression);
+        if (twin) {
+          const offset = twin.sets;
+          for (const r of item.rows) r.set_index += offset;
+          twin.sets += item.sets;
+          twin.rows.push(...item.rows);
+          twin.locked_note ??= item.locked_note;
+          rows.push(...item.rows);
+        } else {
+          items.push(item);
+          rows.push(...item.rows);
+        }
+      }
+    }
+    blocks.push({ kind: b.kind, minutes: b.minutes, items });
+  }
+
+  const plan = {
+    day, week: sched.week, template_id: template.id, name: template.name,
+    phase_id: sched.phase?.id, rir: (sched.deload ? spec.deload?.rir : sched.phase?.rir) ?? 3,
+    deload: sched.deload, boss: sched.boss, on_ramp: sched.onRamp,
+    est_minutes: template.minutes, blocks, rows,
+    rest_dow: restDow, rules_version: spec.rulesVersion,
+  };
+  return fitToTime(plan, user.profile?.session_minutes ?? spec.defaults?.session_minutes ?? 50, spec);
+}
+
+/** One template item becomes one or more real exercise cards (or its fallback). */
+function expandItem(item, spec, user, ctx, sched, override) {
+  const ex = spec.byExercise?.[item.exercise_id];
+  if (!ex) return [];
+  const steps = user.stepsByExercise?.[ex.id] ?? resolveSteps(ex, ctx.equipment);
+  const cur = steps.find(s => s.id === user.ladders?.[ex.id]?.step_id) ?? steps[0];
+  if (!cur) return [];
+
+  // A locked step runs the template's declared fallback instead — the user always
+  // has something legal to do, and it is never the gated movement.
+  if (!entryOpen(cur, ctx)) {
+    const blocked = blockedBy(cur, ctx);
+    const out = [];
+    for (const f of item.fallback_when_locked ?? []) {
+      out.push(...expandItem({ ...f, fallback_when_locked: [] }, spec, user, ctx, sched, override));
+    }
+    if (out.length) out[0].locked_note = { exercise_id: ex.id, step_id: cur.id, blocked };
+    return out;
+  }
+
+  let sets = item.phase_sets?.[String(sched.phase?.weeks?.[0] ? phaseNumber(spec, sched.phase) : 1)] ?? item.sets ?? 1;
+  if (sets === 0) return [];
+  sets = scaledSets(sets, sched, spec);
+  if (override?.set_multiplier) sets = Math.max(spec.deload?.min_sets ?? 2, Math.floor(sets * override.set_multiplier));
+  if (ex.id === 'swing' && sched.deload && spec.deload?.swing_sets) sets = Math.min(sets, spec.deload.swing_sets);
+
+  const bodyweight = user.profile?.bodyweight_lb ?? null;
+  const vestLb = cur.load?.vest_pct ? resolveVest(cur.load.vest_pct, bodyweight, ctx.equipment, cur.load.cap_lb ?? 30) : 0;
+  let cardio = resolveCardio(cur.cardio, ctx.equipment);
+  if (cardio && item.time_override_min) cardio = { ...cardio, minutes: item.time_override_min };
+  if (cardio && sched.deload && ex.id === 'treadmill_zone2') {
+    cardio = { ...cardio, minutes: Math.round(cardio.minutes * (spec.deload.zone2_pct ?? 70) / 100),
+               incline: Math.max(0, (cardio.incline ?? 0) + (spec.deload.zone2_incline_delta ?? 0)) };
+  }
+
+  const last = lastValues(user, ex.id, cur.id);
+  const rows = buildRows(ex, cur, sets, item, last, { vestLb, cardio });
+
+  return [{
+    exercise_id: ex.id, name: ex.name, step_id: cur.id, step_name: cur.name,
+    how: cur.how, cues: ex.cues, stop_if: ex.stop_if,
+    checklist: cur.checklist_required ? ex.checklist : null,
+    sets, rest_sec: item.rest_sec ?? 60, note: item.note ?? null,
+    load: { ...cur.load, vest_lb: vestLb || undefined },
+    implement_id: cur.implement_id, cardio,
+    substitutes: item.substitutes ?? null,
+    counts_for_progression: item.counts_for_progression !== false,
+    next_unlock: cur.advance ? describeAdvance(cur, spec) : null,
+    rows,
+  }];
+}
+
+const phaseNumber = (spec, phase) => (spec.phases ?? []).findIndex(p => p.id === phase?.id) + 1;
+
+/** Every loggable row of a plan. XP paid and XP available both count these. */
+function buildRows(ex, step, sets, item, last, { vestLb, cardio }) {
+  const rows = [];
+  const sides = step.sides === 'each' ? ['L', 'R'] : [null];
+  const parts = step.parts?.length ? step.parts : [null];
+  const unit = cardio && step.unit === 'min' ? 'min' : step.unit;
+
+  for (let i = 1; i <= sets; i++) {
+    for (const part of parts) {
+      for (const side of sides) {
+        const A = part?.A ?? step.A;
+        const B = part?.B ?? step.B;
+        const key = `${i}|${side ?? ''}|${part?.key ?? ''}`;
+        rows.push({
+          exercise_id: ex.id, step_id: step.id, set_index: i,
+          side, part: part?.key ?? null, part_name: part?.name ?? null,
+          unit, A, B,
+          target: prefillFor(last?.[key], A, B),
+          last: last?.[key] ?? null,
+          implement_id: step.implement_id, vest_lb: vestLb || undefined,
+          minutes: cardio?.minutes, mph: cardio?.mph, incline: cardio?.incline,
+          rounds: cardio?.rounds, work_sec: cardio?.work_sec, rest_sec: cardio?.rest_sec ?? item.rest_sec,
+          counts_for_progression: item.counts_for_progression !== false,
+          prescribed: true,
+        });
+      }
+    }
+  }
+  return rows;
+}
+
+/**
+ * The prefill: what you did here last time, so one tap means "match it" and the
+ * headline is "beat last time by one rep". A fresh step starts at the low end.
+ */
+function prefillFor(last, A, B) {
+  if (last == null) return A;
+  return clamp(last, A, B);
+}
+
+/** Last logged value per row key at this exact step. */
+function lastValues(user, exId, stepId) {
+  for (let i = user.sessions.length - 1; i >= 0; i--) {
+    const s = user.sessions[i];
+    const rows = s.sets.filter(x => x.exercise_id === exId && x.step_id === stepId);
+    if (!rows.length) continue;
+    const out = {};
+    for (const r of rows) out[`${r.set_index}|${r.side ?? ''}|${r.part ?? ''}`] = r.value;
+    return out;
+  }
+  return null;
+}
+
+/** Plain words for what the next rung costs — shown on the card, never a formula. */
+export function describeAdvance(step, spec = null) {
+  const a = step.advance;
+  if (!a) return null;
+  const n = a.consecutive ?? 2;
+  const times = n === 1 ? 'once' : `${n} sessions in a row`;
+  const extra = (a.requires ?? []).map(r => describeRule(r, '', spec)).filter(Boolean);
+  const main = describeRule(a, times, spec);
+  return [main, ...extra].filter(Boolean).join(', ');
+}
+
+function describeRule(a, times = '', spec = null) {
+  const suffix = times ? `, ${times}` : '';
+  switch (a.rule) {
+    case 'all_sets_reps_gte': return `Every set at ${a.value} rep${a.value === 1 ? '' : 's'}${suffix}`;
+    case 'all_sets_time_gte': return `Every set at ${a.value}s${suffix}`;
+    case 'rounds_gte': return `All ${a.value} rounds${suffix}`;
+    case 'clock_lte': return `Finish inside ${Math.floor(a.value / 60)}:${String(a.value % 60).padStart(2, '0')}${suffix}`;
+    case 'cardio_done': return `Complete it at an easy effort${suffix}`;
+    case 'checklist_all_ok': return times ? `Every form cue ticked${suffix}` : 'every form cue ticked';
+    case 'drops_lte': return a.value === 0
+      ? (times ? `No drops${suffix}` : 'no drops')
+      : (times ? `At most ${a.value} drops${suffix}` : `at most ${a.value} drops`);
+    case 'rpe_min': return times ? `Hard efforts at RPE ${a.value}+${suffix}` : `hard efforts at RPE ${a.value}+`;
+    case 'sessions_gte': return `Practise it ${a.value} times`;
+    case 'weeks_elapsed_gte': return `from week ${a.value}`;
+    case 'no_pain_flag_days': return `no ${a.region ?? ''} pain flagged in ${a.days} days`.replace('  ', ' ');
+    case 'ladder_at_or_past': {
+      const named = spec?.byStep?.[a.step_id]?.name ?? a.step_id.split('.')[1].replace(/_/g, ' ');
+      const ex = spec?.byExercise?.[a.exercise]?.name ?? a.exercise.replace(/_/g, ' ');
+      return `${ex} at "${named}"`;
+    }
+    case 'benchmark_gte': return `${a.id} at ${a.value} or better`;
+    case 'benchmark_lte': return `${a.id} at ${a.value} or faster`;
+    case 'all_of': return a.rules.map(r => describeRule(r, '', spec)).filter(Boolean).join(' and ');
+    default: return null;
+  }
+}
+
+/**
+ * Trim the plan to the minutes the user actually has, in a fixed order that never
+ * touches the warm-up, the get-up or the swings. Dropped rows are marked
+ * `prescribed: false` so they count for neither fidelity nor available XP.
+ */
+export function fitToTime(plan, targetMinutes, spec) {
+  let est = plan.est_minutes;
+  if (est <= targetMinutes) return plan;
+  const guard = spec.time_guard ?? [];
+  const never = new Set(guard.find(g => g.action === 'never')?.exercise_ids ?? []);
+
+  for (const rule of guard) {
+    if (est <= targetMinutes) break;
+    if (rule.action === 'trim') {
+      for (const b of plan.blocks) {
+        for (const it of b.items) {
+          if (it.exercise_id !== rule.target || !it.cardio?.minutes) continue;
+          const cut = Math.min(est - targetMinutes, it.cardio.minutes - (rule.floor_min ?? 0));
+          if (cut > 0) {
+            it.cardio = { ...it.cardio, minutes: it.cardio.minutes - cut, trimmed: true };
+            for (const r of it.rows) r.minutes = it.cardio.minutes;
+            est -= cut;
+          }
+        }
+      }
+    } else if (rule.action === 'drop_last_set') {
+      const block = plan.blocks.find(b => b.kind === rule.block);
+      for (let i = (block?.items.length ?? 0) - 1; i >= 0 && est > targetMinutes; i--) {
+        const it = block.items[i];
+        if (never.has(it.exercise_id) || it.sets <= 1) continue;
+        const last = it.rows.filter(r => r.set_index === it.sets);
+        for (const r of last) r.prescribed = false;
+        it.dropped_sets = (it.dropped_sets ?? 0) + 1;
+        est -= Math.max(1, Math.round(((it.rest_sec ?? 60) + 45) / 60));
+      }
+    }
+  }
+  plan.est_minutes = Math.max(targetMinutes, Math.round(est));
+  plan.rows = plan.blocks.flatMap(b => b.items.flatMap(i => i.rows));
+  return plan;
 }

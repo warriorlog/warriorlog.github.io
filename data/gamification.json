@@ -1,0 +1,1150 @@
+{
+  "schemaVersion": 1,
+  "rulesVersion": 1,
+  "xp": {
+    "set_logged": 10,
+    "set_met": 5,
+    "zone2_per_min": 3,
+    "zone2_talk_fail_per_min": 2,
+    "zone2_daily_cap_min": 45,
+    "interval_round": 12,
+    "quest_full": 50,
+    "quest_skirmish": 25,
+    "ember": 5,
+    "ladder_advance": 100,
+    "gate": 75,
+    "gear_tier": 150,
+    "rep_pr": 25,
+    "pr_max_per_session": 3,
+    "pledge_kept": 15,
+    "placement": 150,
+    "boss_per_benchmark": 30,
+    "boss_all_six": 20,
+    "perfect_week": 300,
+    "perfect_week_muster": 150,
+    "rekindle": 50,
+    "kindle_walk": 20,
+    "duel_win": 100,
+    "duel_dead_heat": 50,
+    "alliance_crown": 100,
+    "boss_defeated_pct": 0.1,
+    "boss_flawless_pct": 0.2,
+    "flame_milestones": {
+      "7": 100,
+      "30": 300,
+      "66": 500,
+      "100": 1000
+    }
+  },
+  "level": {
+    "coefficient": 120,
+    "exponent": 1.5
+  },
+  "ranks": [
+    {
+      "level": 1,
+      "title": "Recruit"
+    },
+    {
+      "level": 3,
+      "title": "Initiate"
+    },
+    {
+      "level": 5,
+      "title": "Footsoldier"
+    },
+    {
+      "level": 8,
+      "title": "Shieldbearer"
+    },
+    {
+      "level": 11,
+      "title": "Spearman"
+    },
+    {
+      "level": 14,
+      "title": "Vanguard"
+    },
+    {
+      "level": 17,
+      "title": "Blade"
+    },
+    {
+      "level": 20,
+      "title": "Warrior"
+    },
+    {
+      "level": 24,
+      "title": "Veteran"
+    },
+    {
+      "level": 28,
+      "title": "Champion"
+    },
+    {
+      "level": 32,
+      "title": "Warlord"
+    },
+    {
+      "level": 36,
+      "title": "Ironborn"
+    },
+    {
+      "level": 40,
+      "title": "Titan"
+    },
+    {
+      "level": 45,
+      "title": "Forgeborn"
+    },
+    {
+      "level": 50,
+      "title": "Legend"
+    },
+    {
+      "level": 60,
+      "title": "Immortal"
+    }
+  ],
+  "regions": [
+    "heart",
+    "neck_traps",
+    "shoulders",
+    "chest",
+    "arms",
+    "back",
+    "core",
+    "glutes",
+    "thighs",
+    "calves"
+  ],
+  "region_level": {
+    "divisor": 40
+  },
+  "gear_slots": [
+    {
+      "id": "helm",
+      "name": "Helm",
+      "region": "heart",
+      "source": {
+        "kind": "benchmark",
+        "id": "bb_mile_time"
+      }
+    },
+    {
+      "id": "gorget",
+      "name": "Gorget",
+      "region": "neck_traps",
+      "source": {
+        "kind": "ladder",
+        "exercise": "farmer_carry",
+        "steps": [
+          "farmer_carry.db20",
+          "farmer_carry.offset_53",
+          "farmer_carry.offset_vest"
+        ]
+      }
+    },
+    {
+      "id": "pauldrons",
+      "name": "Pauldrons",
+      "region": "shoulders",
+      "source": {
+        "kind": "ladder",
+        "exercise": "pike_push_up",
+        "steps": [
+          "pike_push_up.floor",
+          "pike_push_up.elevated",
+          "pike_push_up.wall_hs"
+        ]
+      }
+    },
+    {
+      "id": "breastplate",
+      "name": "Breastplate",
+      "region": "chest",
+      "source": {
+        "kind": "benchmark",
+        "id": "bb_pushups_2min"
+      }
+    },
+    {
+      "id": "gauntlets",
+      "name": "Gauntlets",
+      "region": "arms",
+      "source": {
+        "kind": "ladder",
+        "exercise": "diamond_push_up",
+        "steps": [
+          "diamond_push_up.knee",
+          "diamond_push_up.full",
+          "diamond_push_up.vest10"
+        ]
+      }
+    },
+    {
+      "id": "backplate",
+      "name": "Backplate",
+      "region": "back",
+      "source": {
+        "kind": "ladder",
+        "exercise": "db_row",
+        "steps": [
+          "db_row.db20",
+          "db_row.db35",
+          "db_row.kb53"
+        ]
+      }
+    },
+    {
+      "id": "belt",
+      "name": "Belt",
+      "region": "core",
+      "source": {
+        "kind": "benchmark",
+        "id": "bb_hollow_hold"
+      }
+    },
+    {
+      "id": "hip_guard",
+      "name": "Hip Guard",
+      "region": "glutes",
+      "source": {
+        "kind": "benchmark",
+        "id": "bb_swings_5min"
+      }
+    },
+    {
+      "id": "greaves",
+      "name": "Greaves",
+      "region": "thighs",
+      "source": {
+        "kind": "benchmark_max",
+        "ids": [
+          "bb_goblet_bw",
+          "bb_vest_stepups_3min"
+        ]
+      }
+    },
+    {
+      "id": "sabatons",
+      "name": "Sabatons",
+      "region": "calves",
+      "source": {
+        "kind": "ladder",
+        "exercise": "calf_raise",
+        "steps": [
+          "calf_raise.two_leg_slow",
+          "calf_raise.single_db20",
+          "calf_raise.single_kb53"
+        ]
+      }
+    }
+  ],
+  "gear_tiers": [
+    {
+      "index": 0,
+      "id": "iron",
+      "name": "Iron",
+      "stroke": "#6b7280"
+    },
+    {
+      "index": 1,
+      "id": "bronze",
+      "name": "Bronze",
+      "stroke": "#CD7F32"
+    },
+    {
+      "index": 2,
+      "id": "silver",
+      "name": "Silver",
+      "stroke": "#C0C0C0"
+    },
+    {
+      "index": 3,
+      "id": "gold",
+      "name": "Gold",
+      "stroke": "#FFD700"
+    }
+  ],
+  "flame": {
+    "day_boundary_hours": 4,
+    "rest_per_days": 7,
+    "shields_start": 1,
+    "shields_max": 2,
+    "ember_days": 7,
+    "rekindle_quests": 2,
+    "rekindle_per_days": 30,
+    "recovery_max_days": 7,
+    "away_max_days": 7,
+    "away_per_season": 2
+  },
+  "perfect_week": {
+    "min_full": 4,
+    "muster_min_full": 3,
+    "max_skirmish": 2
+  },
+  "duel": {
+    "weights": {
+      "sessions": 0.3,
+      "fidelity": 0.25,
+      "zone2": 0.2,
+      "progress": 0.15,
+      "xp": 0.1
+    },
+    "progress": {
+      "per_step": 34,
+      "per_tier": 50
+    },
+    "dead_heat_margin": 2,
+    "alliance_after_losses": 3,
+    "alliance_target": 150,
+    "pb_star_margin": 5,
+    "lock_dow": 2,
+    "lock_hour": 23,
+    "min_sessions_contested": 2,
+    "max_paused_contested": 3,
+    "session_counts": {
+      "min_minutes": 20,
+      "min_fidelity": 0.6,
+      "skirmish_min_minutes": 12
+    }
+  },
+  "bosses": [
+    {
+      "n": 1,
+      "id": "gatekeeper",
+      "name": "The Gatekeeper",
+      "hp": 55
+    },
+    {
+      "n": 2,
+      "id": "iron_colossus",
+      "name": "The Iron Colossus",
+      "hp": 65
+    },
+    {
+      "n": 3,
+      "id": "warlord",
+      "name": "The Warlord",
+      "hp": 60,
+      "hp_bonus": {
+        "amount": 10,
+        "when": {
+          "metric": "both_gate_passed",
+          "gate": "bell",
+          "op": "eq",
+          "value": true
+        }
+      }
+    },
+    {
+      "n": 4,
+      "id": "iron_vest",
+      "name": "The Iron Vest",
+      "hp": 55,
+      "hp_bonus": {
+        "amount": 5,
+        "when": {
+          "metric": "both_vest_sessions",
+          "op": "gte",
+          "value": 2
+        }
+      }
+    },
+    {
+      "n": 5,
+      "id": "season_titan",
+      "name": "The Season Titan",
+      "hp": 50
+    }
+  ],
+  "boss_benchmarks": [
+    "bb_mile_time",
+    "bb_pushups_2min",
+    "bb_hollow_hold",
+    "bb_goblet_bw",
+    "bb_swings_5min",
+    "bb_vest_stepups_3min"
+  ],
+  "boss_damage": {
+    "first_battle_logged": 10,
+    "first_battle_per_tier": 15,
+    "imp_cap": 25,
+    "tier_pts_per_climb": 15,
+    "tier_pts_cap": 30,
+    "outcomes": {
+      "flawless": 1.5,
+      "defeated": 1.0,
+      "wounded": 0.75
+    },
+    "solo_hp_multiplier": 0.5,
+    "escaped_revenge_bonus": 10,
+    "window_extension_days": 7,
+    "paused_days_for_extension": 3,
+    "rematch_days": 7,
+    "rematch_max_retests": 2
+  },
+  "duo_flame": {
+    "milestones": {
+      "7": 100,
+      "30": 300,
+      "66": 500,
+      "100": 1000
+    },
+    "ember_days": 7,
+    "restore_days": 3,
+    "neutral_break_days": 14
+  },
+  "unlock": [
+    {
+      "screen": "home",
+      "when": {
+        "metric": "always"
+      }
+    },
+    {
+      "screen": "quest",
+      "when": {
+        "metric": "always"
+      }
+    },
+    {
+      "screen": "quest_complete",
+      "when": {
+        "metric": "always"
+      }
+    },
+    {
+      "screen": "body",
+      "when": {
+        "metric": "always"
+      }
+    },
+    {
+      "screen": "settings",
+      "when": {
+        "metric": "always"
+      }
+    },
+    {
+      "screen": "ladders",
+      "when": {
+        "metric": "steps_gained",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "screen": "skirmish_hint",
+      "when": {
+        "metric": "program_day",
+        "op": "gte",
+        "value": 4
+      }
+    },
+    {
+      "screen": "partner_card",
+      "when": {
+        "metric": "both_sessions_completed",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "screen": "duo_flame",
+      "when": {
+        "metric": "both_sessions_completed",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "screen": "journal",
+      "when": {
+        "metric": "sessions_completed",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "screen": "weekly_report",
+      "when": {
+        "metric": "weeks_completed",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "screen": "duel",
+      "when": {
+        "metric": "weeks_completed",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "screen": "boss_arena",
+      "when": {
+        "metric": "program_day",
+        "op": "gte",
+        "value": 8
+      }
+    },
+    {
+      "screen": "armory_slots",
+      "when": {
+        "metric": "gear_any_tier",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "screen": "badges",
+      "when": {
+        "metric": "badges_earned",
+        "op": "gte",
+        "value": 1
+      }
+    }
+  ],
+  "badges": [
+    {
+      "id": "first_blood",
+      "name": "First Blood",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "sessions_completed",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "mirror_faced",
+      "name": "Faced the Mirror",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "quiz_done",
+        "op": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "kindling_7",
+      "name": "Kindling",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "flame",
+        "op": "gte",
+        "value": 7
+      }
+    },
+    {
+      "id": "perfect_week",
+      "name": "Perfect Week",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "perfect_weeks",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "first_rung",
+      "name": "First Rung",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "steps_gained",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "ten_clean",
+      "name": "Ten Clean",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "set_value",
+        "exercise": "push_up",
+        "min_step_id": "push_up.full",
+        "op": "gte",
+        "value": 10
+      }
+    },
+    {
+      "id": "hinge_gate",
+      "name": "Hinge Earned",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "ladder_step",
+        "exercise": "hinge_deadlift",
+        "step_id": "hinge_deadlift.kb53_volume",
+        "op": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "skirmisher",
+      "name": "Skirmisher",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "skirmish_count",
+        "op": "gte",
+        "value": 5
+      }
+    },
+    {
+      "id": "comeback",
+      "name": "Comeback",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "rekindled",
+        "duo": false,
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "pledged_10",
+      "name": "Word Is Bond",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "pledges_kept",
+        "op": "gte",
+        "value": 10
+      }
+    },
+    {
+      "id": "vested",
+      "name": "Vested Interest",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "vest_used",
+        "op": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "get_up_shoe",
+      "name": "Steady Hand",
+      "rarity": "common",
+      "duo": false,
+      "criterion": {
+        "metric": "ladder_step",
+        "exercise": "turkish_get_up",
+        "step_id": "turkish_get_up.db8",
+        "op": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "bell_earned",
+      "name": "Bell Earned",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "ladder_step",
+        "exercise": "swing",
+        "step_id": "swing.deadstop_53",
+        "op": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "iron_month",
+      "name": "Iron Month",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "flame",
+        "op": "gte",
+        "value": 30
+      }
+    },
+    {
+      "id": "heart_week",
+      "name": "Heart Week",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "zone2_week_minutes",
+        "op": "gte",
+        "value": 150
+      }
+    },
+    {
+      "id": "twenty_clean",
+      "name": "Twenty Clean",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "set_value",
+        "exercise": "push_up",
+        "min_step_id": "push_up.full",
+        "op": "gte",
+        "value": 20
+      }
+    },
+    {
+      "id": "goblet_53",
+      "name": "Bell Squat",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "set_value",
+        "exercise": "goblet_squat",
+        "min_step_id": "goblet_squat.kb53",
+        "implement_id": "kb53",
+        "op": "gte",
+        "value": 6
+      }
+    },
+    {
+      "id": "century_bell",
+      "name": "Century Bell",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "session_exercise_total",
+        "exercise": "swing",
+        "implement_id": "kb53",
+        "op": "gte",
+        "value": 100
+      }
+    },
+    {
+      "id": "runner",
+      "name": "First Stride",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "ladder_step",
+        "exercise": "treadmill_intervals",
+        "step_id": "treadmill_intervals.jog_8",
+        "op": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "record_hunter",
+      "name": "Record Hunter",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "pr_count",
+        "op": "gte",
+        "value": 25
+      }
+    },
+    {
+      "id": "climber_20",
+      "name": "Climber",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "steps_gained",
+        "op": "gte",
+        "value": 20
+      }
+    },
+    {
+      "id": "gatekeeper_slain",
+      "name": "Gatekeeper Faced",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "boss_benchmarks_logged",
+        "battle_n": 1,
+        "op": "gte",
+        "value": 6
+      }
+    },
+    {
+      "id": "colossus_slain",
+      "name": "Colossus Faced",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "boss_benchmarks_logged",
+        "battle_n": 2,
+        "op": "gte",
+        "value": 6
+      }
+    },
+    {
+      "id": "bronze_warrior",
+      "name": "Bronze Warrior",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "gear_min_tier",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "mile_soldier",
+      "name": "Twelve-Minute Mile",
+      "rarity": "rare",
+      "duo": false,
+      "criterion": {
+        "metric": "benchmark_value",
+        "id": "bb_mile_time",
+        "op": "lte",
+        "value": 720
+      }
+    },
+    {
+      "id": "automatic_66",
+      "name": "Automatic",
+      "rarity": "epic",
+      "duo": false,
+      "criterion": {
+        "metric": "flame",
+        "op": "gte",
+        "value": 66
+      }
+    },
+    {
+      "id": "silver_warrior",
+      "name": "Silver Warrior",
+      "rarity": "epic",
+      "duo": false,
+      "criterion": {
+        "metric": "gear_min_tier",
+        "op": "gte",
+        "value": 2
+      }
+    },
+    {
+      "id": "simple_swing",
+      "name": "Simple",
+      "rarity": "epic",
+      "duo": false,
+      "criterion": {
+        "metric": "set_value",
+        "exercise": "swing_density",
+        "min_step_id": "swing_density.clock_5",
+        "implement_id": "kb53",
+        "op": "lte",
+        "value": 300
+      },
+      "approximation_note": "Original wording is '100 kb53 swings on a clock of 300 s or less'. Expressed as a best clock-seconds set value at or past swing_density.clock_5, the rung whose target is exactly 100 swings in 5:00."
+    },
+    {
+      "id": "forty_clean",
+      "name": "Forty Clean",
+      "rarity": "epic",
+      "duo": false,
+      "criterion": {
+        "metric": "set_value",
+        "exercise": "push_up",
+        "min_step_id": "push_up.full",
+        "op": "gte",
+        "value": 40
+      }
+    },
+    {
+      "id": "warlord_slain",
+      "name": "Warlord Faced",
+      "rarity": "epic",
+      "duo": false,
+      "criterion": {
+        "metric": "boss_benchmarks_logged",
+        "battle_n": 3,
+        "op": "gte",
+        "value": 6
+      }
+    },
+    {
+      "id": "centurion",
+      "name": "Centurion",
+      "rarity": "epic",
+      "duo": false,
+      "criterion": {
+        "metric": "sessions_completed",
+        "op": "gte",
+        "value": 100
+      }
+    },
+    {
+      "id": "sub_10_mile",
+      "name": "Sub-10 Mile",
+      "rarity": "epic",
+      "duo": false,
+      "criterion": {
+        "metric": "benchmark_value",
+        "id": "bb_mile_time",
+        "op": "lte",
+        "value": 599
+      },
+      "approximation_note": "Strict '< 600 s' expressed as 'lte 599' because the DSL has no strict-less operator; the benchmark unit is whole seconds."
+    },
+    {
+      "id": "gold_warrior",
+      "name": "Gold Warrior",
+      "rarity": "legendary",
+      "duo": false,
+      "criterion": {
+        "metric": "gear_min_tier",
+        "op": "eq",
+        "value": 3
+      }
+    },
+    {
+      "id": "eternal_flame",
+      "name": "Eternal Flame",
+      "rarity": "legendary",
+      "duo": false,
+      "criterion": {
+        "metric": "flame",
+        "op": "gte",
+        "value": 100
+      }
+    },
+    {
+      "id": "forgeborn",
+      "name": "Forgeborn",
+      "rarity": "legendary",
+      "duo": false,
+      "criterion": {
+        "metric": "level",
+        "op": "gte",
+        "value": 45
+      }
+    },
+    {
+      "id": "first_light",
+      "name": "First Light",
+      "rarity": "common",
+      "duo": true,
+      "criterion": {
+        "metric": "duo_flame",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "duo_week",
+      "name": "Week of Two",
+      "rarity": "common",
+      "duo": true,
+      "criterion": {
+        "metric": "duo_flame",
+        "op": "gte",
+        "value": 7
+      }
+    },
+    {
+      "id": "rekindled_duo",
+      "name": "Rekindled",
+      "rarity": "common",
+      "duo": true,
+      "criterion": {
+        "metric": "rekindled",
+        "duo": true,
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "in_step",
+      "name": "In Step",
+      "rarity": "uncommon",
+      "duo": true,
+      "criterion": {
+        "metric": "duo_same_day_sessions",
+        "within_minutes": 15,
+        "op": "gte",
+        "value": 10
+      }
+    },
+    {
+      "id": "dead_heat",
+      "name": "Dead Heat",
+      "rarity": "uncommon",
+      "duo": true,
+      "criterion": {
+        "metric": "duel_status",
+        "status": "dead_heat",
+        "consecutive": true,
+        "op": "gte",
+        "value": 2
+      },
+      "approximation_note": "The extra condition 'both S >= 75' has no DSL metric; only the two consecutive dead heats are checked."
+    },
+    {
+      "id": "seesaw",
+      "name": "Seesaw",
+      "rarity": "uncommon",
+      "duo": true,
+      "criterion": {
+        "metric": "duel_status",
+        "status": "belt_changed",
+        "consecutive": true,
+        "op": "gte",
+        "value": 3
+      }
+    },
+    {
+      "id": "duo_month",
+      "name": "Thirty Together",
+      "rarity": "uncommon",
+      "duo": true,
+      "criterion": {
+        "metric": "duo_flame",
+        "op": "gte",
+        "value": 30
+      }
+    },
+    {
+      "id": "duo_slayers",
+      "name": "Slayers",
+      "rarity": "uncommon",
+      "duo": true,
+      "criterion": {
+        "metric": "boss_outcome",
+        "outcome": "defeated",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "one_bell_two_warriors",
+      "name": "One Bell, Two Warriors",
+      "rarity": "rare",
+      "duo": true,
+      "criterion": {
+        "metric": "both_gate_passed",
+        "gate": "bell",
+        "op": "eq",
+        "value": true
+      }
+    },
+    {
+      "id": "indispensable",
+      "name": "Indispensable",
+      "rarity": "rare",
+      "duo": true,
+      "criterion": {
+        "metric": "boss_outcome",
+        "outcome": "defeated",
+        "synergy_required": true,
+        "op": "gte",
+        "value": 1
+      },
+      "approximation_note": "'damage_a + damage_b < HP <= damage_duo' is carried by the arg synergy_required on the allowed boss_outcome metric; the outcome value stays in the defined set."
+    },
+    {
+      "id": "duo_flawless",
+      "name": "Flawless",
+      "rarity": "rare",
+      "duo": true,
+      "criterion": {
+        "metric": "boss_outcome",
+        "outcome": "flawless",
+        "op": "gte",
+        "value": 1
+      }
+    },
+    {
+      "id": "club_190",
+      "name": "190 Club",
+      "rarity": "rare",
+      "duo": true,
+      "criterion": {
+        "metric": "duel_sum_s",
+        "op": "gte",
+        "value": 190
+      }
+    },
+    {
+      "id": "zone2_pair",
+      "name": "Two Hearts",
+      "rarity": "rare",
+      "duo": true,
+      "criterion": {
+        "metric": "zone2_week_minutes",
+        "as_pct_of_prescribed": true,
+        "both_users": true,
+        "consecutive_weeks": 4,
+        "op": "gte",
+        "value": 100
+      },
+      "approximation_note": "No duo Zone-2 metric exists; expressed on zone2_week_minutes with as_pct_of_prescribed + both_users + consecutive_weeks args (100 = zone2_pct of 100 for both warriors, four weeks running)."
+    },
+    {
+      "id": "iron_block",
+      "name": "Iron Block",
+      "rarity": "rare",
+      "duo": true,
+      "criterion": {
+        "metric": "sessions_completed",
+        "both_users": true,
+        "window": "program_block_4w",
+        "op": "gte",
+        "value": 22
+      },
+      "approximation_note": "Expressed on sessions_completed with both_users + a 4-week program-block window; the DSL has no duo session metric."
+    },
+    {
+      "id": "season_of_fire",
+      "name": "Season of Fire",
+      "rarity": "legendary",
+      "duo": true,
+      "criterion": {
+        "metric": "duo_flame",
+        "op": "gte",
+        "value": 90
+      }
+    }
+  ],
+  "nudges": {
+    "max_per_day": 3,
+    "max_competitive_per_open": 1,
+    "max_coop_per_open": 1,
+    "competitive_min_hour": 12,
+    "competitive_days": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "sessions_gap_days": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "sessions_gap_min": 2,
+    "suppress_competitive_when_losses_gte": 2,
+    "stale_partner_hours": 24,
+    "reactions_per_day": 3,
+    "coop_priority": [
+      "sync_delta",
+      "duo_flame_at_risk",
+      "ember_live",
+      "boss_window",
+      "partner_milestone",
+      "reaction_received"
+    ],
+    "competitive_priority": [
+      "belt_within_reach",
+      "sessions_gap",
+      "partner_done_today",
+      "belt_defence"
+    ],
+    "duo_flame_risk_hour": 18
+  }
+}
