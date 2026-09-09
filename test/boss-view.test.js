@@ -81,6 +81,15 @@ test('the closest tier is the one needing the smallest relative jump', () => {
   assert.equal(V.closestTiers([far, near], 1)[0].id, 'bb_pushups_2min');
 });
 
+test('a shut test says the thing that would actually open it', () => {
+  const early = testCard(bench('bb_swings_5min'), userAt({ swing: 'swing.hike_park_20' }), spec);
+  assert.equal(early.locked, true);
+  // testCard hands back the benchmark's health-screen note; the reason THIS
+  // warrior cannot swing yet is the rung, and that is what the card must say.
+  assert.match(V.lockNote(early), /cont_20|continuous swings/i);
+  assert.notEqual(V.lockNote(early), early.locked_note);
+});
+
 test('the co-op bar shows three slices and the synergy is the smaller hit, counted twice', () => {
   const s = V.segments(30, 18, 55);
   assert.equal(s.synergy, 18);

@@ -69,7 +69,36 @@ locked below continuous swings.
 data/       program, gamification, copy — the app's behaviour lives here
 data/frag/  provenance: the per-group fragments program.json was assembled from
 design/     the full design outputs and the reviews that shaped them
-src/        engine, reducer, gamification, duo, sync, store, views
+src/        reduce, engine, placement, gamify, boss, duo, sync, store, util
+src/views/  one file per screen, plus chrome.js (topbar/tabbar) and silhouette.js
 test/       node:test, zero dependencies
 scripts/    assemble.mjs — an authoring aid, NOT a build step
 ```
+
+## Where behaviour lives, so you change data and not code
+
+| Want to change | Edit |
+| --- | --- |
+| An exercise, rung, target or gate | `data/program.json` |
+| How someone is placed, or what an injury caps | `data/program.json` → `placement` |
+| XP, levels, ranks, badges, bosses, the duel weights | `data/gamification.json` |
+| Any wording at all | `data/copy.json` |
+
+If a change needs new *code*, it almost always means adding a rule to the `RULES`
+registry in `engine.js` and a case to the linter — not special-casing a view.
+
+## Things that look like bugs but are deliberate
+
+- **A partner who has set up but never trained does not make the boss solo.**
+  Halving its strength and doubling it back on their first log would rewrite the
+  battle underneath both users.
+- **A changed benchmark variant scores zero improvement, not a regression.**
+  Sixty swings with the bell after ninety with a dumbbell is progress.
+- **Armour is granted at placement but pays no XP.** It reflects what you can
+  already wear; XP is only for what you earn above that baseline.
+- **Pain regressions ignore the placement floor.** The floor stops one bad
+  session undoing the quiz; pain is a safety signal and outranks it.
+- **Warm-up and cooldown flows pay no XP and are not scored targets.** They are
+  one tap, and counting them would inflate everyone's fidelity equally.
+- **A skirmish can never advance a ladder.** That is what stops short days being
+  farmed for rungs.
