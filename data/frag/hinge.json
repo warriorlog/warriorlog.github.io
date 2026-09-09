@@ -1,0 +1,946 @@
+{
+  "exercises": [
+    {
+      "id": "hinge_deadlift",
+      "name": "Hinge drill to dumbbell RDL to kettlebell deadlift (HINGE GATE)",
+      "region": "glutes",
+      "pattern": "hinge",
+      "equipment": "wall, dumbbells 12/20/35, 53 lb kettlebell, vest",
+      "cues": [
+        "Hips BACK, shins near vertical, soft knees - this is not a squat",
+        "Flat back from neck to tailbone, hands slide down the thighs",
+        "Stand by squeezing the glutes, finish tall, ribs down",
+        "Weight stays close to the legs the whole way down and up",
+        "Breathe in at the top, brace, exhale at lockout - never hold your breath for a whole set"
+      ],
+      "stop_if": "Sharp or pinching low-back pain, a back you cannot keep flat, or the weight drifting away from your shins. Stop the set, do not finish the reps, and drop one step next session.",
+      "region_weights": { "glutes": 0.4, "thighs": 0.35, "back": 0.2, "core": 0.05 },
+      "checklist": {
+        "n": 5,
+        "cues": [
+          "Hips moved first, not the knees",
+          "Shins stayed near vertical",
+          "Back flat from neck to tailbone",
+          "Weight stayed close to the legs",
+          "Tall glute lockout, no back arch"
+        ]
+      },
+      "ladder": [
+        {
+          "id": "hinge_deadlift.wall_drill",
+          "ord": 1,
+          "name": "Wall hinge drill",
+          "how": "Stand about 6 in from a wall facing away. Push the hips straight back until they touch the wall, hands sliding to the knees, then squeeze the glutes to stand tall. 3 sets of 10, no load, never to failure.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 10,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "checklist_required": true,
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 10,
+            "consecutive": 1,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "hinge_deadlift.rdl_12",
+          "ord": 2,
+          "name": "12 lb dumbbell RDL, 3 s down",
+          "how": "One 12 lb dumbbell held in both hands in front of the thighs (no pair needed). Push the hips back, lower for 3 s to mid-shin, stand tall. 3 sets of 12-15, stop 3 reps short of struggling.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 12, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db12",
+          "requires": ["db:12"],
+          "checklist_required": true,
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 15,
+            "consecutive": 1,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "hinge_deadlift.rdl_20",
+          "ord": 3,
+          "name": "20 lb dumbbell RDL",
+          "how": "One 20 lb dumbbell held in both hands (no pair needed). 3 s down, hips back, stand tall. 3 sets of 10-12.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20"],
+          "checklist_required": true,
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 12,
+            "consecutive": 2,
+            "requires": [{ "rule": "checklist_all_ok" }],
+            "unlocks": ["swing"]
+          },
+          "terminal": false
+        },
+        {
+          "id": "hinge_deadlift.rdl_35",
+          "ord": 4,
+          "name": "35 lb dumbbell RDL",
+          "how": "One 35 lb dumbbell held in both hands, close to the legs. 3 s down to mid-shin, stand tall. 3 sets of 8-12.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["db:35"],
+          "checklist_required": true,
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 12,
+            "consecutive": 2,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "hinge_deadlift.kb53_floor",
+          "ord": 5,
+          "name": "53 lb kettlebell deadlift from the floor (HINGE GATE)",
+          "how": "Bell on the floor between the feet, handle in line with the ankles. Hinge, take both hands on the handle, pull the slack out, stand tall, then set it back on the floor every rep. 3 sets of 5-10. This step is the HINGE GATE - clearing it opens every 53 lb rung in the program.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 5,
+          "B": 10,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.rdl_35" }
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 10,
+            "consecutive": 2,
+            "requires": [{ "rule": "checklist_all_ok" }],
+            "unlocks": ["hinge_gate", "kb53"]
+          },
+          "terminal": false
+        },
+        {
+          "id": "hinge_deadlift.kb53_volume",
+          "ord": 6,
+          "name": "53 lb deadlift, high reps",
+          "how": "Touch-and-go: the bell kisses the floor and comes straight back up, 2 s down. 3 sets of 12-15. Reset to a dead stop the moment the back stops feeling flat.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "hinge_deadlift.kb53_tempo",
+          "ord": 7,
+          "name": "53 lb deadlift, hover pause",
+          "how": "3 s down, then hover the bell 1 in off the floor for 2 s before standing. 3 sets of 10-12. Any loss of a flat back ends the set.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 12,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "hinge_deadlift.kb53_vest",
+          "ord": 8,
+          "name": "53 lb deadlift wearing the vest",
+          "how": "Same dead-stop deadlift wearing the vest at 10% bodyweight (cap 30 lb). 3 sets of 10-15. Needs at least one completed weighted-vest walk block behind you.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": 10, "cap_lb": 30 },
+          "implement_id": "kb53",
+          "requires": ["kb:53", "vest"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" },
+            { "rule": "ladder_at_or_past", "exercise": "vest_walk", "step_id": "vest_walk.v10_8" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "swing",
+      "name": "Swing ladder: two-hand dumbbell swing to 53 lb kettlebell swing to one-hand",
+      "region": "glutes",
+      "pattern": "power",
+      "equipment": "dumbbells 20/35 held by one end in both hands, 53 lb kettlebell",
+      "cues": [
+        "Hike it back like a football snap - forearms hit the inner thighs high",
+        "Snap the hips, arms are ropes, the weight floats to chest height on its own",
+        "Standing plank at the top: glutes and abs tight, ribs down, no leaning back",
+        "Park it on the floor in front of you under control - never drop it, never lower it with a round back",
+        "Never swing to failure: stop while every rep still looks like the first one"
+      ],
+      "stop_if": "Sharp or pinching low-back pain, dizziness, or the weight starting to squat instead of hinge. 3 consecutive broken reps end the set - park the weight and move on.",
+      "region_weights": { "glutes": 0.45, "thighs": 0.25, "back": 0.15, "heart": 0.15 },
+      "checklist": {
+        "n": 5,
+        "cues": [
+          "Hinge, not a squat",
+          "Flat back on every rep",
+          "Weight stayed above the knees on the backswing",
+          "Hip snap with a tall standing-plank lockout",
+          "Arms relaxed, weight floated to chest height"
+        ]
+      },
+      "ladder": [
+        {
+          "id": "swing.hike_park_20",
+          "ord": 1,
+          "name": "Hike-and-park, 20 lb dumbbell",
+          "how": "One 20 lb dumbbell stood on end, both hands on the top bell. Hinge, hike it back between the legs so the forearms touch high on the inner thighs, then stand and park it on the floor. No swing yet - this is the hike only. 5 sets of 5.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 5,
+          "B": 5,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.rdl_20" }
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 5,
+            "consecutive": 1,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "swing.deadstop_20",
+          "ord": 2,
+          "name": "Dead-stop dumbbell swing, 20 lb",
+          "how": "Hike, one swing to chest height, park it on the floor. Every single rep starts from a dead stop on the floor. 5 sets of 5.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 5,
+          "B": 5,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.rdl_20" }
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 5,
+            "consecutive": 1,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "swing.cont_20",
+          "ord": 3,
+          "name": "Continuous two-hand dumbbell swing, 20 lb",
+          "how": "Continuous sets of 10, park the weight between sets, rest 60 s. 5 sets of 10.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 10,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.rdl_20" }
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 10,
+            "consecutive": 2,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "swing.cont_35",
+          "ord": 4,
+          "name": "Two-hand dumbbell swing, 35 lb",
+          "how": "Same continuous swing with the 35 lb dumbbell stood on end. 5 sets of 10, rest 60 s.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 10,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["db:35"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.rdl_35" }
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 10,
+            "consecutive": 2,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "swing.cont_35_15",
+          "ord": 5,
+          "name": "35 lb dumbbell swing, sets of 15 (BELL GATE)",
+          "how": "Continuous sets of 15 with the 35 lb dumbbell, rest 60-75 s. 5 sets of 12-15. Clearing this - with the hinge gate and a 30 s hollow hold behind you - earns the 53 lb bell.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["db:35"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.rdl_35" }
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 15,
+            "consecutive": 2,
+            "requires": [
+              {
+                "rule": "all_of",
+                "rules": [
+                  { "rule": "all_sets_reps_gte", "value": 15 },
+                  { "rule": "checklist_all_ok" },
+                  { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" },
+                  { "rule": "ladder_at_or_past", "exercise": "hollow_hold", "step_id": "hollow_hold.full_hollow" }
+                ]
+              }
+            ],
+            "unlocks": ["bell"]
+          },
+          "terminal": false
+        },
+        {
+          "id": "swing.deadstop_53",
+          "ord": 6,
+          "name": "Dead-stop 53 lb kettlebell swing",
+          "how": "The bell at last. Hike, one swing to chest height, park it on the floor - every rep from a dead stop. 5 sets of 5, rest 60 s.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 5,
+          "B": 5,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 5,
+            "consecutive": 1,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "swing.cont_53",
+          "ord": 7,
+          "name": "Continuous 53 lb two-hand swing",
+          "how": "Continuous sets of 10 with the bell, park it between sets, rest 60 s. 5 sets of 10.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 10,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 10,
+            "consecutive": 2,
+            "requires": [
+              {
+                "rule": "all_of",
+                "rules": [
+                  { "rule": "checklist_all_ok" },
+                  { "rule": "clock_lte", "value": 300, "exercise": "swing_density", "step_id": "swing_density.clock_5" },
+                  { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }
+                ]
+              }
+            ],
+            "unlocks": ["onehand_swing"]
+          },
+          "terminal": false
+        },
+        {
+          "id": "swing.onehand_53",
+          "ord": 8,
+          "name": "One-hand 53 lb swing",
+          "how": "One hand on the handle, free hand mirroring the working arm, shoulder packed down. Alternate sides each set and always switch hands with the bell parked on the floor. 5 sets of 8-10 each side.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 10,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 10,
+            "consecutive": 2,
+            "requires": [
+              {
+                "rule": "all_of",
+                "rules": [
+                  { "rule": "checklist_all_ok" },
+                  { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }
+                ]
+              }
+            ]
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "swing_density",
+      "name": "Saturday swing engine: EMOM to density clock",
+      "region": "glutes",
+      "pattern": "power",
+      "equipment": "wall, dumbbells 12/20/35, 53 lb kettlebell",
+      "cues": [
+        "This block is about pacing, not maximum effort - every minute should end with time left over",
+        "Same swing rules as Thursday: hinge, flat back, hip snap, arms are ropes",
+        "Goblet squats on the even minutes are the rest - move smoothly, no grinding reps",
+        "If a minute is not finished with at least 15 s to spare, stay on this rung next week",
+        "Never swing to failure: stop while every rep still looks like the first one"
+      ],
+      "stop_if": "Sharp or pinching low-back pain, dizziness, or reps that stop looking like the first one. 3 consecutive broken reps end the set - park the weight, sit the round out, and finish the block at the next minute.",
+      "region_weights": { "glutes": 0.35, "thighs": 0.3, "heart": 0.25, "back": 0.1 },
+      "checklist": {
+        "n": 5,
+        "cues": [
+          "Hinge, not a squat",
+          "Flat back on every rep",
+          "Weight stayed above the knees on the backswing",
+          "Hip snap with a tall standing-plank lockout",
+          "Every minute finished with time to spare"
+        ]
+      },
+      "ladder": [
+        {
+          "id": "swing_density.emom_hinge",
+          "ord": 1,
+          "name": "8-min EMOM: hinge drill / goblet squat",
+          "how": "8 rounds, one per minute on the clock. Odd minutes: 5 wall hinges, or 5 RDLs with the 12 lb dumbbell once your hinge ladder is past the wall drill. Even minutes: 8 goblet squats at your current goblet step. This is what Saturday looks like while the swing is still locked.",
+          "unit": "rounds",
+          "sides": "both",
+          "A": 8,
+          "B": 8,
+          "load": { "kind": "db", "lb": 12, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db12",
+          "requires": ["bw", "db:12"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.wall_drill" }
+          ],
+          "advance": { "rule": "rounds_gte", "value": 8, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "swing_density.emom_deadstop",
+          "ord": 2,
+          "name": "8-min EMOM: dead-stop swings / goblet squat",
+          "how": "8 rounds, one per minute. Odd minutes: 5 dead-stop 20 lb dumbbell swings, parking the weight between every rep. Even minutes: 8 goblet squats at your current goblet step.",
+          "unit": "rounds",
+          "sides": "both",
+          "A": 8,
+          "B": 8,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "swing", "step_id": "swing.deadstop_20" }
+          ],
+          "advance": {
+            "rule": "rounds_gte",
+            "value": 8,
+            "consecutive": 2,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "swing_density.emom_db",
+          "ord": 3,
+          "name": "8-min EMOM: continuous dumbbell swings / goblet squat",
+          "how": "8 rounds, one per minute. Odd minutes: 8 continuous swings with the dumbbell your swing ladder is on (20 lb, or 35 lb once you have earned it). Even minutes: 8 goblet squats at your current goblet step.",
+          "unit": "rounds",
+          "sides": "both",
+          "A": 8,
+          "B": 8,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "swing", "step_id": "swing.cont_20" }
+          ],
+          "advance": {
+            "rule": "rounds_gte",
+            "value": 8,
+            "consecutive": 2,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "swing_density.emom_kb53",
+          "ord": 4,
+          "name": "8-min EMOM: 10 bell swings a minute",
+          "how": "8 rounds: 10 two-hand swings with the 53 lb bell at the top of every minute, rest the remainder. 80 swings in 8 minutes. Cut the block short the moment a minute leaves you under 15 s of rest.",
+          "unit": "rounds",
+          "sides": "both",
+          "A": 8,
+          "B": 8,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" },
+            { "rule": "ladder_at_or_past", "exercise": "swing", "step_id": "swing.cont_53" }
+          ],
+          "advance": {
+            "rule": "rounds_gte",
+            "value": 8,
+            "consecutive": 2,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          },
+          "terminal": false
+        },
+        {
+          "id": "swing_density.clock_8",
+          "ord": 5,
+          "name": "Density clock: 100 swings in 8:00",
+          "how": "10 sets of 10 two-hand bell swings against the app stopwatch, resting as needed. Log the clock in seconds - lower is better. Target 8:00 (480 s) or faster.",
+          "unit": "clock_sec",
+          "sides": "both",
+          "A": 480,
+          "B": 480,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" },
+            { "rule": "ladder_at_or_past", "exercise": "swing", "step_id": "swing.cont_53" }
+          ],
+          "advance": { "rule": "clock_lte", "value": 480, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "swing_density.clock_6",
+          "ord": 6,
+          "name": "Density clock: 100 swings in 6:00",
+          "how": "Same 100 swings, tighter rest. Log the clock in seconds - lower is better. Target 6:00 (360 s) or faster. Form still ends the set before the clock does.",
+          "unit": "clock_sec",
+          "sides": "both",
+          "A": 360,
+          "B": 360,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" },
+            { "rule": "ladder_at_or_past", "exercise": "swing", "step_id": "swing.cont_53" }
+          ],
+          "advance": { "rule": "clock_lte", "value": 360, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "swing_density.clock_5",
+          "ord": 7,
+          "name": "Density clock: 100 swings in 5:00",
+          "how": "A set of 10 every 30 s for 5 minutes. Log the clock in seconds - lower is better. Target 5:00 (300 s). Clearing this twice, with a clean low back for two weeks, earns the one-hand swing.",
+          "unit": "clock_sec",
+          "sides": "both",
+          "A": 300,
+          "B": 300,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "checklist_required": true,
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" },
+            { "rule": "ladder_at_or_past", "exercise": "swing", "step_id": "swing.cont_53" }
+          ],
+          "advance": {
+            "rule": "clock_lte",
+            "value": 300,
+            "consecutive": 2,
+            "requires": [{ "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }],
+            "unlocks": ["onehand_swing"]
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "single_leg_rdl",
+      "name": "Single-leg Romanian deadlift",
+      "region": "thighs",
+      "pattern": "hinge",
+      "equipment": "wall or chair, single dumbbells 8/12/20/35, 53 lb kettlebell",
+      "cues": [
+        "Hips stay square to the floor - the rear hip must not roll open",
+        "The rear leg reaches straight back as the chest lowers, one long line from heel to head",
+        "Weight in the hand opposite the standing leg, sliding down the shin",
+        "Soft knee on the standing leg, foot tripod planted, eyes down at one spot",
+        "Balance first: touch the wall or chair whenever you need it rather than twisting"
+      ],
+      "stop_if": "Low-back pain, a hip that rolls open and will not square up, or a knee that wobbles inward. Take the fingertips back to the wall or drop one step.",
+      "region_weights": { "thighs": 0.45, "glutes": 0.4, "core": 0.15 },
+      "ladder": [
+        {
+          "id": "single_leg_rdl.supported",
+          "ord": 1,
+          "name": "Supported bodyweight single-leg RDL",
+          "how": "Fingertips of the free hand on a wall or chair back. Hinge over the standing leg, rear leg reaching back, then stand tall. 3 sets of 8-12 each side.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw", "chair"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "single_leg_rdl.unsupported",
+          "ord": 2,
+          "name": "Unsupported bodyweight single-leg RDL",
+          "how": "No hands. 3 s down, pause, stand tall. Touch down with the rear toe between reps if you need to. 3 sets of 8-12 each side.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "single_leg_rdl.db8",
+          "ord": 3,
+          "name": "8 lb single-leg RDL",
+          "how": "One 8 lb dumbbell in the hand opposite the standing leg. 3 s down. 3 sets of 10-12 each side.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 12,
+          "load": { "kind": "db", "lb": 8, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db8",
+          "requires": ["db:8"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "single_leg_rdl.db12",
+          "ord": 4,
+          "name": "12 lb single-leg RDL",
+          "how": "One 12 lb dumbbell, opposite hand. 3 s down. 3 sets of 10-12 each side.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 12,
+          "load": { "kind": "db", "lb": 12, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db12",
+          "requires": ["db:12"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "single_leg_rdl.db20",
+          "ord": 5,
+          "name": "20 lb single-leg RDL",
+          "how": "One 20 lb dumbbell, opposite hand. 3 s down. 3 sets of 10-12 each side.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "single_leg_rdl.db20_tempo",
+          "ord": 6,
+          "name": "20 lb single-leg RDL, 3 s down + 1 s pause",
+          "how": "Same 20 lb dumbbell, 3 s down and a 1 s pause at the bottom before standing. 3 sets of 12-15 each side. This rung bridges 20 lb to 35 lb with time under tension, not load.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "single_leg_rdl.db35",
+          "ord": 7,
+          "name": "35 lb single-leg RDL",
+          "how": "One 35 lb dumbbell, opposite hand, 3 s down. 3 sets of 8-12 each side.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["db:35"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "single_leg_rdl.kb53",
+          "ord": 8,
+          "name": "53 lb kettlebell single-leg RDL",
+          "how": "Bell in the hand opposite the standing leg, set it down on the floor between sides. 3 sets of 6-10 each side. Needs the hinge gate.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 6,
+          "B": 10,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 10, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "hip_thrust",
+      "name": "Hip thrust",
+      "region": "glutes",
+      "pattern": "hinge",
+      "equipment": "couch or chair edge, dumbbells 20/35, 53 lb kettlebell, towel",
+      "cues": [
+        "Chin tucked, ribs down, finish with a posterior tilt - a glute squeeze, not a back arch",
+        "Shoulder blades on the edge, shins vertical at the top, feet about hip width",
+        "2 s squeeze at the top of every rep, 2 s down",
+        "Pad the weight with a folded towel and hold it with both hands",
+        "Stop 2-3 reps short of struggling - this is never a max-effort lift"
+      ],
+      "stop_if": "Low-back pinching instead of a glute squeeze, hip flexor cramping, or a weight you cannot control on the way down. Shorten the range or drop one step.",
+      "region_weights": { "glutes": 0.8, "thighs": 0.2 },
+      "ladder": [
+        {
+          "id": "hip_thrust.bw",
+          "ord": 1,
+          "name": "Couch hip thrust, bodyweight",
+          "how": "Upper back on the couch or chair edge, feet flat, knees bent. Drive the hips to a full lockout, 2 s squeeze, 2 s down. 3 sets of 12-20.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 20,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw", "couch"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 20, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "hip_thrust.db20",
+          "ord": 2,
+          "name": "Hip thrust + 20 lb",
+          "how": "One 20 lb dumbbell across the hips on a folded towel, both hands holding it. 2 s squeeze at the top. 3 sets of 12-15.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20", "couch"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "hip_thrust.db35",
+          "ord": 3,
+          "name": "Hip thrust + 35 lb",
+          "how": "One 35 lb dumbbell across the hips on a folded towel. 2 s squeeze, 3 s down. 3 sets of 10-15.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["db:35", "couch"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "hip_thrust.kb53",
+          "ord": 4,
+          "name": "Hip thrust + 53 lb kettlebell, 2 s pause",
+          "how": "Bell on the hips over a folded towel, both hands on it. 2 s pause at lockout, 3 s down. 3 sets of 10-15. Deadlift the bell into place from the floor - never hoist it while seated. Needs the hinge gate.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53", "couch"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "hip_thrust.sl_db20",
+          "ord": 5,
+          "name": "Single-leg hip thrust + 20 lb",
+          "how": "One foot planted, the other knee pulled toward the chest. 20 lb dumbbell on the working-side hip, held with both hands. 3 sets of 8-12 each side.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20", "couch"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "hip_thrust.sl_db35",
+          "ord": 6,
+          "name": "Single-leg hip thrust + 35 lb",
+          "how": "Same single-leg thrust with the 35 lb dumbbell on the working-side hip. 3 sets of 8-12 each side.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["db:35", "couch"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "glute_bridge",
+      "name": "Floor glute bridge",
+      "region": "glutes",
+      "pattern": "hinge",
+      "equipment": "floor",
+      "cues": [
+        "Heels about a hand's length from the hips, toes light, push through the heels",
+        "Ribs down and chin tucked - lift with the glutes, never by arching the low back",
+        "2 s squeeze at the top, lower under control",
+        "If the hamstrings cramp, walk the feet slightly closer and squeeze the glutes harder",
+        "Never to failure: stop while the squeeze still comes from the glutes"
+      ],
+      "stop_if": "Low-back pinching or hamstring cramping instead of a glute squeeze. Shorten the range, move the feet, or stop the set.",
+      "region_weights": { "glutes": 0.85, "thighs": 0.1, "core": 0.05 },
+      "ladder": [
+        {
+          "id": "glute_bridge.bw",
+          "ord": 1,
+          "name": "Glute bridge",
+          "how": "On the floor, feet flat and hip width. Drive the hips up to a straight line from knee to shoulder, 2 s squeeze, lower under control. 2-3 sets of 12-20.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 20,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 20, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "glute_bridge.pause",
+          "ord": 2,
+          "name": "Glute bridge, 2 s pause",
+          "how": "Same bridge with a hard 2 s hold at the top of every rep and 3 s down. 2-3 sets of 12-20.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 20,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 20, "consecutive": 2 },
+          "terminal": false
+        },
+        {
+          "id": "glute_bridge.single_leg",
+          "ord": 3,
+          "name": "Single-leg glute bridge",
+          "how": "One foot planted, the other knee pulled to the chest, hips level throughout. 2 s squeeze at the top. 2-3 sets of 8-15 each side.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 15,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    }
+  ]
+}

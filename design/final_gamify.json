@@ -1,0 +1,744 @@
+{
+ "concept_name": "WARRIORLOG \u2014 Forgeborn Duo (character sheet spine + Chainforge habit levers + Arena prefill + integrated two-player Belt)",
+ "one_paragraph_pitch": "Your body is the character sheet. A 10-region silhouette (heart, neck/traps, shoulders, chest, arms, back, core, glutes, thighs, calves) fills from the feet up as you earn region XP, and its outline hardens from iron to Bronze, Silver and Gold armour only when you hit real benchmark tiers or named ladder milestones \u2014 never from XP alone. One load-independent XP currency (a set pays the same whether it is a wall push-up or a vest push-up, so Cat and Sean are paid identically for executing their own prescription) levels each warrior from Recruit to Immortal on a curve that levels up every session in week 1 and about twice a week by week 12. Ladders from final_program.json advance on machine-checkable rules over full quests only; gates (Hinge, Bell, Vest, Run) are unlocks with XP and badges; a rolling rest link, silent Shields, Recovery/Away modes and an Ember/Rekindle window mean one bad day never wipes the Flame. The two-player layer speaks the same vocabulary: a Duo Flame beside your own, a weekly Belt decided by five self-relative percentages (never absolute load), Alliance Weeks after three losses, and co-op Boss Battles every four weeks where damage = A + B + min(A,B) so the smaller partner's number counts twice. Everything is deterministic JSON, computed on each phone from two users' synced files on a public orphan data branch; body metrics never leave the phone.",
+ "core_loop": "1) Open (0\u20133 s): Home shows the silhouette, Level/title/XP bar, Flame + Shields, Duo Flame (two flames; one lit = partner already trained today), the Partner card ('Cat trained today \u00b7 07:12 \u00b7 Upper A \u00b7 44 min' or 'Cat \u2014 not yet today'), and today's Quest card: 'Week 3 \u00b7 Tue \u00b7 UPPER A \u00b7 47 min \u00b7 At stake: Push-up 3\u21924 (hit 3\u00d712 once more)'. Up to three 'Numbers to beat' lines: a ladder one qualifying session from advancing, the coldest region, and (Thu\u2013Sun only) the single action that flips the provisional Belt. Pledge line: 'Pledged 6:30 PM \u00b7 After coffee'. 2) Tap START QUEST (or the 'Only 15 min? Skirmish' toggle). Warm-up flow = one tap (0 XP). 3) Per set: each row shows step name, implement chip and target ('20 lb goblet \u00b7 12', prefilled with your last logged reps at this step, 'last: 11' in grey). One tap = done at the prefilled number \u2192 row turns green, '+15 XP' floats into the header bar, the header mini-silhouette pulses the region. Tap the number = \u00b1stepper (two taps); tap the chip = picker limited to owned implements. Rest timer auto-runs with 'next: set 2/4'. Checklist exercises show one 5-cue card per exercise, all cues default green; tap a cue to mark amber (0 taps on the normal path). RIR chip row (0\u20134, default = phase target) appears once per exercise after its last set; long-press a row to flag pain 0\u201310. Cardio block: 1-tap timer, incline/speed chips, 'talk test failed' toggle, interval round tapper. 4) Last set \u2192 QUEST COMPLETE: XP count-up by source, LADDER UP cards, NEW RECORD chips, gate unlocks, region level-ups, Flame +1, Duo Flame status ('Cat still to train \u2014 one flame lit'), one sentence of why it mattered ('+3 push-ups vs Friday'), 'Cat will see: Upper A \u00b7 44 min \u00b7 8/8 targets' preview, then ONE optional tap: Tomorrow's Pledge chip (default = median start time of last 5 sessions). 5) DONE \u2192 Home shows tomorrow's quest, boss countdown and the provisional Belt line ('That moves you ahead 74\u201371, provisional'). Budget: ~20\u201325 taps for a 20-set session, no typing.",
+ "mechanics": [
+  {
+   "name": "Set XP (load-independent per-tap reward)",
+   "rule": "Every working set pays XP the instant it is tapped. XP depends only on whether the set met ITS OWN step's target \u2014 never on load, step index, implement or absolute reps \u2014 so identical execution at different ladder steps pays identically for Sean and Cat. Warm-up and cooldown flows pay 0.",
+   "formula_or_data": "For a set of exercise e at step s with prescribed range [A,B] (target grammar from final_program.progression_rules; single-value targets have A=B; 'each side' sets count once per side): logged = reps_or_seconds >= 0.6*A -> 10 XP; met = reps_or_seconds >= B AND (no checklist required OR checklist == 5/5) -> +5 XP. EMOM/density-clock blocks are ONE set: logged 10, met (+5) if all rounds done / time <= step threshold. Zone-2: zone2_xp = 3 * minutes where talk_test_ok, daily cap 45 min (135 XP); minutes flagged talk_test_failed pay 2/min and are NOT Zone-2 minutes. Interval round: 12 XP per completed round, cap = the step's prescribed rounds. Quest completion (every prescribed working set has a logged value): +50 full quest, +25 Skirmish; Ember day (>=1 working set, quest not completed): +5 only. Set JSON: {exercise_id, step, set_index, side:'L'|'R'|null, value:int, unit:'reps'|'s'|'rounds'|'clock_s', implement_id, vest_lb, checklist_ok:bool|null, rir:int|null, pain:int|null, talk_test_ok:bool|null, xp:int}.",
+   "psychology": "Immediate, certain, small rewards at the moment of effort defeat hyperbolic discounting for a beginner; load-blind scoring is what makes the duo comparison fair and removes any incentive to grab the 53 lb bell early.",
+   "ui": "Row tap -> green fill, '+15 XP' float to header bar, region pulse on the 48-px header silhouette. No modal."
+  },
+  {
+   "name": "Exercise Ladders with machine-checkable advancement and defined form checks",
+   "rule": "Every exercise uses the ladder from final_program.json verbatim (exercise ids, steps, targets, gates). Advance one step when the advance_when rule is met on 2 consecutive FULL quests (Skirmish/Ember never count); gates evaluated at advance time; max one advance per exercise per session; none in deload/boss weeks or the first session after a >7-day gap. Regress after 2 consecutive FAIL sessions or pain>=3 twice in 7 days; regression never costs XP. form_ok only exists for exercises that declare a checklist (hinge_deadlift steps 1\u20135, swing all steps, goblet_squat step 1, turkish_get_up steps 1\u20132, neck_isometrics 'pain-free'); for all others advance_when is reps/time only.",
+   "formula_or_data": "qualifying(session,e) = every prescribed set of e has value >= B (top of range) AND (checklist_required ? checklist_ok : true) AND session.type=='full'. advance if qualifying on the last 2 consecutive full sessions containing e AND all gate expressions (e.g. 'hinge_deadlift.step >= 6') true -> step += 1, counter = 0, +100 XP (flat, load-independent), record steps_gained {exercise_id, from_step, to_step, to_step_name, date}. FAIL(session,e) = any set value < 0.6*A OR pain>=3. regress if FAIL on 2 consecutive sessions -> step = max(1, step-1), +0 XP, message 'Step held \u2014 back to <name>, nothing lost'. Within-step target: if not all sets met B, next prefill = last value per set, headline 'beat last time by >= 1 total rep'. Locked exercises render their template fallback (swing steps locked -> hinge_deadlift sets; vest steps -> last unweighted step; vest_walk -> treadmill_zone2). Ladders screen shows '1 of 2 qualifying sessions' per exercise.",
+   "psychology": "Competence and goal-gradient: Home tells you when one session triggers a climb; two-session confirmation keeps a fast beginner safe; full-quests-only closes the Skirmish loophole.",
+   "ui": "Ladders screen: one vertical ladder per exercise, lit rung, plain-language rule and progress; locked rungs show the exact remaining gate condition. LADDER UP card on Quest Complete."
+  },
+  {
+   "name": "Ghost prefill and Rep PRs (self-referenced, history-gated, capped)",
+   "rule": "Every set row is prefilled with the user's last logged value at that exercise+step (ladder low-end A when the step just changed). A rep PR = best single-set value at the same exercise AND step; it can only fire once at least one prior full session exists at that step, max 3 PR bonuses per session.",
+   "formula_or_data": "pr_key = exercise_id + ':' + step. On set log: if history[pr_key].sessions >= 1 AND value > best[pr_key] -> +25 XP (if session_pr_count < 3), best updated regardless. Timed holds and clocks use seconds (clock: lower time = PR). No load PR type exists (load changes are ladder advances). Lifetime pr_count feeds badges. e1rm is NOT used (load-dependent).",
+   "psychology": "Arena's best friction idea (default tap = match or beat last time) without WIN/LOSS framing; the history gate removes the Day-1 'NEW RECORD' spray.",
+   "ui": "'last: 11' under the target; gold NEW RECORD chip on the row and a card on Quest Complete; PR Board sorted by recency with days-since-PR per region."
+  },
+  {
+   "name": "Region XP and Body Fill (channel 1 of the body map)",
+   "rule": "Set, PR and advance XP are split into 10 body regions by each exercise's region_weights; each region levels independently and fills its part of the silhouette.",
+   "formula_or_data": "regions = [heart, neck_traps, shoulders, chest, arms, back, core, glutes, thighs, calves]. region_xp[r] += xp * w[e][r]. Weights: push_up {chest .5, arms .25, shoulders .15, core .1}; db_floor_press {chest .55, arms .3, shoulders .15}; db_overhead_press {shoulders .6, arms .25, core .15}; pike_push_up {shoulders .6, arms .25, core .15}; db_lateral_raise {shoulders .9, neck_traps .1}; diamond_push_up {arms .6, chest .3, core .1}; db_triceps_extension {arms .9, shoulders .1}; db_row {back .7, arms .2, core .1}; prone_ytw {back .6, shoulders .4}; db_rear_delt_fly {shoulders .6, back .4}; db_curl {arms 1}; db_hammer_curl {arms 1}; db_shrug {neck_traps .9, back .1}; neck_isometrics {neck_traps 1}; goblet_squat {thighs .6, glutes .3, core .1}; split_squat {thighs .5, glutes .4, core .1}; step_up {glutes .5, thighs .35, calves .15}; calf_raise {calves 1}; hinge_deadlift {glutes .4, thighs .35, back .2, core .05}; swing {glutes .45, thighs .25, back .15, heart .15}; single_leg_rdl {thighs .45, glutes .4, core .15}; hip_thrust {glutes .8, thighs .2}; turkish_get_up {core .4, shoulders .3, glutes .15, thighs .15}; hollow_hold {core 1}; plank_side_plank {core .9, shoulders .1}; leg_raise {core 1}; suitcase_carry {core .5, arms .3, neck_traps .2}; farmer_carry {neck_traps .4, arms .35, core .25}; treadmill_zone2 {heart .7, calves .15, thighs .15}; treadmill_intervals {heart .75, thighs .15, calves .1}; vest_walk {heart .6, calves .15, thighs .15, core .1}. region_level = floor(sqrt(region_xp / 40)): L1 40, L2 160, L3 360, L4 640, L5 1000, L6 1440, L7 1960, L8 2560, L9 3240, L10 4000 (display saturates at 10, number keeps counting). Expected: ~180 region XP/week -> L2 week 1, L4\u20135 week 4, L7\u20138 week 12. Cold tag: region with 0 XP in the last 7 training days shows 'Cold N days' and Home's second 'number to beat' names it.",
+   "psychology": "Endowed progress and Zeigarnik: a partially filled body is unfinished business; symmetry is guaranteed by the template so no multiplier is needed (the old x1.10 symmetry bonus is dropped because it distorted the duel).",
+   "ui": "Bottom-up liquid fill via clipPath, height = (region_xp - thr[L]) / (thr[L+1] - thr[L]); hue HSL 220 (L0) -> 25 (L10); level number inside the region; level-up = white flash + 1.05 flex 300 ms."
+  },
+  {
+   "name": "Gear Tiers (channel 2: benchmark- and milestone-locked armour, never XP)",
+   "rule": "Each region has one gear slot with tiers Iron(0)/Bronze(1)/Silver(2)/Gold(3) mapping to the program's recruit/soldier/warrior/champion. Six slots are set only by Boss Battle benchmark tiers; four are set only by named ladder milestones. Tiers never go down.",
+   "formula_or_data": "HELM (heart) = tier(bb_mile_time). BREASTPLATE (chest) = tier(bb_pushups_2min). BELT (core) = tier(bb_hollow_hold). HIP GUARD (glutes) = tier(bb_swings_5min). GREAVES (thighs) = max(tier(bb_goblet_bw), tier(bb_vest_stepups_3min)). GORGET (neck_traps): farmer_carry.step >=2 Bronze, >=4 Silver, >=6 Gold. PAULDRONS (shoulders): pike_push_up.step >=2 / >=4 / >=6. GAUNTLETS (arms): diamond_push_up.step >=3 / >=4 / >=5. BACKPLATE (back): db_row.step >=2 / >=4 / >=6. SABATONS (calves): calf_raise.step >=2 / >=4 / >=6. Benchmark tier index from final_program.benchmarks tiers (recruit 0, soldier 1, warrior 2, champion 3, with the program's implement caps). XP: +150 per tier index gained per slot (benchmark or milestone). Composite badges: all 10 slots >= Bronze / >= Silver / == Gold.",
+   "psychology": "Status that cannot be faked by attendance; every armour piece is a number or a rung the user actually hit; never regresses so a bad test day costs nothing.",
+   "ui": "Armory (inside Body screen): 10 slot cards with material swatch, the number/rung that earned it and 'next: Silver at 30 push-ups (you: 22)'. Outline stroke: iron #6b7280, bronze #CD7F32, silver #C0C0C0, gold #FFD700 with 2-px glow; tier-up sweeps the material top-to-bottom."
+  },
+  {
+   "name": "Gates as unlocks (Hinge, Bell, Vest, Run, Overhead)",
+   "rule": "The program's safety gates are presented as quests with a padlock, the exact remaining condition, XP and a badge \u2014 never as restrictions.",
+   "formula_or_data": "hinge_gate_passed = hinge_deadlift.step >= 6 (+75 XP, badge hinge_gate). bell_gate_passed = swing.step >= 6 (+75, badge bell_earned, profile.swing_form_gate_passed=true, Hip Guard padlock opens). vest gates per exercise per final_program.safety_and_form_gates (+75 each, first one grants badge vested on first vest set). run_gate_passed = treadmill_intervals.step >= 3 (+75, badge runner). Overhead gate = shoulder screen at onboarding (no XP).",
+   "psychology": "Safety framed as an unlock; the 53 lb bell becomes a trophy both partners earn on their own timeline.",
+   "ui": "Padlock on the silhouette region and ladder rung with 'Needs: 35 lb swings 5\u00d715 twice \u00b7 hollow hold step 4 (you: 3)'."
+  },
+  {
+   "name": "Skirmish and Ember floor",
+   "rule": "Every quest has a 15-minute Skirmish: 2-min warm-up + 3 rounds of the quest's three priority exercises at current step targets, 45 s rest, plus a 6-min Zone-2 block on cardio days. It counts for both Flames and for sessions_completed in the duel but cannot advance ladders. Logging even one working set (Ember) keeps the Flame.",
+   "formula_or_data": "quest.skirmish = [three exercise ids per template day: Mon goblet_squat, hinge_deadlift, calf_raise; Tue push_up, db_row, db_overhead_press; Wed treadmill_zone2 12 min, turkish_get_up, suitcase_carry; Thu swing(or fallback), hip_thrust, step_up; Fri db_row, db_floor_press, pike_push_up; Sat treadmill_intervals 4 rounds, swing block, hollow_hold]. XP: set XP as normal + 25 completion. Perfect Week allows <= 2 Skirmishes. Skirmish counts as 'session completed' for the duel if duration >= 12 min.",
+   "psychology": "Tiny-habits floor that protects first-28-day frequency, the strongest adherence predictor, without paying to sandbag.",
+   "ui": "'Only 15 min? Skirmish' toggle on the Quest card; Day 4 (Muster Sat) copy teaches it before it is needed."
+  },
+  {
+   "name": "The Flame (streak) with rolling rest, silent Shields, Recovery/Away, Ember and Rekindle",
+   "rule": "See streak_rules. Day boundary 04:00 local. Rest is automatic and rolling. Shields auto-deploy silently. Illness/travel freeze rather than break. A break dims to Ember; two quests within the window Rekindles at the old count.",
+   "formula_or_data": "date(d) = (now - 4h).toDateString(). start_shields = 1, max 2, +1 per Perfect Week. Milestones 7/30/66/100 -> +100/+300/+500/+1000 XP. Rekindle +50. Resolver in streak_rules.",
+   "psychology": "Loss aversion with a safety valve; Duolingo's decoupling of streak from perfect days; Lally's 66-day automaticity milestone.",
+   "ui": "Flame with count, halo during a Perfect Week, shield icons; Ember state = dimmed flame with old count and 'Ember \u2014 2 quests by Sunday rekindles 23'. Never red, no countdown before the day boundary."
+  },
+  {
+   "name": "Tomorrow's Pledge (implementation intention)",
+   "rule": "One optional tap on Quest Complete pledges tomorrow's start time; setup captures an anchor ('after coffee'). Kept pledge pays XP; broken pledge costs nothing and no accuracy stat is shown.",
+   "formula_or_data": "pledge = {date, time:'HH:MM'}; default chip = median start_time of last 5 sessions (else setup time). kept = next session start within [time-30m, time+90m] -> +15 XP. Boss Ticket = the pledge for boss Saturday, same +15.",
+   "psychology": "Implementation intentions are the best-evidenced habit lever; kept as a soft commitment with no guilt channel.",
+   "ui": "Chip row '6:30 PM \u2713 | 7:00 AM | Other'; Home shows 'Pledged 6:30 PM \u00b7 After coffee'."
+  },
+  {
+   "name": "Zone-2 definition and weekly Heart ring",
+   "rule": "A Zone-2 minute is a treadmill_zone2 or vest_walk minute at the user's current ladder step with the talk test not flagged failed and block RPE <= 4 (<= 5 for vest_walk).",
+   "formula_or_data": "zone2_min_prescribed(week,u) = sum of prescribed treadmill_zone2/vest_walk minutes in the user's template week (Phase 1: 7+30+8+4 = 49; Phase 2: 52; Phase 3: 55; deload week: Wed at 70%). Optional Sunday Kindle walk (>= 20 min) adds Zone-2 minutes and +20 XP. Heart ring = zone2_min_done / zone2_min_prescribed with a tick at the AHA 150-min line.",
+   "psychology": "Makes heart health visible weekly; caps stop grinding.",
+   "ui": "Ring around the head on the silhouette; 1-tap timer; 'talk test failed' toggle."
+  },
+  {
+   "name": "Boss Battles (solo scoring) and Training Camp",
+   "rule": "Weeks 4, 8, 12 (Saturday) run final_program's fixed six-benchmark script: bb_mile_time, bb_pushups_2min, bb_hollow_hold, bb_goblet_bw, bb_swings_5min, bb_vest_stepups_3min. Mon\u2013Fri of a boss week is the 0.6-set deload, the three sessions before the boss are 'Training Camp' (prefills frozen, banner). Bosses cannot be lost; a below-previous single benchmark gets one Rematch within 7 days replacing that day's conditioning block on a TRAINING day (never the rest day).",
+   "formula_or_data": "boss_n at program week 4n, Saturday; window opens Monday of that week and closes Sunday of the following week. XP: +30 per benchmark logged, +20 when all six are logged (=200), +150 per tier index gained per benchmark (Rematch improvements pay tier XP only). Boss 1 has no previous: deltas shown vs placement quiz where comparable (push-ups). Split the battle: if >15 min short, tests 5\u20136 move to the next training day's conditioning block. Names: boss_1 'The Gatekeeper', boss_2 'The Iron Colossus', boss_3 'The Warlord', boss_4+ 'Season Titan'. Live: each test card drains the boss's bar to the tier reached and repaints the slot outline immediately. Results lead with deltas ('+9 push-ups, +0:35 hollow, -0:41 mile') and a projection ('At this pace: Silver Breastplate by The Warlord'). Week-12 result renders a shareable character card to <canvas> (level, title, gear, flame best, duo record) \u2014 local only.",
+   "psychology": "Temporal landmarks and anticipation; no-fail framing keeps a bad day costless.",
+   "ui": "BOSS APPROACHING banner 3 days out with the tiers you are closest to; dark boss UI; split option; rematch offer card."
+  },
+  {
+   "name": "Weekly Report and Perfect Week",
+   "rule": "On first open after Monday 04:00 a one-screen report shows quests, XP by source, advances, PRs, region level changes, Zone-2 vs prescribed, the (provisional) Belt result and next week's headline. Perfect Week = every prescribed quest of the plan week done (6; Muster week 4), >= 4 full, no Shield consumed.",
+   "formula_or_data": "perfect = quests_done == sessions_prescribed_template AND full_quests >= 4 AND shields_used_this_week == 0 (Muster week: 4/4 -> +150, no shield). Perfect Week +300 XP, +1 Shield (cap 2), halo. 5/6 with a Shield used is not Perfect but shows 'Held the line'.",
+   "psychology": "Self-monitoring with historical comparison is the best-evidenced retention driver; fresh-start effect each Monday.",
+   "ui": "Swipeable card; archive in Journal."
+  },
+  {
+   "name": "Duo Flame",
+   "rule": "A second flame beside your own counts consecutive calendar days on which both warriors trained; either partner's rest link counts; Shield/Recovery/Away days are neutral; a duo-required day with one partner at 'none' dims the Duo Flame to Ember.",
+   "formula_or_data": "duo_required(d) = d is not a rest link for either user. For each d from first common date to yesterday: if both trained -> duo += 1; else if not duo_required and neither is 'none' on a training day -> duo += 1; else if either status in {shield, recovery, away, manual_no_contest} -> neutral (after 14 consecutive neutral days -> ember); else -> ember(duo) with ember_expires = d + 7 days; 3 consecutive both-trained days before expiry restores the full previous count (+50 XP each, badge rekindled_duo); one duo Rekindle per rolling 30 days. Today is 'pending' (one flame lit if exactly one has trained) and cannot break until the next day's 23:59. Milestones 7/30/66/100 pay each user +100/+300/+500/+1000. Longest duo flame stored.",
+   "psychology": "K\u00f6hler-style mutual obligation without simultaneity; nobody's illness costs the other anything.",
+   "ui": "Two-flame icon with count in Home header; partner card shows the pending state."
+  },
+  {
+   "name": "Weekly Duel for The Belt (relative-to-self fairness model)",
+   "rule": "ISO week Mon\u2013Sun, locked Tuesday 23:59. Each user gets S in 0\u2013100 from five categories that are all ratios to THEIR OWN prescription, capped at 100; higher S takes the Belt. Absolute loads, reps, speeds and body metrics never enter any formula or the scoreboard.",
+   "formula_or_data": "sessions_pct = min(100, 100*sessions_completed/sessions_prescribed); fidelity_pct = 100*mean over completed sessions of exercises_hit/exercises_prescribed (0 if none); zone2_pct = min(100, 100*zone2_min_done/zone2_min_prescribed); progress_pct = min(100, 34*ladder_steps_gained + 50*tier_climbs); xp_pct = min(100, 100*xp_week/xp_available_week). S = round(0.30*sessions_pct + 0.25*fidelity_pct + 0.20*zone2_pct + 0.15*progress_pct + 0.10*xp_pct). session_completed = quest with duration_min >= 20 AND exercises_hit/exercises_prescribed >= 0.6, OR Skirmish >= 12 min, OR pure Zone-2 session >= 20 min. exercise_hit = every prescribed set of that exercise logged with value >= A (low end). xp_week = session XP only (sets, PRs, Zone-2, intervals, completion, advances, gates, pledges); excludes boss, duel, milestone and weekly bonuses. xp_available_week = sum over prescribed sessions of (15*working_sets + 3*zone2_min + 12*interval_rounds_at_step + 50), deload multipliers applied. sessions_prescribed = template days (6) minus shield/recovery/away days that fell on training days. Contest status: contested = both sessions_completed >= 2 AND neither has >= 3 paused days; unexplained = 0 sessions, 0 paused days while partner >= 2 -> absent user loses ('sat this week out'); otherwise no_contest (belt unchanged, week excluded from PB baselines). |S_a - S_b| < 2 -> dead_heat: 0.5 crown each, loss counters reset. Winner: 1 crown, Belt moves, loser.consecutive_losses += 1. Alliance Week: after any user's 3 consecutive contested losses the next week has no Belt change; shared crown for both if S_a + S_b >= 150; counter resets. PB star: S >= max(S over previous 4 contested weeks) + 5, displayed first. Week 0 (Muster) is an exhibition: scores shown, no Belt. Season = 12 program weeks; champion = most crowns, then most dead heats, else co-champions; Belt vacant at season start. Duel XP (not in xp_week): win +100, dead heat +50 each, alliance crown +100 each.",
+   "psychology": "Social comparison beats passive support for activity, but only when the weaker partner can win \u2014 every category is execution, not strength; Alliance Weeks and PB stars stop runaway losing.",
+   "ui": "Duel screen: paired horizontal bars per category (percentages only, step NAMES gained), Belt line, 'loser's best category' and 'closest gap' lines computed by trying each category at 100, Crown Cabinet side by side, share card (canvas, local)."
+  },
+  {
+   "name": "Co-op Boss Battles (K\u00f6hler conjunctive damage)",
+   "rule": "Each boss week is also a duo battle: each warrior's benchmark improvement and tier climbs become damage; combined damage counts the smaller number twice. Never any penalty.",
+   "formula_or_data": "Battle 1 (no previous): strike_b = 10 if logged + 15*tier_index_b (0\u201355). Battles 2+: imp_b = (new-prev)/prev for higher-is-better (bb_pushups_2min, bb_hollow_hold, bb_goblet_bw, bb_swings_5min, bb_vest_stepups_3min), (prev-new)/prev for bb_mile_time; imp_pts = clamp(round(100*imp_b),0,25); tier_pts = min(30, 15*tier_climbs_b); strike_b = imp_pts + tier_pts (0\u201355); unlogged = 0. damage_u = round(mean of the six strikes). damage_duo = damage_a + damage_b + min(damage_a, damage_b). HP: boss_1 The Gatekeeper 55; boss_2 The Iron Colossus 65; boss_3 The Warlord 60 (+10 'Bell Strike' if both swing_form_gate_passed); boss_4 Iron Vest 55 (+5 if both logged >= 2 vest sessions in the block); boss_5+ Season Titan 50. Outcomes: >= 1.5*HP FLAWLESS (+20% of xp_available_week to each, badge duo_flawless); >= HP DEFEATED (+10%, badge duo_slayers on first); >= 0.75*HP WOUNDED -> 1-week rematch, each may retest up to 2 benchmarks, only improvements add; else ESCAPED (returns next boss week at HP with +10 revenge bonus). If one user has >= 3 paused days in the window it extends 7 days once; if still incomplete the battle is SOLO for the tester (HP*0.5, no synergy, never a duo defeat). Each phone writes its own users/<slot>/boss/<n>.json and both compute the outcome.",
+   "psychology": "Conjunctive tasks make the less-capable partner indispensable (Irwin/Feltz 2012); tapering HP matches shrinking beginner gains.",
+   "ui": "Boss banner with HP bar and 'Cat 4/6 logged \u00b7 you 2/6'; result shows three hits: 'Sean 31 \u00b7 Cat 27 \u00b7 SYNERGY +27'."
+  },
+  {
+   "name": "Partner card, visibility contract and on-open nudges",
+   "rule": "The partner card is always on Home; nudges are pure functions of (me, partner, now) computed on open/foreground, max 3 per day, one competitive + one co-op per open, nothing competitive before 12:00, on rest/paused days, to a user with consecutive_losses >= 2, or when partner data is > 24 h stale.",
+   "formula_or_data": "Card states: trained today (time, template, minutes) | not yet today | rest day | recovering (day n) | travelling (day n of m) | 'as of N h ago' when updated_at > 6 h. Co-op priority: new-from-partner delta > duo flame at risk (>= 18:00, duo-required, partner trained, you not) > ember live > boss window status > partner milestone (send \ud83d\udd25) > reaction received. Competitive priority (Thu\u2013Sun): belt within reach (smallest single action that flips the provisional result) > sessions gap >= 2 (Wed\u2013Sat) > partner-done-today > holder's defence reminder. Reactions \ud83d\udd25/\ud83d\udc4f/\ud83d\udcaa max 3/day written to my own week file. Never synced: body weight, measurements, photos, RIR/RPE, pain, notes, HR bpm, vest weight, placement answers, shield reasons beyond the kind word. Per-set reps/steps sync (they are needed for backup) but the partner UI shows only hit/miss and step names unless share_numbers is on.",
+   "psychology": "Fact + one concrete next action; no shame copy; asynchronous by design.",
+   "ui": "Partner card below the Quest card; mid-quest header chip 'Cat did this yesterday \u00b7 hit 7/8'; per-row 'Cat \u2713 Incline II' tick (toggle, default on); post-save 'Cat will see this \u2713'."
+  },
+  {
+   "name": "Progressive unlock (week-1 simplicity)",
+   "rule": "Systems appear only when they first matter.",
+   "formula_or_data": "Day 0: Home (silhouette fill, Level, Flame, Quest card), Quest, Quest Complete. After the first ladder progress mark (day 2): Ladders screen. When both users have >= 1 quest: Partner card + Duo Flame. Day 4 (first Saturday): Skirmish taught in copy. First Monday: Weekly Report; Duel screen appears as 'Exhibition' (no Belt until week 1 resolves). Day 8: Boss Arena tab with countdown. Body/Armory tab: fill from day 0, armour slots greyed with 'Forged at The Gatekeeper \u00b7 week 4' until boss 1 (ladder-milestone slots can open earlier). Badges tab on first badge. Settings always.",
+   "psychology": "Cognitive load control; each reveal is itself a small reward.",
+   "ui": "New tabs slide in with a one-line explainer; 'How XP works' page lists every formula."
+  },
+  {
+   "name": "Profile switcher and sync model",
+   "rule": "Two profiles (sean, cat) exist on every phone; the phone's 'home slot' (set once at sync setup) is the only slot the phone writes; the other profile is view-only on that phone. A long-press + confirm can move the write slot (replacement-phone case). Each user writes only users/<slot>/**; partner files are read-only.",
+   "formula_or_data": "Repo: warriorlog.github.io, orphan branch 'data'. Files per slot: profile.json, state.json (level, xp_total, flame, best_flame, shields, gear tiers, ladder steps, updated_at), weeks/<ISO>.json, log/<ISO>.json (sessions + sets, no body metrics/RIR/pain/notes), badges.json, boss/<n>.json. Writes via Contents API with the phone's fine-grained PAT (device storage only), retry on 409; reads via raw.githubusercontent.com with cache-busting param. Local-only per profile (localStorage/IndexedDB keyed by slot): body metrics, RIR, pain, notes, quiz answers, pledges, nudge history, share_numbers default false.",
+   "psychology": "Transparent ownership: 'Cat will see:' preview on every save.",
+   "ui": "Launch screen with two avatar cards ('Sean \u00b7 L21 Warrior \u00b7 this phone', 'Cat \u00b7 L19 Blade \u00b7 view only'), plus 'Set up sync' if no PAT."
+  }
+ ],
+ "xp_and_levels": {
+  "xp_sources": [
+   {
+    "source": "Working set logged (value >= 60% of the step's low-end target)",
+    "xp": "10"
+   },
+   {
+    "source": "Set meets the step's advance threshold (top of range, checklist 5/5 where required)",
+    "xp": "+5"
+   },
+   {
+    "source": "Rep PR at the same exercise+step (needs >= 1 prior full session at that step)",
+    "xp": "25, max 3 per session"
+   },
+   {
+    "source": "Zone-2 minute (talk test OK, block RPE <= 4)",
+    "xp": "3 per minute, cap 45 min/day; talk-test-failed minutes 2/min"
+   },
+   {
+    "source": "Interval round completed",
+    "xp": "12, cap = step's prescribed rounds"
+   },
+   {
+    "source": "Quest complete / Skirmish complete / Ember day",
+    "xp": "50 / 25 / 5"
+   },
+   {
+    "source": "Ladder advance (any exercise, any step)",
+    "xp": "100 flat"
+   },
+   {
+    "source": "Gate passed (hinge, bell, each vest gate, run)",
+    "xp": "75 each"
+   },
+   {
+    "source": "Gear tier gained (benchmark or ladder milestone)",
+    "xp": "150 per tier index per slot"
+   },
+   {
+    "source": "Pledge kept (start within [-30m, +90m])",
+    "xp": "15"
+   },
+   {
+    "source": "Placement quiz completed (Day 0)",
+    "xp": "150"
+   },
+   {
+    "source": "Boss Battle: per benchmark logged / all six",
+    "xp": "30 each + 20 (=200)"
+   },
+   {
+    "source": "Perfect Week (Muster week 4/4)",
+    "xp": "300 + 1 Shield (150, no Shield)"
+   },
+   {
+    "source": "Flame milestones 7/30/66/100 (solo and duo, each)",
+    "xp": "100 / 300 / 500 / 1000"
+   },
+   {
+    "source": "Rekindle (solo or duo)",
+    "xp": "50"
+   },
+   {
+    "source": "Sunday Kindle walk >= 20 min",
+    "xp": "20 (+ Zone-2 minutes; no flame effect)"
+   },
+   {
+    "source": "Weekly Duel: win / dead heat / alliance crown",
+    "xp": "100 / 50 each / 100 each (excluded from xp_week)"
+   },
+   {
+    "source": "Co-op boss DEFEATED / FLAWLESS",
+    "xp": "+10% / +20% of that week's xp_available_week to each user"
+   },
+   {
+    "source": "Warm-up, cooldown, opening the app, badges, rest day",
+    "xp": "0"
+   }
+  ],
+  "level_curve_formula": "FINAL (replaces final_program's floor(sqrt(XP/100)) and its 10/25/50 values): xp_required(L) = round(120 * (L-1)^1.5) cumulative; level = 1 + floor((xp_total/120)^(2/3)). Checkpoints: L2 120, L3 339, L4 624, L5 960, L6 1342, L7 1764, L8 2222, L9 2715, L10 3240, L12 4378, L15 6286, L18 8411, L20 9938, L25 14109, L30 18740, L35 23790, L40 29226, L45 35022, L50 41160, L60 54383. Expected ~2,600\u20133,000 XP/week (4 strength quests ~380, Wed ~300, Sat ~260, plus advances/PRs/Perfect Week): Muster week ends ~L6\u20137 (a level every session), week 4 ~L21, week 8 ~L33, week 12 ~L45. No cap.",
+  "rank_titles": [
+   {
+    "level": 1,
+    "title": "Recruit"
+   },
+   {
+    "level": 3,
+    "title": "Initiate"
+   },
+   {
+    "level": 5,
+    "title": "Footsoldier"
+   },
+   {
+    "level": 8,
+    "title": "Shieldbearer"
+   },
+   {
+    "level": 11,
+    "title": "Spearman"
+   },
+   {
+    "level": 14,
+    "title": "Vanguard"
+   },
+   {
+    "level": 17,
+    "title": "Blade"
+   },
+   {
+    "level": 20,
+    "title": "Warrior"
+   },
+   {
+    "level": 24,
+    "title": "Veteran"
+   },
+   {
+    "level": 28,
+    "title": "Champion"
+   },
+   {
+    "level": 32,
+    "title": "Warlord"
+   },
+   {
+    "level": 36,
+    "title": "Ironborn"
+   },
+   {
+    "level": 40,
+    "title": "Titan"
+   },
+   {
+    "level": 45,
+    "title": "Forgeborn"
+   },
+   {
+    "level": 50,
+    "title": "Legend"
+   },
+   {
+    "level": 60,
+    "title": "Immortal"
+   }
+  ]
+ },
+ "streak_rules": "DAY BOUNDARY: date = (now - 4 h) local; a 00:30 session belongs to the previous day. DAY STATUS per user, resolved lazily on app open for every unresolved past date up to yesterday, in this order: (1) trained \u2014 >= 1 working set logged (full quest, Skirmish or Ember); (2) rest \u2014 no session AND no 'rest' status in the previous 6 days (rolling one-rest-per-7 link; Sunday is the default but the user can move it by simply not training another day; a Kindle walk on a rest day keeps status 'rest'); (3) recovery/away \u2014 Recovery Mode (sick/injured: unlimited activations, <= 7 days, extendable once by 7) or Away Mode (travel/life: <= 7 days, max 2 activations per 12-week season) active; (4) shield \u2014 shields > 0 -> shields -= 1 silently, Home shows 'Shield held Tuesday'; (5) none -> Ember. FLAME COUNT: trained +1, rest +1 (so a full week = 7), shield +1 (max 2 per inventory so at most 2 free days), recovery/away = frozen (no change, no break; > 14 consecutive frozen days -> Ember), none -> Ember. EMBER: the flame dims and shows its old count for 7 days; completing 2 quests (full or Skirmish, not Ember-sets) inside the window Rekindles at the previous count (+50 XP, badge comeback); Rekindle is available once per rolling 30 days \u2014 a second break within 30 days resets to 0. Best Flame is kept forever. SHIELDS: start 1, cap 2, +1 per Perfect Week; never purchasable; they also cover the Duo Flame for the same day. PERFECT WEEK: all prescribed quests of the plan week (Mon\u2013Sat = 6; Muster week Wed\u2013Sat = 4) with >= 4 full quests (Muster: >= 3) and no Shield consumed -> +300 XP (+150 Muster) and +1 Shield; a Shield week can still be 'Held the line'. MILESTONES 7/30/66/100 get the only big animations (+100/300/500/1000). PROGRAM CALENDAR: the template is calendar-anchored (needed so both partners share boss weeks); a missed day's template is skipped, but once per week a training day may run the most recently missed template instead ('Make-up: Tuesday's Upper A'). Program-level absence rules from final_program (8\u201314 days away -> every ladder -1 step and repeat last week; > 14 -> -2 steps, restart phase) apply after Recovery/Away ends. DUO FLAME: see the Duo Flame mechanic \u2014 both trained +1; a rest link for either partner +1; shield/recovery/away/manual no-contest neutral; a duo-required day with one partner at 'none' -> duo Ember (7 days, 3 consecutive both-trained days restore the full count, once per rolling 30 days); today is pending until the next day's 23:59 so late logging never breaks it. COPY RULES (data-enforced string table): never 'lost', 'failed', 'broken', 'missed', 'behind', 'lazy'; no red; no countdown timers before the day boundary; absence is 'not yet today'.",
+ "badges": [
+  {
+   "id": "first_blood",
+   "name": "First Blood",
+   "criterion": "sessions where type in {full, skirmish} and completed == true >= 1",
+   "rarity": "common"
+  },
+  {
+   "id": "mirror_faced",
+   "name": "Faced the Mirror",
+   "criterion": "placement_quiz.completed_at != null",
+   "rarity": "common"
+  },
+  {
+   "id": "kindling_7",
+   "name": "Kindling",
+   "criterion": "flame >= 7",
+   "rarity": "common"
+  },
+  {
+   "id": "perfect_week",
+   "name": "Perfect Week",
+   "criterion": "perfect_weeks_count >= 1 (Muster week counts)",
+   "rarity": "common"
+  },
+  {
+   "id": "first_rung",
+   "name": "First Rung",
+   "criterion": "steps_gained lifetime count >= 1",
+   "rarity": "common"
+  },
+  {
+   "id": "ten_clean",
+   "name": "Ten Clean",
+   "criterion": "any set with exercise_id == 'push_up' AND step >= 4 AND value >= 10",
+   "rarity": "common"
+  },
+  {
+   "id": "hinge_gate",
+   "name": "Hinge Earned",
+   "criterion": "hinge_deadlift.step >= 6",
+   "rarity": "common"
+  },
+  {
+   "id": "skirmisher",
+   "name": "Skirmisher",
+   "criterion": "completed sessions with type == 'skirmish' >= 5",
+   "rarity": "common"
+  },
+  {
+   "id": "comeback",
+   "name": "Comeback",
+   "criterion": "solo Rekindle completed >= 1",
+   "rarity": "common"
+  },
+  {
+   "id": "pledged_10",
+   "name": "Word Is Bond",
+   "criterion": "pledges_kept lifetime >= 10",
+   "rarity": "common"
+  },
+  {
+   "id": "vested",
+   "name": "Vested Interest",
+   "criterion": "any working set with vest_lb > 0",
+   "rarity": "common"
+  },
+  {
+   "id": "get_up_shoe",
+   "name": "Steady Hand",
+   "criterion": "turkish_get_up.step >= 3",
+   "rarity": "common"
+  },
+  {
+   "id": "bell_earned",
+   "name": "Bell Earned",
+   "criterion": "swing.step >= 6 (BELL GATE passed)",
+   "rarity": "rare"
+  },
+  {
+   "id": "iron_month",
+   "name": "Iron Month",
+   "criterion": "flame >= 30",
+   "rarity": "rare"
+  },
+  {
+   "id": "heart_week",
+   "name": "Heart Week",
+   "criterion": "zone2_min_done in one ISO week >= 150",
+   "rarity": "rare"
+  },
+  {
+   "id": "twenty_clean",
+   "name": "Twenty Clean",
+   "criterion": "any set with exercise_id == 'push_up' AND step >= 4 AND value >= 20",
+   "rarity": "rare"
+  },
+  {
+   "id": "goblet_53",
+   "name": "Bell Squat",
+   "criterion": "any set with exercise_id == 'goblet_squat' AND step >= 8 AND value >= 6",
+   "rarity": "rare"
+  },
+  {
+   "id": "century_bell",
+   "name": "Century Bell",
+   "criterion": "sum of swing values in one session with implement_id == 'kb53' >= 100",
+   "rarity": "rare"
+  },
+  {
+   "id": "runner",
+   "name": "First Stride",
+   "criterion": "treadmill_intervals.step >= 3 (RUN GATE passed)",
+   "rarity": "rare"
+  },
+  {
+   "id": "record_hunter",
+   "name": "Record Hunter",
+   "criterion": "pr_count lifetime >= 25",
+   "rarity": "rare"
+  },
+  {
+   "id": "climber_20",
+   "name": "Climber",
+   "criterion": "steps_gained lifetime count >= 20",
+   "rarity": "rare"
+  },
+  {
+   "id": "gatekeeper_slain",
+   "name": "Gatekeeper Faced",
+   "criterion": "boss_1: all six benchmark ids logged in window",
+   "rarity": "rare"
+  },
+  {
+   "id": "colossus_slain",
+   "name": "Colossus Faced",
+   "criterion": "boss_2: all six benchmark ids logged in window",
+   "rarity": "rare"
+  },
+  {
+   "id": "bronze_warrior",
+   "name": "Bronze Warrior",
+   "criterion": "min over 10 gear slots of tier_index >= 1",
+   "rarity": "rare"
+  },
+  {
+   "id": "mile_soldier",
+   "name": "Twelve-Minute Mile",
+   "criterion": "bb_mile_time value <= 720 s",
+   "rarity": "rare"
+  },
+  {
+   "id": "automatic_66",
+   "name": "Automatic",
+   "criterion": "flame >= 66",
+   "rarity": "epic"
+  },
+  {
+   "id": "silver_warrior",
+   "name": "Silver Warrior",
+   "criterion": "min over 10 gear slots of tier_index >= 2",
+   "rarity": "epic"
+  },
+  {
+   "id": "simple_swing",
+   "name": "Simple",
+   "criterion": "any swing clock set with implement_id == 'kb53' AND rounds/reps == 100 AND clock_s <= 300",
+   "rarity": "epic"
+  },
+  {
+   "id": "forty_clean",
+   "name": "Forty Clean",
+   "criterion": "any set with exercise_id == 'push_up' AND step >= 4 AND value >= 40",
+   "rarity": "epic"
+  },
+  {
+   "id": "warlord_slain",
+   "name": "Warlord Faced",
+   "criterion": "boss_3: all six benchmark ids logged in window",
+   "rarity": "epic"
+  },
+  {
+   "id": "centurion",
+   "name": "Centurion",
+   "criterion": "completed sessions (full + skirmish) >= 100",
+   "rarity": "epic"
+  },
+  {
+   "id": "sub_10_mile",
+   "name": "Sub-10 Mile",
+   "criterion": "bb_mile_time value < 600 s",
+   "rarity": "epic"
+  },
+  {
+   "id": "gold_warrior",
+   "name": "Gold Warrior",
+   "criterion": "min over 10 gear slots of tier_index == 3",
+   "rarity": "legendary"
+  },
+  {
+   "id": "eternal_flame",
+   "name": "Eternal Flame",
+   "criterion": "flame >= 100",
+   "rarity": "legendary"
+  },
+  {
+   "id": "forgeborn",
+   "name": "Forgeborn",
+   "criterion": "level >= 45",
+   "rarity": "legendary"
+  },
+  {
+   "id": "first_light",
+   "name": "First Light",
+   "criterion": "duo: first date on which both users' day status == 'trained' (duo_flame reaches 1)",
+   "rarity": "common"
+  },
+  {
+   "id": "duo_week",
+   "name": "Week of Two",
+   "criterion": "duo_flame >= 7",
+   "rarity": "common"
+  },
+  {
+   "id": "rekindled_duo",
+   "name": "Rekindled",
+   "criterion": "duo Rekindle completed >= 1",
+   "rarity": "common"
+  },
+  {
+   "id": "in_step",
+   "name": "In Step",
+   "criterion": "10 distinct dates where both users' session start_time values are within 15 minutes",
+   "rarity": "uncommon"
+  },
+  {
+   "id": "dead_heat",
+   "name": "Dead Heat",
+   "criterion": "two consecutive contested weeks with |S_a - S_b| < 2 and both S >= 75",
+   "rarity": "uncommon"
+  },
+  {
+   "id": "seesaw",
+   "name": "Seesaw",
+   "criterion": "Belt changes hands in 3 consecutive contested weeks",
+   "rarity": "uncommon"
+  },
+  {
+   "id": "duo_month",
+   "name": "Thirty Together",
+   "criterion": "duo_flame >= 30",
+   "rarity": "uncommon"
+  },
+  {
+   "id": "duo_slayers",
+   "name": "Slayers",
+   "criterion": "first co-op battle with damage_duo >= HP (not solo)",
+   "rarity": "uncommon"
+  },
+  {
+   "id": "one_bell_two_warriors",
+   "name": "One Bell, Two Warriors",
+   "criterion": "both profiles have swing_form_gate_passed == true",
+   "rarity": "rare"
+  },
+  {
+   "id": "indispensable",
+   "name": "Indispensable",
+   "criterion": "co-op battle DEFEATED where damage_a + damage_b < HP <= damage_duo (awarded to both)",
+   "rarity": "rare"
+  },
+  {
+   "id": "duo_flawless",
+   "name": "Flawless",
+   "criterion": "any co-op battle with damage_duo >= 1.5 * HP",
+   "rarity": "rare"
+  },
+  {
+   "id": "club_190",
+   "name": "190 Club",
+   "criterion": "a contested week with S_a + S_b >= 190",
+   "rarity": "rare"
+  },
+  {
+   "id": "season_of_fire",
+   "name": "Season of Fire",
+   "criterion": "duo_flame >= 90",
+   "rarity": "legendary"
+  }
+ ],
+ "boss_battles": "SCHEDULE: program week 1 starts Mon 2026-09-14 (Tue 2026-09-08 \u2013 Sun 09-13 is 'Muster', week 0). Boss weeks 4, 8, 12 (Sat 2026-10-10, 11-07, 12-05), then every 4 weeks. Mon\u2013Fri of a boss week is the 0.6-set deload with no ladder evaluation; the three sessions before Saturday show a 'Training Camp' banner with prefills frozen. 3 days out Home shows 'BOSS APPROACHING \u2014 The Gatekeeper' with boss art and the two tiers you are closest to ('Bronze Breastplate needs 15 push-up points; your best set is 12'). The Boss Ticket is a pledge for Saturday (+15 XP if kept). BATTLE SCRIPT (final_program.deload_rules, ~48 min): warm-up 5, bb_mile_time, 8 min walk, bb_pushups_2min, 3 min rest, bb_hollow_hold, 3 min rest, bb_goblet_bw, 3 min rest, bb_swings_5min, 3 min rest, bb_vest_stepups_3min, cooldown 4. Each test is a card: result entered with the stepper/timer (two taps), the boss's bar for that test drains to the tier reached, the tier pill lights, and the silhouette slot outline repaints live. Protocol substitutions and caps come from final_program.benchmarks (knee push-ups 0.5, tuck hollow 0.5x, implement caps on swings/goblet/step-ups). Bosses cannot be lost: +30 per benchmark logged, +20 for all six, +150 per tier index gained. Split the battle: tests 5\u20136 may move to the next training day's conditioning block; tiers apply as each lands. Rematch: any benchmark below its previous value is offered once within 7 days, replacing a training day's conditioning block (never the rest day), best of two counts. Results screen leads with deltas vs the previous boss and a projection line. CO-OP LAYER: the same window (Mon of boss week to the following Sunday) is a duo battle. Battle 1 strike = 10 if logged + 15 per tier index; later battles strike = clamp(round(100*imp),0,25) + min(30, 15*tier_climbs); damage_u = mean of six strikes; damage_duo = a + b + min(a,b). HP: Gatekeeper 55, Iron Colossus 65, Warlord 60 (+10 Bell Strike if both passed the BELL GATE), Iron Vest 55 (+5 if both logged >= 2 vest sessions), Season Titan 50. FLAWLESS >= 1.5 HP (+20% xp_available_week each), DEFEATED >= HP (+10%), WOUNDED >= 0.75 HP (1-week rematch, <= 2 retests each, improvements only), else ESCAPED (returns next boss week with +10 revenge bonus). One partner unable to test (>= 3 paused days) extends the window 7 days once, then the battle is SOLO (HP x0.5, no synergy, counts only for that user). Equipment hint: 'Cat used the bell at 07:30 \u2014 it's free'. Week-12 Warlord result renders a shareable character card (canvas, offline, local only): level, title, 10 slot tiers, best flame, duo record.",
+ "body_map": "Inline SVG, viewBox 240x520, front view with a tap-to-flip back view; ten closed regions: HEART (pulsing glyph in the upper chest plus a ring around the head), NECK & TRAPS, SHOULDERS, CHEST, ARMS (both), BACK (visible on flip, shown as a band behind the torso edges on front), CORE, GLUTES (flip), THIGHS (quads front / hamstrings on flip, one region), CALVES. Two independent channels per region: FILL = region level from region XP, bottom-up liquid fill using a clipPath whose height = (region_xp - thr[L]) / (thr[L+1] - thr[L]), fill hue interpolated HSL 220 (L0) -> 25 (L10) with the level number inside; OUTLINE = gear tier stroke (iron #6b7280, bronze #CD7F32, silver #C0C0C0, gold #FFD700 + 2-px glow). Third channel for the heart: the head ring fills clockwise with this week's Zone-2 minutes toward zone2_min_prescribed, with a small tick at the AHA 150-minute line; heart pulse rate is cosmetic. Level-up = white flash then 1.05 scale flex for 300 ms; tier-up = material sweep top to bottom; locked slots (Hip Guard before the BELL GATE; benchmark slots before boss 1) show a padlock with the remaining condition. Cold cue: a region with no XP in the last 7 training days gets a dotted outline and 'Cold N days'; Home's second 'number to beat' names it. Tap a region -> card: level and XP to next, gear slot with the number/rung that earned it and the next threshold, the ladders feeding it with current rungs, days since last PR, 7-day XP sparkline. Below the silhouette: Level, title, XP bar, Flame + Shields, Duo Flame, Best Flame, Iron Moved (local-only lifetime load x reps). A 48-px thumbnail sits in the Quest header and pulses the region on every set tap. Read in two seconds: how full am I, how much armour am I wearing, is the heart ring closed.",
+ "two_player": "SHARED VOCABULARY: both warriors use the same XP values, level curve, rank titles, badges list and screens; nothing in the duo layer needs a second currency. DUO FLAME: consecutive calendar days on which both trained; either partner's rest link counts +1; shield/recovery/away/manual-no-contest days neutral (14 consecutive neutral days -> Ember); a duo-required day with one partner at 'none' -> duo Ember for 7 days, restored in full by 3 consecutive both-trained days (+50 XP each, badge rekindled_duo, once per rolling 30 days); today pending until next day 23:59; milestones 7/30/66/100 pay each +100/300/500/1000; longest duo flame stored. WEEKLY DUEL (ISO week, locked Tue 23:59, both phones compute identically and write result blocks into their own week file; on disagreement the file with the later partner_updated_at wins and the other phone rewrites): S = round(0.30*sessions_pct + 0.25*fidelity_pct + 0.20*zone2_pct + 0.15*progress_pct + 0.10*xp_pct) with sessions_pct = min(100,100*sessions_completed/sessions_prescribed), fidelity_pct = 100*mean(exercises_hit/exercises_prescribed) over completed sessions, zone2_pct = min(100,100*zone2_min_done/zone2_min_prescribed), progress_pct = min(100, 34*ladder_steps_gained + 50*tier_climbs), xp_pct = min(100,100*xp_week/xp_available_week). FAIRNESS MODEL: every quantity is (what you did) / (what YOUR program prescribed you), capped at 100, so 12 lb goblets at step 3 and 53 lb goblets at step 8 score the same when both hit target; absolute load, reps, speed and body metrics never enter a formula or the scoreboard (step NAMES gained are shown); ladder gains are capped and weighted 15% because lower steps advance faster; Zone-2 above prescription earns nothing; fidelity averages over completed sessions so one sick day is not a lost week; sessions_prescribed shrinks by paused days; no hidden handicap coefficients anywhere. STATUS: contested = both >= 2 sessions and neither >= 3 paused days; unexplained absence (0 sessions, 0 paused, partner >= 2) = loss with neutral copy; else no_contest (excluded from PB baselines). |\u0394S| < 2 = dead heat (0.5 crown each, loss counters reset). Winner takes the Belt and 1 crown (+100 XP outside xp_week); loser.consecutive_losses += 1. ALLIANCE WEEK: after 3 consecutive contested losses by either user, the next week freezes the Belt; S_a + S_b >= 150 gives both a shared crown (+100 XP each), otherwise nobody loses; counter resets. PB STAR: S >= max(previous 4 contested S) + 5 -> star, always displayed first ('Lost the belt, set a PB'). RESULT COPY: winner sees the loser's best category; loser sees their best category plus the single category that, set to 100, would have flipped the result. Week 0 (Muster) is an exhibition. SEASON = 12 program weeks; champion = most crowns, then dead heats, else co-champions; permanent plaque; Belt vacant at each season start. Belt record line 'Held 3 weeks \u00b7 5 title changes'. CO-OP BOSSES: damage_duo = a + b + min(a,b) vs HP 55/65/60/55/50 (see boss_battles), outcomes FLAWLESS/DEFEATED/WOUNDED/ESCAPED, loot = +10%/+20% of xp_available_week each and a cosmetic theme per defeated boss. PARTNER CARD (Home): avatar, status line (trained today with time/template/minutes | not yet today | rest day | recovering day n | travelling day n of m | 'as of N h ago' if > 6 h stale), Duo Flame with pending state, Belt line ('You hold the belt \u00b7 Sean is 6 points behind, 3 days left'), mini scoreboard (two stacked S bars, tap for the five categories), reactions row \ud83d\udd25/\ud83d\udc4f/\ud83d\udcaa (max 3/day), boss banner when a window is open. Mid-quest: header chip 'Cat did this yesterday \u00b7 hit 7/8'; per-row partner tick 'Cat \u2713 Incline II' (toggle, default on); equipment-free hint. NUDGES: computed on open, pure function nudge(me, partner, now) -> {id, class, text, deeplink}; max 3/day, one co-op + one competitive per open; no competitive nudge before 12:00, on rest/paused days, with stale data (> 24 h), or to a user with consecutive_losses >= 2; Alliance Week shows only the combined-150 line; priority lists in the partner-card mechanic. VISIBILITY: never synced \u2014 body weight, measurements, photos, RIR/RPE, pain, notes, HR bpm, vest weight, quiz answers, shield reasons beyond the kind word; per-set reps/steps sync for backup but the partner UI shows only hit/miss and step names unless share_numbers (per user, default off) is on. SYNC: each phone writes only users/<slot>/** on the orphan 'data' branch and reads the partner's files; belt holder, crowns and consecutive_losses are replayed from locked week results, never stored as mutable counters, so late syncs self-correct.",
+ "first_7_days_experience": "DAY 0 \u2014 Tue 2026-09-08 (setup + placement, ~12 min): Profile switcher (pick Sean or Cat on this phone), equipment (vest max/increment/min, each dumbbell pair/single, bell confirmed, treadmill max incline/speed, chair braced), health + shoulder + hip/knee screens, placement quiz Q1\u2013Q8 from final_program (max clean push-ups, chair sit-to-stands, plank, wall hinge checklist, 8 lb press, 20 lb hold, cardio comfort, KB experience) which seeds every ladder step (e.g. 6 push-ups -> push_up step 4 at 3x5, diamond step 2, goblet step 2\u20133, hinge step 1\u20132), rest day (default Sunday, rolling), usual time + anchor. Ends with the empty iron-outlined silhouette, 'Faced the Mirror', +150 XP -> Level 2 Recruit, 1 Shield, Flame 0, and tomorrow's quest card. DAY 1 \u2014 Wed (Heart + Skill, 49 min): Zone-2 30 min at step 1 with talk test, naked get-ups, suitcase carries, plank family; every tap pays; no PRs yet (history gate); ~280 XP -> Level 3 Initiate; first Pledge tap. Partner card appears the moment both have logged a quest ('Cat trained today \u00b7 06:50'). DAY 2 \u2014 Thu (Lower B): swing rows show hinge_deadlift at your step with the 5-cue card (all green by default); hip thrust, SL-RDL, step-ups, 8-min walk; ~360 XP -> Level 4 Footsoldier; Ladders tab slides in showing '1 of 2' marks. DAY 3 \u2014 Fri (Upper B): first ladder advances possible for exercises seen twice (db_row appears Tue/Fri; in Muster week only once, so advances land next week) \u2014 the copy says so honestly; ~360 XP -> Level 5; Duo Flame shows 3 if both trained Wed\u2013Fri. DAY 4 \u2014 Sat (Warrior Day): brisk-walk intervals step 1 (6 rounds, +72), swing block fallback (goblet/hinge EMOM), core finisher, flush walk; card copy teaches 'If today is tight, tap Skirmish'; Muster complete (4/4) +150 -> Level 6; Boss Arena tab appears Sunday with 'The Gatekeeper in 28 days'. DAY 5 \u2014 Sun (rest link, Flame safe): optional Kindle walk (+20, Zone-2 minutes); first Weekly Report on first open Monday 04:00+: quests 4/4, XP by source, region levels (most regions L1\u20132), Zone-2 vs prescribed, Duel exhibition scores ('Sean 92 \u00b7 Cat 95 \u2014 exhibition, the Belt is on the line from this week'). DAY 6 \u2014 Mon 09-14 (Week 1 Lower A): goblet, hinge, split squat, calves, hollow, 7-min walk; first rep PRs now fire (history exists for Wed/Thu/Fri exercises later in the week); ~380 XP -> Level 7 Shieldbearer around here. DAY 7 \u2014 Tue (Upper A): second exposure to push_up if it appeared in a Skirmish? No \u2014 first Upper A; Home 'At stake' now lists exercises one qualifying session from a climb; Flame 7 fires 'Kindling' (+100) if every day since Wed was trained or the rest link. The user ends the first seven days having levelled every session, learned the escape hatch, seen the partner card and Duo Flame light, read one Weekly Report, and with the first real climbs and the first Belt week visibly ahead.",
+ "anti_patterns_deliberately_avoided": [
+  "Load-weighted XP or Work Score (Arena): set XP never depends on load or step, so the 53 lb bell cannot buy XP and the duel cannot be won by being stronger.",
+  "Streak multiplier on session XP (Chainforge): a missed day never devalues a later PR or climb.",
+  "Date-seeded loot, chests, variable-ratio rewards: every reward is deterministic and stated on the 'How XP works' page.",
+  "Armour or titles earned by XP alone: all 10 gear slots are locked to benchmark tiers or named ladder rungs.",
+  "Daily streak that breaks on the planned rest day, or a fixed rest day that silently burns a Shield: rolling rest link + 4 AM boundary.",
+  "Capped or punished illness: Recovery Mode is unlimited; Away Mode covers travel.",
+  "Day-1 'NEW RECORD' spray: PRs need one prior full session at the step and cap at 3 per session.",
+  "Skirmish loophole: 15-minute quests keep the Flame but cannot advance a ladder.",
+  "Undefined form_ok: checklists exist only where final_program declares them, default green, one tap per amber cue.",
+  "Rest-day boss rematches: rematches replace a training day's conditioning block.",
+  "WIN/LOSS stamps per session, letter grades, GPA, 48-hour countdown timers, red states, words like 'failed/missed/behind'.",
+  "Comparing absolute loads, reps, speeds, volume or body metrics anywhere; body weight, measurements, photos, RIR, pain and notes never leave the phone.",
+  "Hidden handicaps for the smaller partner: the only asymmetry is the transparent placement start step.",
+  "Runaway losing: Alliance Week after 3 losses, PB star, no competitive nudges to a user on 2+ losses.",
+  "Rewarding overtraining: every duel category caps at 100, Zone-2 caps daily, rest-day training adds no flame or duo day, no extra-rep XP.",
+  "Max tests before week 4 or loaded work before its gate (Hinge, Bell, Vest, Run, Overhead).",
+  "Two phones writing the same file or mutable shared counters: per-slot files only; belt and crowns are replays of locked weeks.",
+  "Notification spam: no push; max 3 on-open nudges/day, none competitive before noon or from stale data.",
+  "Ten systems on day 1: progressive unlock schedule.",
+  "Typing during a workout: every log action is one or two taps."
+ ],
+ "screens": [
+  {
+   "name": "Profile Switcher (launch)",
+   "purpose": "Choose which warrior this phone is; make the write slot explicit.",
+   "key_elements": [
+    "Two avatar cards with level/title and 'this phone' / 'view only' labels",
+    "Long-press + confirm to move the write slot",
+    "Set up sync (repo, slot, PAT stored on device)",
+    "Add profile (max 2)"
+   ]
+  },
+  {
+   "name": "Onboarding / Placement Quiz",
+   "purpose": "Seed every ladder honestly, capture equipment and screens, grant Day-0 progress.",
+   "key_elements": [
+    "Equipment: vest max/increment/min, dumbbell pair/single per size, bell, treadmill limits, chair/couch",
+    "Health screen (PAR-Q), shoulder screen, hip/knee screen, injury flags",
+    "Q1\u2013Q8 placement with live 'starting step' preview per exercise",
+    "Rest day (rolling default Sunday), usual time, anchor habit, session length 40/45/50",
+    "Body metrics (local-only notice), units",
+    "Result: iron silhouette, +150 XP, 1 Shield, tomorrow's quest"
+   ]
+  },
+  {
+   "name": "Home / Character Sheet",
+   "purpose": "Two-second read: how full, how much armour, what is today, where is my partner.",
+   "key_elements": [
+    "Silhouette (fill + outline + heart ring), Level/title/XP bar, Flame + Shields, Duo Flame",
+    "Quest card: week/day/template, minutes, 'At stake', Skirmish toggle, Make-up option, START",
+    "Numbers to beat (<= 3 lines)",
+    "Pledge line with anchor",
+    "Partner card (status, Belt line, mini scoreboard, reactions, boss banner)",
+    "Boss countdown (from 3 days out) and one nudge slot",
+    "Recovery / Away mode buttons"
+   ]
+  },
+  {
+   "name": "Quest (logging)",
+   "purpose": "Log a 40\u201350 min session in ~25 taps with XP per set.",
+   "key_elements": [
+    "Warm-up flow one tap (0 XP)",
+    "Set rows: step name, implement chip, prefilled value, 'last: n'; tap = done; stepper; owned-implement picker",
+    "Checklist card (5 cues, default green) where required; RIR chip row per exercise; long-press pain flag",
+    "Auto rest timer with next-set preview; header mini-silhouette pulse; running XP",
+    "Cardio block: timer, incline/speed chips, talk-test toggle, interval round tapper, density clock stopwatch",
+    "Partner chip and per-row partner tick",
+    "Finish (enabled when all working sets logged) / End early (saves as Ember)"
+   ]
+  },
+  {
+   "name": "Quest Complete",
+   "purpose": "Peak-end moment: convert the session into visible progress and the one investment tap.",
+   "key_elements": [
+    "XP count-up by source",
+    "LADDER UP, NEW RECORD, gate unlock, tier and badge cards",
+    "Flame/Duo Flame status, Perfect Week card",
+    "Region fills and level-ups",
+    "'Why it mattered' line and 'Cat will see:' preview",
+    "Tomorrow's Pledge chips; provisional Belt delta"
+   ]
+  },
+  {
+   "name": "Body & Armory",
+   "purpose": "Head-to-toe visualisation and the 10 gear slots with exact next thresholds.",
+   "key_elements": [
+    "Full silhouette with flip, cold tags, padlocks",
+    "Region card: level, XP to next, feeding ladders, days since PR, sparkline",
+    "10 slot cards with material, earning number/rung, 'next: Silver at \u2026'",
+    "Composite progress Bronze/Silver/Gold Warrior"
+   ]
+  },
+  {
+   "name": "Ladders",
+   "purpose": "Make progression rules legible and give a mid-term goal per exercise.",
+   "key_elements": [
+    "One vertical ladder per exercise from final_program, lit rung",
+    "Rule and progress ('1 of 2 qualifying sessions'), gate conditions on locked rungs",
+    "Regression notice with reason and 'nothing lost'",
+    "Climb history with dates"
+   ]
+  },
+  {
+   "name": "Boss Arena",
+   "purpose": "Run the every-4-weeks benchmark as an event, solo and co-op.",
+   "key_elements": [
+    "Countdown, Training Camp banner, Boss Ticket",
+    "Six test cards with tier bars, live outline change, split option",
+    "Co-op HP bar with three hits (you, partner, synergy), window status, rematch state",
+    "Results: deltas, projection, XP; week-12 share card (canvas)"
+   ]
+  },
+  {
+   "name": "Duel & Crown Cabinet",
+   "purpose": "Weekly head-to-head on self-relative measures, with the Belt and season history.",
+   "key_elements": [
+    "Provisional/locked status, five paired category bars (percentages only), step names gained",
+    "Belt holder line, PB star, loser's-best and closest-gap lines",
+    "Crown Cabinet: crowns, dead heats, alliance crowns, boss trophies, duo badges side by side",
+    "Season strip and champion plaque; manual 'pause the contest' with reason kind",
+    "Share card (canvas, local)"
+   ]
+  },
+  {
+   "name": "Journal / Calendar & Weekly Report",
+   "purpose": "Show regularity and history; the Monday report moment.",
+   "key_elements": [
+    "Week strip with quest/skirmish/ember/rest/shield/paused markers and Perfect Week halos",
+    "Flame history, Best Flame, Duo Flame history",
+    "Per-session log with XP and PRs; PR Board",
+    "Weekly Report cards (archive)",
+    "Zone-2 and Iron Moved (local) totals"
+   ]
+  },
+  {
+   "name": "Badges",
+   "purpose": "One list of solo and duo badges with machine-checked progress.",
+   "key_elements": [
+    "Earned/unearned with criterion text and progress bar",
+    "Rarity grouping",
+    "Partner's badges (from synced badges.json)"
+   ]
+  },
+  {
+   "name": "Settings",
+   "purpose": "Equipment facts, modes, sync and full transparency of rules.",
+   "key_elements": [
+    "Equipment editor (shared), units, session length",
+    "Recovery Mode / Away Mode controls; rest day",
+    "share_numbers toggle; partner tick toggle; reactions",
+    "Sync: repo, slot, PAT, last sync, 'Cat will see' contract",
+    "Export/import JSON backup; 'How XP works' with every formula"
+   ]
+  }
+ ],
+ "data_fields_required": [
+  "profile.slot ('sean'|'cat'), display_name, avatar, units, timezone, program_start_date (shared, = 2026-09-14), muster_start_date (2026-09-08), rest_weekday_default, usual_time, anchor_text, share_numbers, swing_form_gate_passed, swing_form_gate_date, schema_version, updated_at",
+  "equipment (shared): vest_max_lb, vest_increment_lb, vest_min_lb, dumbbells {8,10,12,20,35: 'pair'|'single'|'none'}, kb53 (bool), treadmill_max_incline, treadmill_max_mph, chair_height_in, chair_braced (bool), couch_edge (bool)",
+  "local_only: bodyweight_lb, height, age, resting_hr, health_screen answers, shoulder_screen_ok, hip_knee_screen_ok, injury_flags[], placement_quiz {Q1..Q8, completed_at}, nutrition_pref, pledges[], nudge_history, iron_moved_lb, device_id, pat",
+  "state: xp_total, level, title, flame, best_flame, flame_state ('lit'|'ember'|'frozen'), ember_expires, last_rekindle_date, shields, perfect_weeks_count, recovery_mode {active, start, extended}, away_mode {active, start, uses_this_season}, ladder_steps {exercise_id: step}, qualifying_counters {exercise_id: n}, fail_counters {exercise_id: n}, gates {hinge, bell, run, vest:{exercise_id:bool}}, gear_tiers {slot: 0..3}, region_xp {10 regions}, pr_best {exercise_id:step -> value}, pr_history_sessions {exercise_id:step -> n}, pr_count, steps_gained_count, sessions_completed_count, skirmish_count, pledges_kept, badges {id: date}, updated_at",
+  "day_status per date: 'trained'|'rest'|'shield'|'recovery'|'away'|'none'|'pending', shield_kind ('auto'|'sick'|'travel'|'injury'|'life'|null)",
+  "session: session_id, date (4 AM boundary), start_time, duration_min, template_id (mon_lower_a \u2026 sat_warrior, boss_n, makeup:<template>), type ('full'|'skirmish'|'ember'|'kindle'|'boss'), completed (bool), exercises_prescribed, exercises_hit, exercise_hits {exercise_id: bool}, zone2_min, general_cardio_min, interval_rounds, xp_earned, xp_by_source {}, pr_bonuses_used, is_deload, is_camp",
+  "set: exercise_id, step, set_index, side, value, unit ('reps'|'s'|'rounds'|'clock_s'), target_low A, target_high B, implement_id ('bw'|'db8'|'db10'|'db12'|'db20'|'db35'|'kb53'|'vest'), vest_lb, checklist_ok (bool|null), rir (local), pain (local), talk_test_ok, rpe_block (local), met (bool), logged (bool), xp",
+  "week file (synced): week_id (ISO), updated_at, days {date: {status, shield_kind}}, sessions [{session_id, date, start_time, duration_min, template_id, template_name, type, completed, exercises_prescribed, exercises_hit, exercise_hits, zone2_min, xp_earned}], sessions_prescribed, zone2_min_prescribed, xp_available_week, xp_week, ladder_steps_end, steps_gained [{exercise_id, from_step, to_step, to_step_name, date}], tier_climbs, benchmarks {benchmark_id: {tier, tier_prev, imp_pct, date, value (only if share_numbers)}}, reactions [{date, emoji, target_session_id}], manual_no_contest {active, reason_kind}, result {S_me, S_partner, status ('contested'|'no_contest'|'dead_heat'|'alliance'|'unexplained'|'exhibition'), winner, pb_star_me, pb_star_partner, partner_updated_at, locked_at}",
+  "boss file (synced): battle_n, boss_id, window_start, window_end, benchmarks {benchmark_id: {value, tier, tier_prev, imp_pct, date, rematch_value}}, strikes {benchmark_id: 0..55}, damage (0..55), logged_benchmarks, solo (bool), resolved_at",
+  "program constants read at runtime: final_program.exercises[].ladder (steps, targets, advance_when, gates), weekly_template (blocks, sets, rest), phases (RIR, eccentric), benchmarks (tiers, protocols), deload_rules, safety_and_form_gates, region_weights table, skirmish lists, xp table, level curve, rank titles, gear slot sources, boss HP table, badge criteria table, copy string table, nudge rules",
+  "derived (never stored as mutable truth): level from xp_total; region_level from region_xp; flame and duo_flame from day statuses; belt holder, crowns, consecutive_losses, alliance flag from replayed locked week results; damage_duo and outcomes from both boss files; xp_available_week from template + steps; numbers-to-beat from ladders/cold regions/provisional S"
+ ]
+}

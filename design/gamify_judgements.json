@@ -1,0 +1,442 @@
+[
+ {
+  "scores": [
+   {
+    "design_index": 0,
+    "criteria": [
+     {
+      "criterion": "1. 12-week 6-day adherence for THIS user",
+      "score_0_to_10": 8,
+      "note": "Level-up every session in week 1, a per-session 'at stake' line (goal-gradient), silent Shields, Ember-state Rekindle that restores the previous count, unlimited Recovery Mode, day-counter program (missed content is never skipped), Skirmish floor. Missing the two best-evidenced habit levers: an implementation intention / time anchor, and a flexible rest day (fixed rest day means a shifted rest day silently burns a Shield)."
+     },
+     {
+      "criterion": "2. Rewards tied to real progress",
+      "score_0_to_10": 9,
+      "note": "Only design where the visualisation cannot be earned by attendance: gear tiers are set exclusively by benchmark numbers and never by XP. Ladder advance pays 100+25*step vs 10/set attendance; Zone-2 and extra-rep XP are capped; warm-ups pay 0. Weakness: rep PRs pay on Day 1 for every exercise because there is no history (hollow records, uncapped per session)."
+     },
+     {
+      "criterion": "3. Early wins in week 1",
+      "score_0_to_10": 9,
+      "note": "The Mirror places every ladder and paints the sheet on Day 0 (+200 XP, level 3 immediately); first LADDER UP realistically on Day 4 (2 qualifying sessions); Swing School unlock Day 5; Perfect Week + Shield Day 6; flame 7 milestone. Curve math checks out (cum L9 = 2,715 XP vs ~2,500-3,000/week)."
+     },
+     {
+      "criterion": "4. Rest / missed / short days",
+      "score_0_to_10": 8,
+      "note": "Neutral rest day, silent Shields (max 2), 4-day Ember with Rekindle at previous count, unlimited Recovery Mode, Skirmish counts for flame and can still advance ladders, catch-up only after 10 days. Deductions: rest day is fixed not rolling; no 4 AM day boundary; the boss 'Rematch on the rest day' contradicts the rest-day-is-neutral rule."
+     },
+     {
+      "criterion": "5. Logging friction",
+      "score_0_to_10": 9,
+      "note": "One tap = done at target, 2-tap stepper, load chip limited to owned loads, warm-up as one tap, auto rest timer with next-set preview, 3-toggle form check only on scheduled days, cardio as a minute counter. ~20-25 taps for 20 sets, no typing. Slightly worse than Design 2 only because rows are prefilled with the ladder target rather than last performance."
+     },
+     {
+      "criterion": "6. Implementable in vanilla JS, static, offline",
+      "score_0_to_10": 8,
+      "note": "Nearly everything is closed-form: set XP, region thresholds (floor(sqrt(xp/150))), level curve (1+floor((xp/120)^(2/3))), ladder schema with consecutive_qualifying_sessions, boss JSON with tier tables, canvas share card. Gaps: 'form_ok_required' is undefined for every ladder except the swing; 'minutes in Zone 2' has no machine definition (needs a treadmill-rung + RPE<=6 tap rule); 'condition':'all_sets_reps>=target' is a string needing a tiny interpreter; symmetry multiplier is applied 'at set time' but computed weekly (fine, just specify)."
+     },
+     {
+      "criterion": "7. Not gimmicky after week 3",
+      "score_0_to_10": 7,
+      "note": "The user explicitly asked to feel like a warrior, so the character-sheet framing is on-brief, and because every armor slot is a real number it reads as a scoreboard rather than a toy. Still, HELM/PAULDRONS/SABATONS, liquid-fill silhouette, heart pulse rate cosmetic and a 60-level title ladder are a lot of fantasy skin; 'Squire' at level 5 may grate for an adult."
+     },
+     {
+      "criterion": "8. Head-to-toe visualisation",
+      "score_0_to_10": 9,
+      "note": "Best of the three: nine regions including calves, two independent channels (fill = XP level, outline = benchmark tier), Zone-2 ring, back-view flip for back/glutes, lag-region dotted outline with an automatic extra set in the program JSON, region card with sparkline, 48px header thumbnail pulsing during logging. Two-second read is genuinely achievable."
+     }
+    ],
+    "total": 67,
+    "fatal_flaws": [
+     "None fatal. Notable: no implementation intention / time-of-day anchor (the single strongest predictor of who becomes a steady exerciser is absent).",
+     "Fixed rest day: a user who swaps Thursday for Sunday burns a Shield silently, which erodes trust in the Shield count.",
+     "Day-1 rep-PR spray (3-4 'NEW RECORD' chips with zero history) devalues the PR signal; no per-session PR cap.",
+     "'form_ok_required': true is referenced in the ladder schema but only the swing has a form checkpoint defined, so the rule is either a no-op or blocks advancement for every other ladder.",
+     "Boss Rematch is scheduled 'on the rest day', contradicting the rest-day neutrality that the rest of the design is built on.",
+     "Week-0 12-minute treadmill max test for a deconditioned beginner needs an explicit 'walk allowed' framing to be safe."
+    ]
+   },
+   {
+    "design_index": 1,
+    "criteria": [
+     {
+      "criterion": "1. 12-week 6-day adherence for THIS user",
+      "score_0_to_10": 8,
+      "note": "Strongest habit-science stack: Tomorrow's Pledge (implementation intention), anchor habit, 4 AM boundary, rolling rest link, silent Shields, Reforge quest, no-red/no-guilt copy rules, 66-day milestone. But the streak multiplier and 'cooling glow' are explicitly designed as a Hooked-style internal discomfort trigger, and a broken day still resets chain length to 0 (Reforge relights from 3, not the previous count). Recovery Mode is capped at 2 uses per program."
+     },
+     {
+      "criterion": "2. Rewards tied to real progress",
+      "score_0_to_10": 7,
+      "note": "Ladder +100, PR +25, heavier-load +15, Zone-2 3/min are good, but the design also pays warm-up +5, RPE +5, pledge +15, rings +10, 6/6 +100, Mon-Wed +25 and multiplies all session XP by a streak multiplier (1.00-1.25). Region 'armor' overlays unlock from XP alone at Lv 3/6/9, so the warrior silhouette can be earned by attendance. Link metal = xp/plannedXp is effort, not capacity."
+     },
+     {
+      "criterion": "3. Early wins in week 1",
+      "score_0_to_10": 8,
+      "note": "Honest endowed progress (Day 0 = 60/150 XP, first link stamped, regions Lv1), two level-ups on Day 1, headline mission on Day 2, likely climb Day 5, Week One milestone with guaranteed loot Day 7, Weekly Forge Report. The 'Only 15 min' escape hatch is deliberately taught on Day 4 before it is needed, which is a genuinely smart retention move."
+     },
+     {
+      "criterion": "4. Rest / missed / short days",
+      "score_0_to_10": 8,
+      "note": "Rolling one-rest-per-7-days is the best rest handling of the three; 4 AM boundary; lazy resolver (rest -> shield -> recovery -> broken) is fully specified; Quick Forge and 1-set Ember both count; multiplier decays 0.05 not resets. Deductions: chain length still resets to 0; Recovery Mode limited to 2 activations per 12 weeks (punishes a second illness, which teaches people to lie to the app); missed-day handling of program content (does Day 9 wait or skip?) is unspecified."
+     },
+     {
+      "criterion": "5. Logging friction",
+      "score_0_to_10": 8,
+      "note": "1 tap per set, 2-tap stepper, 1-tap cardio timer, long-press = failed, auto rest timer. Adds 2 post-session taps (RPE face, pledge chip) which is acceptable. Ambiguity that could add taps: ladder advanceWhen uses per-exercise 'maxRpe' but RPE is captured once per session; if implemented per exercise it adds a tap to every block. 5-cue swing checklist twice."
+     },
+     {
+      "criterion": "6. Implementable in vanilla JS, static, offline",
+      "score_0_to_10": 9,
+      "note": "Most rigorously specified: link record schema, day-boundary formula, resolver algorithm, fnv1a + mulberry32 seeded roll, closed-form level curve cum(L)=150(L-1)+25(L-1)(L-2) (checks out at L5=900, L10=3150, L30=24650), region formula, pledge window math, boss 'equivalent reps' multipliers. Only the RPE-per-exercise ambiguity and 'userId' on a static site (needs a generated UUID) need a decision."
+     },
+     {
+      "criterion": "7. Not gimmicky after week 3",
+      "score_0_to_10": 6,
+      "note": "Chain/forge metaphor is adult and durable, but the stack is heavy for a solo user: chain + heat glow + multiplier + three Apple-style rings + weekly rings + pledge + loot drops + chain skins (damascus, gold) + armor cosmetics + hammer-strike reveal + report card. Loot and cosmetic skins are the part most likely to feel mobile-game by week 3."
+     },
+     {
+      "criterion": "8. Head-to-toe visualisation",
+      "score_0_to_10": 7,
+      "note": "Seven regions only: legs lumped (no calves), shoulders+arms lumped, engine glyph. Good touches: neglect dimming with day count, balance arc, thumbnail pulse during logging, boss crests. But region levels come purely from XP, so the map shows where you spent effort, not what your body can do."
+     }
+    ],
+    "total": 61,
+    "fatal_flaws": [
+     "Date-seeded loot drops are a variable-ratio reinforcement schedule -- the defining signature of manipulative engagement design -- and the design leans on Hooked's 'internal trigger' framing for the cooling chain. Cosmetic-only mitigates but does not remove the pattern; for this reviewer it is the main reason not to pick it.",
+     "Streak multiplier applied to session XP means a missed day devalues every subsequent real PR and ladder climb; it couples the reward for progress to attendance, the opposite of criterion 2.",
+     "Recovery Mode capped at 2 activations per program: a third cold or a tweaked back in week 10 breaks the chain, which is exactly the illness-punishment anti-pattern Design 0 names.",
+     "Chain length resets to 0 on a broken day (Reforge restores the multiplier and relights from 3, not the earned count).",
+     "Ladder advanceWhen depends on per-exercise RPE (maxRpe: 4) but RPE is only collected once per session; as written the rule is either unimplementable or adds a tap per exercise.",
+     "Seven-region map drops calves, so 'head to toe' is literally not drawn."
+    ]
+   },
+   {
+    "design_index": 2,
+    "criteria": [
+     {
+      "criterion": "1. 12-week 6-day adherence for THIS user",
+      "score_0_to_10": 6,
+      "note": "Self-referenced competition is well-evidenced and the prefilled Ghost makes the default action 'match last week'. But the core loop asks a beginner to beat last week's Work Score in every slot, every week, for 12 weeks; the only built-in deloads are 3-session Training Camps. Beginner plateaus arrive around weeks 5-9 -- precisely when adherence is most fragile -- and the loop then serves 'GHOST WINS' stamps and Season LOSSes. The cracked-streak 48 h countdown is a pressure timer. Letter grades with F and GPA can feel patronising to an adult."
+     },
+     {
+      "criterion": "2. Rewards tied to real progress",
+      "score_0_to_10": 8,
+      "note": "1 XP per Work Score point (load x reps) makes XP track actual training work, not check-ins; PRs capped at 3/session (best PR hygiene of the three); ladder +75; tier promotions +150; Ghost WIN rewards real improvement. Deduction: Work Score's (1 + ext_lb/20) factor pays a 53 lb swing set ~2.6x a knee push-up set, so the currency biases volume toward the heaviest implement rather than toward capacity gains across the body."
+     },
+     {
+      "criterion": "3. Early wins in week 1",
+      "score_0_to_10": 8,
+      "note": "Recon baseline on Day 1 gives starting tiers immediately; Trainer Ghost at 0.9x guarantees a Day-2 WIN; level 2 in one session (L2 = 455 XP vs ~350-550/session); ladder step likely Day 4-5; Shield on Day 6; first Report Card and 'Week One Warrior' on Day 7. The 'Sealed' swing test visible on Day 4 turns form work into a quest -- nice."
+     },
+     {
+      "criterion": "4. Rest / missed / short days",
+      "score_0_to_10": 7,
+      "note": "Auto-logged rest day, Shields (only 1 earned per week), cracked -> 48 h Reclaim, Medic Tent (7 days per 30) with x0.85 ghosts and +100 on return, Quick Strike with scaled Ghost so it can still be a WIN, training on rest day = 0 XP (good anti-overtraining). Deductions: Ghost matching is 'same weekday template', so one shifted day misaligns every Ghost that week; what happens to program content after a missed day is unspecified; the countdown is pressure."
+     },
+     {
+      "criterion": "5. Logging friction",
+      "score_0_to_10": 9,
+      "note": "Lowest friction of the three: every set row is prefilled with last week's actual value, so a full session is ~12 taps; stepper with owned-load chips; sword/gold flash inline; 'talk test failed' toggle for cardio; sticky race header. Only cost is the psychological weight of watching a losing race bar mid-session."
+     },
+     {
+      "criterion": "6. Implementable in vanilla JS, static, offline",
+      "score_0_to_10": 8,
+      "note": "Work Score, Ghost scaling by planned_volume, Epley e1RM, tier arrays with higher_is_better, grade thresholds, level curve 150*L^1.6 (checks: L2=455) are all concrete. Ambiguities: planned_reps for the volume ratio is undefined when ladder steps are rep ranges [lo,hi]; per-set prefill by 'set index' breaks when the ladder changes set counts; no rule for what a Ghost is after a Medic Tent week that skipped a slot entirely."
+     },
+     {
+      "criterion": "7. Not gimmicky after week 3",
+      "score_0_to_10": 6,
+      "note": "Ghost race and medal tiers (Iron to Warrior) are adult. The school report card (letter grades, GPA, 'Straight-A Warrior'), Season WIN/DRAW/LOSS banners and 'BOSS DEFEATED' stamps are the parts likely to feel either childish or judgmental once the novelty fades, especially during a losing stretch."
+     },
+     {
+      "criterion": "8. Head-to-toe visualisation",
+      "score_0_to_10": 7,
+      "note": "Nine regions including quads and hamstrings/calves plus heart; tier colours grey -> diamond; benchmark medal pins on regions; weakest-region dashed outline injected as a weekly target; 2-s pulse on trained regions. Single channel (XP tier) with pins, and because the XP feeding it is load-weighted Work Score, glute/back regions will outfill chest/arms for any beginner who swings the 53 lb bell."
+     }
+    ],
+    "total": 59,
+    "fatal_flaws": [
+     "The every-session Ghost race requires monotone week-over-week Work Score growth from a beginner across 12 weeks with no periodised deload outside boss camps; when plateaus hit (weeks 5-9) the loop's emotional valence flips negative exactly where dropout risk peaks. 'Regroup' freezes the bar only after a whole bad week.",
+     "Work Score's ext_lb/20 factor structurally rewards the heaviest implement (53 lb swings ~2.6x knee push-ups per set) and feeds the body map, biasing both behaviour and the visualisation toward hinge work in a program meant to be head-to-toe.",
+     "48 h cracked-streak countdown timer is a pressure mechanic; letter grades with F and a GPA impose school-style evaluation on a solo adult.",
+     "Ghost matched by weekday template: a single shifted day misaligns every comparison for the week, and missed-day program-content handling is unspecified.",
+     "Ghost scaling depends on planned_reps that the ladder schema only expresses as rep ranges, so the central number is under-defined as written."
+    ]
+   }
+  ],
+  "winner_index": 0,
+  "rationale": "Design 0 (FORGEBORN) wins on the criteria that matter most for a beginner who must show up 72 times: it drives adherence with deterministic, pre-stated rewards and a rest/miss system that never punishes illness (unlimited Recovery Mode, silent Shields, Ember-state Rekindle that restores the earned count, day-counter program so missed content is never skipped), and it is the only candidate whose head-to-toe visualisation cannot lie: region fill comes from XP but the armor outline is set solely by benchmark numbers, so the sheet shows both effort and capacity on separate channels. Its ladders explicitly bridge the 12->20->35->53 loading gaps with named bridge steps (reps, tempo, pause, unilateral, 1.5-rep, vest), gate external load behind a form checkpoint and a Bronze tier, and the level curve, region thresholds and boss JSON are internally consistent (checked: L9 at 2,715 XP against ~2,500-3,000/week; region L1/L2 at 150/600). Week 1 is engineered for a level-up every session plus a real ladder advance and a real unlock. Design 1 (CHAINFORGE) has the best pure habit science (pledge, anchor, rolling rest, 4 AM boundary, resolver algorithm) and the tightest spec, but as a reviewer allergic to dark patterns I cannot pick a design built on date-seeded loot drops (variable-ratio reinforcement), a streak multiplier that devalues real PRs after a missed day, and a Recovery Mode capped at two illnesses per program; it also drops calves from a 'head to toe' map. Design 2 (THE ARENA) has the lowest logging friction (prefilled last-week values) and the best PR hygiene, but its core loop demands monotone week-over-week gains from a beginner with no periodised deload, uses a load-weighted score that biases both behaviour and the body map toward the 53 lb bell, adds a 48 h countdown timer, and wraps it all in school-style letter grades -- a combination likely to turn negative in weeks 5-9 exactly when dropout risk peaks. Design 0's own gaps (no implementation intention, fixed rest day, Day-1 PR spray, undefined form_ok, rest-day Rematch) are all fixable by grafting from the other two without changing its architecture.",
+  "best_ideas_to_graft_from_others": [
+   {
+    "from_design_index": 1,
+    "idea": "Tomorrow's Pledge as an implementation intention: one pre-filled time chip on Quest Complete (default = median start time of last 5 sessions) plus a setup 'anchor' ('after coffee') shown on Home. Keep it XP-neutral or a flat +15, never a penalty; track pledge accuracy as a stat only."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Rolling rest link instead of a fixed rest day: the first non-training day in any rolling 7-day window is automatically the rest day, so the user can move rest without burning a Shield. Keep Design 0's rule that rest is neutral for the flame."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "4:00 AM local day boundary (date = now - 4h) so a late session counts for the intended day and there is no midnight panic; plus the explicit lazy resolver run on app open (rest -> shield -> recovery -> ember), which is exactly the algorithm Design 0's flame needs but never writes down."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Copy rules as data: never 'lost', 'failed', 'broken' in UI strings; no red; no countdown timers before the day boundary. Apply to Design 0's Ember state ('Flame dimmed -- rekindle' rather than a ticking 4-day clock)."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Teach the escape hatch before it is needed: on Day 4 the quest card copy says 'If today is tight, tap Skirmish' so the user learns the 15-minute floor in week 1 rather than discovering it on the first bad day."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Ladder regression notice with the reason spelled out ('2 sessions below 60% of target -> back to knee push-up, step held, no XP lost') and a 'Cold N days' tag on any region with no XP in the last 7 training days, feeding Design 0's existing lag_boost rule."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Add a 66-day flame milestone (Lally habit-automaticity median) alongside 7/30/100, and a one-screen Weekly Report card (quests, XP by source, climbs, region deltas, Zone-2 minutes) shown on first open after the week boundary."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "Prefill every set row with the user's last logged value for that exercise step and show it as small grey text ('last: 8') under the target -- keep Design 0's one-tap-at-target behaviour but reduce stepper taps and give a self-referenced anchor without any WIN/LOSS framing."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "Cap PR XP at 3 per session and require history >= 1 prior session before a rep PR can fire, which fixes Design 0's Day-1 'NEW RECORD' spray while keeping the almost-every-session PR availability from week 2 on."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "'Talk test failed' one-tap toggle on the treadmill block that downgrades those minutes from Zone-2 to general cardio credit -- this gives Design 0 the missing machine definition of a Zone-2 minute (treadmill rung + talk test OK)."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "Weakest region auto-injected once per week as the 'at stake' line on Home, and 'days since PR' per region on the region card, so balance is driven by a visible target rather than only a dotted outline."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "Suitcase carry with the 53 lb bell (seconds per hand, score = min(left, right)) as a Belt/Gauntlet benchmark or ladder -- it uses the one heavy implement the user owns, trains grip and core, and bridges the gap between plank holds and loaded work."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "Epley e1RM (load * (1 + reps/30)) as a second PR type for loaded lifts, so a 20 lb x 15 set and a 35 lb x 8 set can be compared across the 12->20->35 dumbbell gaps and a load PR is not the only way to register strength on the bridge steps."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "Explicit 'Training Camp' framing for the 3 sessions before a boss (targets frozen, volume lightened, banner) -- Design 0 already deloads the boss week at 70% sets but does not tell the user why; naming it converts the deload into anticipation."
+   }
+  ]
+ },
+ {
+  "scores": [
+   {
+    "design_index": 0,
+    "criteria": [
+     {
+      "criterion": "1. Drives 6-day/week adherence for 12+ weeks for this user",
+      "score_0_to_10": 8,
+      "note": "Level-up every session in week 1 tapering to ~2/week by week 12, a computed 'At stake' line on Home (goal-gradient), benchmark-locked armor as a pull toward week 4, silent shields, Ember/Rekindle instead of reset, unlimited Recovery Mode, and a day-counter plan so a miss never deletes a workout. Deductions: ten interacting systems (XP, region levels, gear, flame, shields, symmetry multiplier, PRs, badges, ladders, bosses) is real cognitive load, and the 'flame = 6 after a 7-day week' semantics will confuse (users expect calendar-day streaks). No implementation-intention/pledge mechanism, which is the best-evidenced habit lever the other design has."
+     },
+     {
+      "criterion": "2. Ties rewards to real progress, not check-ins",
+      "score_0_to_10": 9,
+      "note": "Best of the three: gear tiers are set ONLY by boss benchmark numbers and never by XP, so the silhouette cannot lie about the body; ladder advances pay 100+25*step vs 10-15 per set; set XP capped (+5 extra reps), Zone-2 capped at 60 min/day; rep-PR and load-PR are separated and capped per exercise per session. Only soft spot: Skirmish (3 rounds of 3 exercises at 45 s rest) can satisfy advance_when, which is a loophole vs Design 1's 'full sessions only' rule."
+     },
+     {
+      "criterion": "3. Early wins in week 1 for a beginner",
+      "score_0_to_10": 9,
+      "note": "Day 0 Mirror paints a filled sheet immediately and places every ladder (push-ups at couch incline, plank at 20 s, treadmill 2% walk); Day 1 fires 3-4 NEW RECORD chips because there is no history; Day 4 is the first LADDER UP; Day 5 swing padlock opens; Day 6 Perfect Week + Shield. Level math is slightly overstated (200 XP after Mirror is L2, not L3; ~650 XP after Day 1 is L4, not L5) but the pattern of a level per session holds."
+     },
+     {
+      "criterion": "4. Rest days, missed days, short days",
+      "score_0_to_10": 9,
+      "note": "Rest day is neutral (never breaks, never increments), optional Kindle walk +20 XP; shields auto-deploy silently; zero-shield miss enters 4-day Ember state with a 2-quest Rekindle; Recovery Mode any number of times; Skirmish counts for flame and 4-of-6; the plan advances by day counter with an explicit catch-up only after 10 calendar days. This is the most complete handling. Missing only a rolling rest window (D1) and a 4 AM day boundary (D1)."
+     },
+     {
+      "criterion": "5. Logging friction",
+      "score_0_to_10": 9,
+      "note": "One tap = set done at target, two-tap stepper, load picker limited to owned loads (BW/8/10/12/20/35/53/vest+X), warm-up as one tap, auto rest timer with next-set preview, no post-session taps required, no typing anywhere. ~20-25 taps per 20-set session. Only friction leaks: 'form_ok_required' in advance_when implies a per-exercise form toggle that the Quest screen never shows, and the treadmill ladder wants a 1-tap RPE."
+     },
+     {
+      "criterion": "6. Implementable in vanilla JS, offline, with the given numbers",
+      "score_0_to_10": 8,
+      "note": "Ladder schema with advance_when/regress_when/min_sessions_per_step, region_weights, tier thresholds per test, level curve with checkpoints, bridge_order for the 12->20->35 gaps, pairs:false flag, boss JSON with rest_between_tests, canvas share card -- all concrete. Deductions: the SVG is the most demanding of the three (9 regions, back-view flip, clipPath liquid fills, glow filters, Zone-2 ring, pulsing heart), the 'back' region on a front view is a fudge, and form_ok_required has no defined input source."
+     },
+     {
+      "criterion": "7. Not gimmicky by week 3",
+      "score_0_to_10": 7,
+      "note": "The user asked to feel like a warrior, and every armor piece is a real number (20 push-ups = Silver Breastplate), which keeps it grounded. Risks: fantasy nouns everywhere (Pauldrons, Sabatons, Greaves, Squire, Ironborn) can read as childish to an adult by week 3; Symmetry x1.1 and 'Kindle Walker' are extra vocabulary; celebration is well-rationed (only flame milestones, ladder-ups, PRs, tiers) which helps. Nothing that would embarrass if a friend saw the phone."
+     },
+     {
+      "criterion": "8. Head-to-toe visualisation quality",
+      "score_0_to_10": 9,
+      "note": "Two independent channels per region (liquid fill = level, outline material = benchmark-earned gear) plus a Zone-2 ring and heart pulse; nine regions including calves and glutes; balance dotted outline with a programmed lag_boost; tap-to-detail with sparkline; live outline material change during boss tests. Clearly the richest and the only one where the picture is honest about strength, not just volume."
+     }
+    ],
+    "total": 68,
+    "fatal_flaws": [
+     "None fatal. Notable: (a) Skirmish sessions can trigger ladder advances, a loophole against the design's own 'real progress' principle; (b) flame counter that shows 6 after a full 7-day week will generate 'why is my streak wrong' confusion; (c) first_7_days level math is off by one level in two places (Mirror 200 XP = L2; end of Day 1 ~650 XP = L4); (d) form_ok_required in advance_when has no defined UI input for non-swing exercises; (e) Bronze Helm (1.0 mi in 12 min = 12:00/mi jog) is a stretch for a deconditioned beginner at week 4, so the 'Bronze Warrior' composite may not fire when the copy implies it will; (f) system count is high enough that week-3 users may stop reading Armory/Ladders and just tap sets -- acceptable, but the Home 'At stake' line must carry the whole load."
+    ]
+   },
+   {
+    "design_index": 1,
+    "criteria": [
+     {
+      "criterion": "1. Drives 6-day/week adherence for 12+ weeks for this user",
+      "score_0_to_10": 8,
+      "note": "Strongest habit science of the three: Tomorrow's Pledge + anchor habit (implementation intentions), 4 AM day boundary, hollow-link open loop, rolling rest link, multiplier decays 0.05 instead of resetting, Reforge quest replaces the shame day, Ember means one set keeps the chain, neglect dimming steers balance. Deductions: the multiplier and cooling glow are still a daily mild stressor; visible pledge-accuracy stat can breed guilt; Recovery Mode capped at 2 activations per program is stricter than real life; and because Ember counts as a real link, a 30-link chain can quietly become meaningless."
+     },
+     {
+      "criterion": "2. Ties rewards to real progress, not check-ins",
+      "score_0_to_10": 7,
+      "note": "Ladders advance on full sessions only with RPE<=4 gate and auto-regression -- the most honest ladder rule here. But the claim 'most XP from progress' is not true in practice: 10 XP x ~20 sets = ~200 of a ~300 XP session is attendance-shaped, link metal is % of planned XP (attendance), three rings are attendance, and region armor overlays unlock at region level 3/6/9 which is XP (i.e. attendance) rather than benchmark, so the warrior silhouette can be earned by showing up. Boss tiers pay XP and a cosmetic but leave no persistent benchmark-locked state on the body."
+     },
+     {
+      "criterion": "3. Early wins in week 1 for a beginner",
+      "score_0_to_10": 8,
+      "note": "Honest endowed progress (Day 0 = 60/150 XP, Ember link, 1 Shield, regions at Lv1, 'link 1 of 7 stamped'), two level-ups on Day 1, Silver/Gold link reveal, first loot roll, heavier-load bonus Day 3, ladder climb Day 5, Week One milestone + guaranteed loot + Forge Report Day 7. Slightly slower level cadence than Design 0 (L5 by end of week 1 vs L8-9)."
+     },
+     {
+      "criterion": "4. Rest days, missed days, short days",
+      "score_0_to_10": 8,
+      "note": "Rolling 7-day rest link (user can move rest day without configuring anything) is the best rest rule of the three; shields auto-deploy; Reforge 3-of-4; Quick Forge and Ember; lazy resolver on app open works offline. Deductions: Recovery Mode max 2 uses; chain still resets to 0 on a broken day (softened, but the number the user watches does drop); and it is ambiguous whether a missed program day skips that day's workout or defers it (links are per program day = calendar day, so the plan appears calendar-locked)."
+     },
+     {
+      "criterion": "5. Logging friction",
+      "score_0_to_10": 8,
+      "note": "1-tap set, 2-tap stepper, long-press fail, 1-tap cardio timer, rest timer auto-start, thumbnail pulse. Adds a warm-up checklist (+5 XP, multiple taps), a 5-cue swing checklist, and two mandatory post-session taps (RPE face, Pledge chip). ~30 s overhead is acceptable but it is more than Design 0, and session-level RPE gating every ladder's advanceWhen is imprecise."
+     },
+     {
+      "criterion": "6. Implementable in vanilla JS, offline, with the given numbers",
+      "score_0_to_10": 9,
+      "note": "Fully specified: link record schema, quality ratio thresholds, resolver order (rest -> shield -> recovery -> broken), fnv1a + mulberry32 date-seeded loot (deterministic, offline, non-rerollable), level cum(L) closed form, push-up equivalence multipliers per ladder step for comparable boss scores, ring formulas, pledge window rule. Minor blemish: draft text left in the regions field ('head_neck_shoulders? no ->')."
+     },
+     {
+      "criterion": "7. Not gimmicky by week 3",
+      "score_0_to_10": 7,
+      "note": "Chain/forge metaphor, rings, and pledge are adult and restrained; copy rules (no red, no 'failed', no midnight timers) are the most tasteful here. The gimmick risk is loot: cosmetic chain skins (damascus, gold) and armor cosmetics on a single-user offline app have no audience and feel hollow by week 3; hammer-strike reveal every session may wear thin. 'Bruiser' rank title is off-tone."
+     },
+     {
+      "criterion": "8. Head-to-toe visualisation quality",
+      "score_0_to_10": 7,
+      "note": "Only 7 regions: shoulders+arms merged and quads/hams/calves merged, which undercuts 'head to toe' (no calves, no separate shoulders). Armor overlays at Lv3/6/9 are XP-based so the picture reflects volume, not strength. Good touches: cold-region dimming with day count, balance arc, boss crests, header thumbnail pulse, 12-week sparkline."
+     }
+    ],
+    "total": 62,
+    "fatal_flaws": [
+     "None fatal. Notable: (a) armor/warrior silhouette is unlockable by attendance XP alone, contradicting the 'real progress' goal; (b) only 7 body regions with calves and shoulders folded into neighbours; (c) Recovery Mode limited to 2 activations per 12 weeks; (d) missed-day semantics for program content are unspecified (calendar-locked links suggest a missed workout is simply gone); (e) cosmetic loot on an offline solo app is the most likely element to feel pointless by week 3; (f) multiplier decay + cooling glow + pledge accuracy together are three small guilt channels."
+    ]
+   },
+   {
+    "design_index": 2,
+    "criteria": [
+     {
+      "criterion": "1. Drives 6-day/week adherence for 12+ weeks for this user",
+      "score_0_to_10": 6,
+      "note": "Ghost race and pre-filled sets are a strong daily hook and Week 1 vs Trainer Ghost is a guaranteed win. But the ghost only ratchets (next ghost = max(this week, last week)), so Work Score must rise monotonically for 12 weeks; a beginner's linear gains flatten around weeks 5-8 and LOSS stamps become the norm right when adherence is most fragile. Every session ends in WIN/LOSS, and the weekly report card can hand out D and F grades -- exactly the shame states that produce week-3-to-6 churn in shipped apps, however nicely 'Regroup' is worded. No pledge/anchor, no ember-level floor."
+     },
+     {
+      "criterion": "2. Ties rewards to real progress, not check-ins",
+      "score_0_to_10": 7,
+      "note": "XP is 1:1 with Work Score (reps x load factor), so the dominant reward is volume, uncapped -- 3x20 of anything beats 3x8; this contradicts the stated 'no junk volume' principle. Bodyweight variants are difficulty-blind (a knee push-up rep scores the same as a full push-up rep; ghost volume-scaling hides this but the body map does not). Seven benchmark tiers up to Warrior are honestly progress-locked and medal pins are good; body map colour is volume-driven, not benchmark-driven."
+     },
+     {
+      "criterion": "3. Early wins in week 1 for a beginner",
+      "score_0_to_10": 8,
+      "note": "First Blood, starting tiers, level 2 on Day 1, near-certain WIN + 1-3 PRs on Day 2, ladder step Day 4-5, Shield + report card + Week One Warrior on Day 7. Deductions: Day 1 Recon (push-up max + plank + 1-min squats + 1-mile + a circuit) is too much for a deconditioned beginner in one session; level claim (~9-10 by Day 7) overstates the L^1.6 curve (~L7 at 3,000 XP)."
+     },
+     {
+      "criterion": "4. Rest days, missed days, short days",
+      "score_0_to_10": 7,
+      "note": "Rest auto-logged, shields auto-consume, 48 h Reclaim, Medic Tent, Quick Strike counts for streak and half attendance, camp weeks freeze ghosts. Deductions: ghosts are bound to 'same weekday slot last week' so the plan is calendar-locked and a missed Wednesday workout is lost, not deferred; a miss still drags Attendance grade toward D/F; rest day pays 0 XP even for active recovery; Medic Tent capped at 7 days per 30."
+     },
+     {
+      "criterion": "5. Logging friction",
+      "score_0_to_10": 9,
+      "note": "Pre-filling every set with last week's actual value is the single best friction idea across all three -- the default tap is 'match or beat last week' and the whole log is ~12 taps. Owned-load chips, sticky You/Ghost header, gold flash on PR. Only nit: stepper is tap number -> +/- -> Done (3 taps), and a 'talk test failed' toggle is an extra decision on cardio blocks."
+     },
+     {
+      "criterion": "6. Implementable in vanilla JS, offline, with the given numbers",
+      "score_0_to_10": 8,
+      "note": "Work Score formulas with worked examples, ghost scaling by planned volume, Epley e1rm, ladder JSON with reps ranges and 2-session rule, boss tier arrays, report card thresholds, region sqrt(xp/60), Quick Strike priority selection. All computable offline. Requires per-week planned reps/loads in the plan JSON for volume scaling (fine). Slightly less complete on data schema than the other two (no explicit plan/day schema, no day-boundary rule)."
+     },
+     {
+      "criterion": "7. Not gimmicky by week 3",
+      "score_0_to_10": 6,
+      "note": "Ghost/self-comparison is proven (Strava, Peloton) and adult. But the school report card with letter grades, GPA and a title stamp reads as patronizing to an adult by week 3, and a per-session WIN/LOSS verdict turns a tired Tuesday into a defeat screen. Seasons/scoreboard are fine; 'Medic Tent' and 'First Blood' are on-tone for the warrior brief."
+     },
+     {
+      "criterion": "8. Head-to-toe visualisation quality",
+      "score_0_to_10": 7,
+      "note": "Nine regions with tier colours (grey -> diamond) and a thin progress line, benchmark medal pins on chest/quads/arms/core/heart/glutes, weakest-region dashed outline, days-since-PR per region. Solid but single-channel and volume-driven; no armor/outline channel, no cardio ring, coarse colour bands (levels 0-2 all grey means weeks of no visible change in a slow region)."
+     }
+    ],
+    "total": 58,
+    "fatal_flaws": [
+     "Ghost ratchet: next week's ghost = max(this week, last week) and Work Score must climb monotonically, so LOSS frequency rises past week 6 exactly when beginner gains flatten -- the mechanic that is the hook in week 2 becomes the reason to quit in week 7.",
+     "Per-session WIN/LOSS verdict plus weekly letter grades with D/F and GPA are shame states for an adult beginner; 'Regroup' copy does not undo a red F tile.",
+     "Work Score is uncapped volume: extra reps pay linearly with no cap, and bodyweight ladder variants are difficulty-blind (knee push-up rep = full push-up rep), so the body map and XP reward junk volume and the design contradicts its own anti-pattern list.",
+     "Calendar-slot ghosts make the program calendar-locked: a missed weekday's workout is gone rather than deferred, unlike Design 0's day-counter plan.",
+     "Day 1 Recon (1-mile + push-up max + plank + squats + a circuit in one session) is too heavy for someone with no training in 6 months."
+    ]
+   }
+  ],
+  "winner_index": 0,
+  "rationale": "Design 0 (Forgeborn) wins at 68 vs 62 (Chainforge) vs 58 (Arena). From a fitness-app product lens the decisive factors are: (1) it is the only design where the head-to-toe picture is honest about strength -- armor tiers are set exclusively by boss benchmark numbers and never by XP, so the thing the user looks at every day cannot be bought with attendance; (2) it has the most complete and kindest handling of the moments where people quit (neutral rest day, silent shields, 4-day Ember + Rekindle instead of a reset, unlimited Recovery Mode, day-counter plan so a missed session is never deleted, catch-up only after 10 days, 15-min Skirmish that still counts); (3) logging is the leanest of the three (one tap per set, load picker limited to owned loads, warm-up as one tap, no mandatory post-session taps); (4) its ladders explicitly bridge the 12->20->35->53 gaps with a defined bridge_order and a pairs:false flag; (5) the level curve produces a level-up every session in week 1 and its 'At stake' line on Home is a computed goal-gradient trigger. Its weaknesses are cognitive load from ten interacting systems and some fantasy vocabulary that could feel childish, but nothing that embarrasses the user or punishes them, and every celebration is rationed. Design 1 is the best-researched for habit formation (pledge/anchor, 4 AM boundary, rolling rest link, decay-not-reset) and the most fully specified for implementation, but its warrior silhouette and armor are XP-unlockable (attendance can buy the picture), it has only 7 regions, caps Recovery at 2 uses, and its cosmetic loot is the element most likely to feel pointless on a solo offline app by week 3. Design 2 has the single best friction idea (ghost pre-fill of every set) and a proven self-comparison hook, but its ghost ratchet guarantees rising LOSS frequency when beginner gains flatten around week 6-8, its per-session WIN/LOSS plus D/F letter grades are shame states, Work Score rewards uncapped and variant-blind volume, and the calendar-slot ghosts make missed workouts disappear -- all classic week-3-to-6 abandonment drivers. The correct build is Forgeborn's skeleton with Chainforge's habit levers and Arena's pre-fill grafted in.",
+  "best_ideas_to_graft_from_others": [
+   {
+    "from_design_index": 2,
+    "idea": "Ghost pre-fill: pre-fill every set row with the user's last logged reps/load for that exercise at the current rung (fall back to the ladder target when the rung just changed), and show the tiny 'last: 8' under the pill. Keep Forgeborn's one-tap-at-target, but make the default the user's own last number so the habitual tap is 'match or beat last time'. Do NOT import the WIN/LOSS verdict; show it as a delta chip only."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Tomorrow's Pledge + anchor habit as one optional tap on Quest Complete ('Tomorrow 6:30 PM | 7:00 AM | Other', default = median start time of last 5 sessions; setup asks 'what happens right before?' and Home shows 'Pledged 6:30 PM \u00b7 After coffee'). +15 XP if started within [start-30m, end+60m]. Skip the visible pledge-accuracy stat to avoid a guilt channel."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "4:00 AM local day boundary (date = now - 4h) so a late-night session counts for the day it belongs to; removes midnight streak anxiety and is one line of code in the flame resolver."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Rolling rest link: instead of a fixed configured rest day, the first no-quest day in any rolling 7-day window is automatically the neutral rest day. Lets the user move rest day without touching settings and removes the 'flame says 6 after a 7-day week' confusion if the flame is redefined as consecutive covered calendar days."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Ladders advance on full quests only; Skirmish and any single-set 'Ember' day keep the flame and pay attendance XP but cannot satisfy advance_when. Closes Forgeborn's Skirmish loophole and keeps progression honest."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Ember floor: logging even one working set forges the day for the flame (+5 XP, no completion bonus). The honest minimum on a terrible day is one set, which protects the first-28-days frequency that predicts adherence."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Push-up equivalence multipliers for boss comparability (incline_high 0.4, incline_low 0.55, knee 0.7, full 1.0, vest_10 1.3, vest_20 1.6) so the Week-0 Mirror and Week-4 Gatekeeper produce comparable push-up scores for a user who tests at different rungs."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Copy rules: never 'lost', 'failed', 'broken'; no red for streak states; a cooled flame is 'Ember -- rekindle'. Also the 'Cold N days' tag on a region with no XP in 7 training days, as the plain-language version of Forgeborn's dotted balance outline."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Weekly Forge Report card on first open after the week boundary (quests, XP by source, ladder climbs, PRs, region level changes, Zone-2 vs target, next week's headline). Forgeborn has a Journal but no weekly summary moment; this is the best-evidenced self-monitoring driver and costs nothing at logging time."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "'Numbers to beat' on Home: expand Forgeborn's single 'At stake' line to 2-3 auto-picked concrete targets (ladder one session from advancing, region with no PR in 14 days marked 'Stale', lowest region level). Also the projection line on boss results ('At this pace: Silver Breastplate by Boss 3')."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "Suitcase carry with the 53 lb bell (seconds per hand, score = min(left,right)) as a benchmark/ladder for grip and core -- uses existing equipment, fits the warrior brief, and single-dumbbell-safe. Tiers Bronze 20 s / Silver 40 / Gold 60 / Platinum 90."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "Days-since-PR per region and per-exercise PR Board sorted by recency, plus Epley e1rm = load x (1 + reps/30) as a PR channel for the loaded lifts (goblet, row, press) so progress between fixed dumbbell steps is still visible."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "Training Camp: freeze all ladder targets and pre-fills for the 3 sessions before a boss (in addition to the 70% deload week) so the user arrives at the benchmark fresh and the UI does not ask for a new PR the day before a test."
+   },
+   {
+    "from_design_index": 2,
+    "idea": "'Talk test failed' one-tap flag on Zone-2 blocks that downgrades the block's XP and keeps heart-rate-zone honesty without a wearable."
+   }
+  ]
+ }
+]

@@ -1,0 +1,910 @@
+{
+  "exercises": [
+    {
+      "id": "db_row",
+      "name": "Single-arm row (chair supported)",
+      "region": "back",
+      "pattern": "pull",
+      "equipment": "chair, dumbbells 12/20/35 (single is enough), 53 lb kettlebell",
+      "cues": [
+        "Hand and same-side knee on the chair, back flat, hips square",
+        "Elbow to the hip pocket, 1 s squeeze, full stretch at the bottom",
+        "No torso rotation and no shrug: the shoulder blade slides, it does not hike",
+        "Tuesday is the light day (3 sets, leave 2-3 reps in the tank); Friday is the heavy day (4 sets, chase the top of the range)"
+      ],
+      "stop_if": "Sharp pain in the shoulder, elbow or low back, any pinch under the shoulder blade, or a back that rounds and will not flatten between reps",
+      "region_weights": { "back": 0.7, "arms": 0.2, "core": 0.1 },
+      "ladder": [
+        {
+          "id": "db_row.db12",
+          "ord": 1,
+          "name": "12 lb row",
+          "how": "Hand and knee on the chair, spine long. 2 s down, 1 s squeeze. Tuesday 3 sets at the low end; Friday 4 sets toward the high end.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "db", "lb": 12, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db12",
+          "requires": ["chair", "db:12"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_row.db20",
+          "ord": 2,
+          "name": "20 lb row",
+          "how": "Same setup and tempo, heavier bell. Friday's fourth set may be 2-3 reps lower than the first three; that is fine, it is the advance rule that matters.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["chair", "db:20"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "db_row.db20_pause",
+          "ord": 3,
+          "name": "20 lb row, 2 s top pause",
+          "how": "Same 20 lb, but hold the squeeze 2 s at the top of every rep. Higher reps, same load: this is the bridge to 35 lb.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["chair", "db:20"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_row.db35",
+          "ord": 4,
+          "name": "35 lb row",
+          "how": "Controlled, no yank and no twist. If the torso rotates to start the rep, the set is over.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 6,
+          "B": 10,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["chair", "db:35"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 10, "consecutive": 2 }
+        },
+        {
+          "id": "db_row.db35_pause",
+          "ord": 5,
+          "name": "35 lb row, 3 s down + 1 s pause",
+          "how": "3 s lowering, 1 s squeeze at the top. Reps climb on the same 35 lb until the 53 lb bell is earned.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["chair", "db:35"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_row.kb53",
+          "ord": 6,
+          "name": "53 lb kettlebell row",
+          "how": "Bell by the handle, hand and knee on the chair. Picking the bell up off the floor is a deadlift: hinge to it, flat back, stand it up, then set up. Friday only if Tuesday felt heavy.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 6,
+          "B": 10,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["chair", "kb:53"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 10, "consecutive": 2 }
+        },
+        {
+          "id": "db_row.kb53_gorilla",
+          "ord": 7,
+          "name": "53 lb gorilla row",
+          "how": "Wide stance, hinge held, bell on the floor between the feet. Row one side while the free hand rests on the floor or on the bell; alternate sides. Reset the hinge between reps if the back rounds.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "prone_ytw",
+      "name": "Prone Y-T-W raises",
+      "region": "back",
+      "pattern": "pull",
+      "equipment": "floor, folded towel, dumbbells 8/10/12",
+      "cues": [
+        "Forehead on a folded towel, neck neutral, eyes down",
+        "Lift from the shoulder blades, not the low back; 2 s hold at the top",
+        "Thumbs up in the Y and T, thumbs up and elbows bent in the W; glutes lightly on to keep the ribs down"
+      ],
+      "stop_if": "Low-back pinching, neck strain, or any letter you can only lift by arching",
+      "region_weights": { "back": 0.6, "shoulders": 0.4 },
+      "ladder": [
+        {
+          "id": "prone_ytw.bw",
+          "ord": 1,
+          "name": "Bodyweight Y-T-W",
+          "how": "Face down. All reps of the Y, then the T, then the W. All three letters together = one set.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 6,
+          "B": 8,
+          "parts": [
+            { "key": "y", "name": "Y", "A": 6, "B": 8 },
+            { "key": "t", "name": "T", "A": 6, "B": 8 },
+            { "key": "w", "name": "W", "A": 6, "B": 8 }
+          ],
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 8, "consecutive": 2 }
+        },
+        {
+          "id": "prone_ytw.bw_hold",
+          "ord": 2,
+          "name": "Bodyweight Y-T-W, 2 s holds",
+          "how": "Same three letters, but hold the top of every rep for a full 2 s before lowering.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 10,
+          "parts": [
+            { "key": "y", "name": "Y", "A": 8, "B": 10 },
+            { "key": "t", "name": "T", "A": 8, "B": 10 },
+            { "key": "w", "name": "W", "A": 8, "B": 10 }
+          ],
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 10, "consecutive": 2 }
+        },
+        {
+          "id": "prone_ytw.db8",
+          "ord": 3,
+          "name": "8 lb Y-T-W",
+          "how": "8 lb in each hand, 2 s hold. The Y is the hardest letter, so it gets the lowest target.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 6,
+          "B": 10,
+          "parts": [
+            { "key": "y", "name": "Y", "A": 6, "B": 10 },
+            { "key": "t", "name": "T", "A": 8, "B": 10 },
+            { "key": "w", "name": "W", "A": 8, "B": 10 }
+          ],
+          "load": { "kind": "db", "lb": 8, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db8",
+          "requires": ["db:8:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps of a letter with the loaded arm while the other arm does the same letter empty, then swap. Both arms = one set.",
+            "A": 6,
+            "B": 10
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 10, "consecutive": 2 }
+        },
+        {
+          "id": "prone_ytw.db10",
+          "ord": 4,
+          "name": "10 lb Y-T-W",
+          "how": "10 lb in each hand, 2 s hold. Same three letters, same order.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "parts": [
+            { "key": "y", "name": "Y", "A": 8, "B": 12 },
+            { "key": "t", "name": "T", "A": 8, "B": 12 },
+            { "key": "w", "name": "W", "A": 8, "B": 12 }
+          ],
+          "load": { "kind": "db", "lb": 10, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db10",
+          "requires": ["db:10:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps of a letter with the loaded arm, the other arm empty, then swap. Both arms = one set.",
+            "A": 8,
+            "B": 12
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "prone_ytw.db12",
+          "ord": 5,
+          "name": "12 lb Y-T-W, 2 s hold",
+          "how": "12 lb in each hand, full 2 s hold on every rep. This is the top of the ladder: hold the quality, do not chase load.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "parts": [
+            { "key": "y", "name": "Y", "A": 8, "B": 12 },
+            { "key": "t", "name": "T", "A": 8, "B": 12 },
+            { "key": "w", "name": "W", "A": 8, "B": 12 }
+          ],
+          "load": { "kind": "db", "lb": 12, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db12",
+          "requires": ["db:12:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps of a letter with the loaded arm, the other arm empty, then swap. Both arms = one set.",
+            "A": 8,
+            "B": 12
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "db_rear_delt_fly",
+      "name": "Bent-over rear delt fly",
+      "region": "shoulders",
+      "pattern": "pull",
+      "equipment": "chair, dumbbells 8/10/12/20",
+      "cues": [
+        "Hinge to 45 degrees or more, flat back, chest proud",
+        "Sweep out and back with thumbs down, 1 s squeeze, no shrug",
+        "Soft elbows held at a fixed angle: this is a fly, not a row"
+      ],
+      "stop_if": "Sharp shoulder pain, low-back rounding you cannot fix, or reps that only move when you jerk the torso",
+      "region_weights": { "shoulders": 0.6, "back": 0.4 },
+      "ladder": [
+        {
+          "id": "db_rear_delt_fly.bw_t",
+          "ord": 1,
+          "name": "Prone T raise (bodyweight)",
+          "how": "Face down on the floor, arms straight out in a T, thumbs up. Lift, hold 2 s, lower with control.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_rear_delt_fly.db8",
+          "ord": 2,
+          "name": "8 lb fly",
+          "how": "Hinged over, 3 s down on every rep.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 8, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db8",
+          "requires": ["db:8:pair"],
+          "single_alt": {
+            "how": "One dumbbell: free hand braced on the chair seat, all reps one side, then swap. Both sides = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_rear_delt_fly.db10",
+          "ord": 3,
+          "name": "10 lb fly",
+          "how": "Same hinge, same 3 s down.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 10, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db10",
+          "requires": ["db:10:pair"],
+          "single_alt": {
+            "how": "One dumbbell: free hand braced on the chair seat, all reps one side, then swap. Both sides = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_rear_delt_fly.db12_pause",
+          "ord": 4,
+          "name": "12 lb fly, 1 s top pause",
+          "how": "3 s down, 1 s squeeze at the top. The pause is what bridges 12 lb to 20 lb.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 12, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db12",
+          "requires": ["db:12:pair"],
+          "single_alt": {
+            "how": "One dumbbell: free hand braced on the chair seat, all reps one side, then swap. Both sides = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_rear_delt_fly.db20",
+          "ord": 5,
+          "name": "20 lb fly",
+          "how": "2 s down, strict. If the elbow angle opens and closes, the load is too heavy: go back to the 12 lb pause step.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20:pair"],
+          "single_alt": {
+            "how": "One dumbbell: free hand braced on the chair seat, all reps one side, then swap. Both sides = one set.",
+            "A": 8,
+            "B": 12
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "db_curl",
+      "name": "Dumbbell biceps curl",
+      "region": "arms",
+      "pattern": "pull",
+      "equipment": "dumbbells 8/10/12/20/35",
+      "cues": [
+        "Elbows pinned to the ribs, no swing and no lean back",
+        "Full extension at the bottom, palm turns up at the top",
+        "Lower for 2 s: the way down is where the arm is built"
+      ],
+      "stop_if": "Elbow or forearm-tendon pain, or a rep that only moves when the hips do",
+      "region_weights": { "arms": 1.0 },
+      "ladder": [
+        {
+          "id": "db_curl.db8",
+          "ord": 1,
+          "name": "8 lb curl",
+          "how": "Both arms together, 2 s down.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 8, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db8",
+          "requires": ["db:8:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_curl.db10",
+          "ord": 2,
+          "name": "10 lb curl",
+          "how": "Same strict form, 2 s down.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 10, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db10",
+          "requires": ["db:10:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_curl.db12",
+          "ord": 3,
+          "name": "12 lb curl",
+          "how": "Same strict form, 2 s down.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 12, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db12",
+          "requires": ["db:12:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_curl.db12_tempo",
+          "ord": 4,
+          "name": "12 lb curl, tempo 3-1-3",
+          "how": "3 s up, 1 s squeeze, 3 s down. Same 12 lb: time under tension is the bridge to 20 lb.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 12,
+          "load": { "kind": "db", "lb": 12, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db12",
+          "requires": ["db:12:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 10,
+            "B": 12
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "db_curl.db20",
+          "ord": 5,
+          "name": "20 lb curl",
+          "how": "Strict, elbows pinned, no body english.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 8,
+            "B": 12
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "db_curl.db20_15",
+          "ord": 6,
+          "name": "20 lb 1.5-rep curl",
+          "how": "Curl all the way up, lower halfway, curl up again, then lower fully. That whole sequence is one rep.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 8,
+            "B": 12
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "db_curl.db35_alt",
+          "ord": 7,
+          "name": "35 lb alternating curl",
+          "how": "One 35 lb dumbbell, one arm at a time, strict. Brace the free hand on the hip; no leaning back, no hip drive.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 6,
+          "B": 10,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["db:35"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 10, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "db_hammer_curl",
+      "name": "Hammer curl (brachialis + forearms)",
+      "region": "arms",
+      "pattern": "pull",
+      "equipment": "dumbbells 8/10/12/20/35",
+      "cues": [
+        "Thumbs up the whole way, elbows pinned, 3 s lower",
+        "Crush the handle: this is forearm and grip work too",
+        "Shoulders stay down and back; the wrist stays straight, never cocked back"
+      ],
+      "stop_if": "Wrist, elbow or forearm-tendon pain, or grip failing before the arm does two sets running",
+      "region_weights": { "arms": 1.0 },
+      "ladder": [
+        {
+          "id": "db_hammer_curl.db8",
+          "ord": 1,
+          "name": "8 lb hammer curl",
+          "how": "Neutral grip, 3 s down.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 8, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db8",
+          "requires": ["db:8:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_hammer_curl.db10",
+          "ord": 2,
+          "name": "10 lb hammer curl",
+          "how": "Same neutral grip, 3 s down.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 10, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db10",
+          "requires": ["db:10:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_hammer_curl.db12",
+          "ord": 3,
+          "name": "12 lb hammer curl",
+          "how": "Same neutral grip, 3 s down.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 12, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db12",
+          "requires": ["db:12:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_hammer_curl.db20",
+          "ord": 4,
+          "name": "20 lb hammer curl",
+          "how": "Controlled, elbows pinned. Expect the grip to talk first.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 8,
+            "B": 12
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "db_hammer_curl.db20_tempo",
+          "ord": 5,
+          "name": "20 lb hammer curl, tempo",
+          "how": "3 s eccentric, 1 s pause at the top. Same 20 lb, more reps: the bridge to 35 lb.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 20, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps with one arm, 20 s rest, all reps with the other. Both arms = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_hammer_curl.db35_cross",
+          "ord": 6,
+          "name": "35 lb cross-body hammer curl",
+          "how": "One 35 lb dumbbell, one arm at a time, curling across the body toward the opposite shoulder. Free hand on the hip, torso still.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 6,
+          "B": 10,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["db:35"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 10, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "db_shrug",
+      "name": "Dumbbell / kettlebell shrug",
+      "region": "neck_traps",
+      "pattern": "pull",
+      "equipment": "dumbbells 12/20/35, 53 lb kettlebell",
+      "cues": [
+        "Straight up toward the ears, 2 s hold at the top, 3 s down; never roll the shoulders",
+        "Chin tucked, arms hanging long and relaxed: the traps do all the work",
+        "One implement: hold it on one side, shrug that side, and refuse to side-bend toward it"
+      ],
+      "stop_if": "Neck pain, tingling into the arms or hands, headache, or a top position you can only reach by tilting the head",
+      "region_weights": { "neck_traps": 0.9, "back": 0.1 },
+      "ladder": [
+        {
+          "id": "db_shrug.db12",
+          "ord": 1,
+          "name": "12 lb shrug",
+          "how": "One dumbbell in each hand, standing tall. 2 s hold at the top, 3 s down.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 15,
+          "B": 20,
+          "load": { "kind": "db", "lb": 12, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db12",
+          "requires": ["db:12:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps on one side while the free hand rests on the thigh, then swap. Both sides = one set. Stand square, do not lean.",
+            "A": 15,
+            "B": 20
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 20, "consecutive": 2 }
+        },
+        {
+          "id": "db_shrug.db20",
+          "ord": 2,
+          "name": "20 lb shrug",
+          "how": "Same tempo and same tall posture.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 15,
+          "B": 20,
+          "load": { "kind": "db", "lb": 20, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db20",
+          "requires": ["db:20:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps on one side while the free hand rests on the thigh, then swap. Both sides = one set.",
+            "A": 15,
+            "B": 20
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 20, "consecutive": 2 }
+        },
+        {
+          "id": "db_shrug.db35",
+          "ord": 3,
+          "name": "35 lb shrug",
+          "how": "Same tempo. Set the dumbbells down between sets rather than holding them through the rest.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "db", "lb": 35, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["db:35:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps on one side while the free hand rests on the thigh, then swap. Both sides = one set.",
+            "A": 12,
+            "B": 15
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_shrug.db35_tempo",
+          "ord": 4,
+          "name": "35 lb shrug, tempo",
+          "how": "2 s hold at the top, 3 s down, every rep. Same 35 lb, higher reps: the bridge to the bell.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 15,
+          "B": 20,
+          "load": { "kind": "db", "lb": 35, "n": 2, "vest_pct": null, "cap_lb": null },
+          "implement_id": "db35",
+          "requires": ["db:35:pair"],
+          "single_alt": {
+            "how": "One dumbbell: all reps on one side while the free hand rests on the thigh, then swap. Both sides = one set.",
+            "A": 15,
+            "B": 20
+          },
+          "advance": { "rule": "all_sets_reps_gte", "value": 20, "consecutive": 2 }
+        },
+        {
+          "id": "db_shrug.kb53",
+          "ord": 5,
+          "name": "53 lb kettlebell shrug, one side",
+          "how": "Bell in one hand, free hand empty and resting on the thigh. Deadlift the bell off the floor to start: hinge, flat back, stand it up. All reps one side, then the other. Fight the side-bend the whole time.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "db_shrug.kb53_offset",
+          "ord": 6,
+          "name": "53 lb kettlebell + 35 lb offset shrug",
+          "how": "Bell in one hand, the 35 lb dumbbell in the other; swap sides each set. Pick both up with a hinge, not a bend. Stand dead square: the heavier side must not pull you over.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "kb53",
+          "requires": ["kb:53", "db:35"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "neck_isometrics",
+      "name": "Neck strengthening (4-way)",
+      "region": "neck_traps",
+      "pattern": "pull",
+      "equipment": "bodyweight, own hand for resistance, folded towel",
+      "cues": [
+        "Chin lightly tucked, spine tall, breathe through the hold",
+        "Push at 50-70% effort against your own hand; the head does not move at all",
+        "Every round is four directions: front, back, left, right, in that order"
+      ],
+      "stop_if": "Sharp neck pain, dizziness, visual changes, headache, or any tingling into the shoulders, arms or hands - stop the round and skip the rest of the day",
+      "region_weights": { "neck_traps": 1.0 },
+      "ladder": [
+        {
+          "id": "neck_isometrics.iso10",
+          "ord": 1,
+          "name": "4-way isometric, 10 s",
+          "how": "Palm on the forehead, then hands behind the head, then a palm on each side in turn. 50% effort, 10 s each, head perfectly still.",
+          "unit": "sec",
+          "sides": "both",
+          "A": 10,
+          "B": 10,
+          "parts": [
+            { "key": "front", "name": "Front", "A": 10, "B": 10 },
+            { "key": "back", "name": "Back", "A": 10, "B": 10 },
+            { "key": "left", "name": "Left", "A": 10, "B": 10 },
+            { "key": "right", "name": "Right", "A": 10, "B": 10 }
+          ],
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 10,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "neck", "days": 7 }
+            ]
+          }
+        },
+        {
+          "id": "neck_isometrics.iso20",
+          "ord": 2,
+          "name": "4-way isometric, 20 s",
+          "how": "Same four directions, 60-70% effort, 20 s each. If the last 5 s shake, hold the effort down, not the time.",
+          "unit": "sec",
+          "sides": "both",
+          "A": 15,
+          "B": 20,
+          "parts": [
+            { "key": "front", "name": "Front", "A": 15, "B": 20 },
+            { "key": "back", "name": "Back", "A": 15, "B": 20 },
+            { "key": "left", "name": "Left", "A": 15, "B": 20 },
+            { "key": "right", "name": "Right", "A": 15, "B": 20 }
+          ],
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 20,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "neck", "days": 7 }
+            ]
+          }
+        },
+        {
+          "id": "neck_isometrics.iso30",
+          "ord": 3,
+          "name": "4-way isometric, 30 s",
+          "how": "Same four directions at 70% effort, 30 s each. Breathe normally the whole hold; never hold your breath.",
+          "unit": "sec",
+          "sides": "both",
+          "A": 25,
+          "B": 30,
+          "parts": [
+            { "key": "front", "name": "Front", "A": 25, "B": 30 },
+            { "key": "back", "name": "Back", "A": 25, "B": 30 },
+            { "key": "left", "name": "Left", "A": 25, "B": 30 },
+            { "key": "right", "name": "Right", "A": 25, "B": 30 }
+          ],
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 30,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "neck", "days": 7 }
+            ]
+          }
+        },
+        {
+          "id": "neck_isometrics.lying15",
+          "ord": 4,
+          "name": "Lying 4-way holds, 15 s",
+          "how": "No hands: the head's own weight is the load. Front = lie on your back, chin tucked, head lifted 2 in. Back = lie face down on a folded towel, head lifted to neutral. Left and right = lie on your side, head lifted level with the spine.",
+          "unit": "sec",
+          "sides": "both",
+          "A": 10,
+          "B": 15,
+          "parts": [
+            { "key": "front", "name": "Front (supine)", "A": 10, "B": 15 },
+            { "key": "back", "name": "Back (prone)", "A": 10, "B": 15 },
+            { "key": "left", "name": "Left (side-lying)", "A": 10, "B": 15 },
+            { "key": "right", "name": "Right (side-lying)", "A": 10, "B": 15 }
+          ],
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 15,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "neck", "days": 7 }
+            ]
+          }
+        },
+        {
+          "id": "neck_isometrics.lying30",
+          "ord": 5,
+          "name": "Lying 4-way holds, 30 s",
+          "how": "Same four lying positions, 30 s each, chin tucked throughout. Top of the ladder: hold the quality, never add weight to the head.",
+          "unit": "sec",
+          "sides": "both",
+          "A": 20,
+          "B": 30,
+          "parts": [
+            { "key": "front", "name": "Front (supine)", "A": 20, "B": 30 },
+            { "key": "back", "name": "Back (prone)", "A": 20, "B": 30 },
+            { "key": "left", "name": "Left (side-lying)", "A": 20, "B": 30 },
+            { "key": "right", "name": "Right (side-lying)", "A": 20, "B": 30 }
+          ],
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 30,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "neck", "days": 7 }
+            ]
+          },
+          "terminal": true
+        }
+      ]
+    }
+  ]
+}

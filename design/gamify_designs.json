@@ -1,0 +1,1520 @@
+[
+ {
+  "concept_name": "FORGEBORN \u2014 Head-to-Toe Character Sheet",
+  "one_paragraph_pitch": "Forgeborn turns the 12-week plan into an RPG character sheet that is literally your body. A front-view silhouette with nine regions (Head/Heart, Shoulders, Arms, Chest, Back, Core, Glutes, Legs, Calves) fills in from the feet up as you earn region XP, and its outline hardens from grey to Bronze, Silver, Gold and Platinum \"gear\" only when you hit real benchmark numbers (push-up max, 53 lb goblet reps, swing density, plank time, 12-minute treadmill distance). One XP currency, earned per set at the moment you tap it, levels a character from Recruit to Ironborn on a curve tuned so a beginner levels up every single session in week 1 and roughly twice a week by week 12. Ladder steps, PRs, Zone-2 minutes and boss tiers pay 5\u201350x more than attendance, but attendance still pays every set, and a weekly Shield system (Duolingo-style silent freezes, plus a rest day that is simply neutral) means one bad day never wipes the flame. Everything is JSON: ladders with machine-checkable advance_when rules, region weights per exercise, tier thresholds per boss test, and a 15-minute \"Skirmish\" variant of every quest for short days.",
+  "core_loop": "1) Open app (0\u20133 s): Home shows the silhouette, the flame count, and today's Quest card: \"Day 12/72 \u00b7 LOWER FORGE B \u00b7 45 min \u00b7 At stake: Goblet Squat ladder 4\u21925 (hit 3\u00d712 today, second time)\". The \"at stake\" line is computed from ladders whose advance_when needs exactly one more qualifying session. 2) Tap START QUEST (1 tap): warm-up block is auto-checked as one tap; timer starts. 3) Per set: each row shows the prescribed target (\"Goblet squat \u00b7 53 lb \u00b7 12\"). ONE tap on the row = done at target; the row turns green and \"+15 XP\" floats up, the region on a mini-silhouette in the header pulses. Tap the reps number = +/- stepper (two taps to adjust); tap the load chip = picker limited to the user's owned loads (BW, 8, 10, 12, 20, 35, 53, vest+X). A rest timer auto-runs between sets and shows \"next: set 2/3\". 4) Last set tapped \u2192 QUEST COMPLETE screen (the peak-end moment): XP tally counts up, region bars fill, any ladder advance plays a \"LADDER UP\" card, any PR plays \"NEW RECORD\", any gear tier change animates on the silhouette, flame increments, and a single sentence of \"why it mattered\" (\"You lifted 6,180 lb today. 3 more clean push-ups than Day 5.\"). 5) Tap DONE \u2192 back to Home, which now shows tomorrow's quest and the boss countdown. Total interaction budget per workout: roughly 20\u201325 taps for a 20-set session; nothing in the loop needs typing.",
+  "mechanics": [
+   {
+    "name": "Set XP (the per-tap reward)",
+    "rule": "Every completed working set pays XP the instant it is tapped. Meeting the prescribed target pays more; beating it pays a little more, capped so junk reps are not rewarded. Warm-up sets pay 0.",
+    "formula_or_data": "set_xp = 10 + (reps >= target_reps && load >= target_load ? 5 : 0) + min(5, max(0, reps - target_reps)). Timed holds: target met if seconds >= target_seconds; bonus +1 per 5 s over, cap 5. Cardio: zone2_xp = 3 * minutes_in_zone2 (daily cap 60 min = 180 XP); interval_round_xp = 12 per completed round (round = work+rest as defined in the quest JSON). Session completion bonus (all prescribed working sets logged, any reps): +50. Exercise JSON field: {\"type\":\"reps\"|\"time\"|\"zone2\"|\"intervals\", \"warmup\":true|false}.",
+    "psychology": "Bridges hyperbolic discounting: the reward is at the moment of effort, not at the end of 12 weeks. Small, immediate, certain rewards are what a beginner with <10 push-ups needs in the first 28 days, which the 2026 Frontiers cohort found is where the adherence protection is won (each SD of training days in the first 28 days = 27% lower dropout hazard).",
+    "ui": "Row tap \u2192 green fill + \"+15 XP\" float from the row into the header XP bar; header mini-silhouette flashes the region. Haptic tick if available. No modal."
+   },
+   {
+    "name": "Exercise Ladders with machine-checkable advancement",
+    "rule": "Every exercise is a ladder of steps that bridges the equipment gaps (12\u219220\u219235 lb dumbbells, one 53 lb bell) with reps, tempo, range of motion, unilateral, pause, density and vest. You advance one step when the advance_when rule is satisfied; you never skip steps except at baseline placement; you never lose XP on regression.",
+    "formula_or_data": "Ladder JSON: {\"id\":\"pushup\",\"region_weights\":{\"chest\":0.5,\"arms\":0.3,\"shoulders\":0.15,\"core\":0.05},\"steps\":[{\"step\":1,\"name\":\"Wall push-up\",\"target\":{\"sets\":3,\"reps\":12}},{\"step\":2,\"name\":\"Incline push-up, couch edge\",\"target\":{\"sets\":3,\"reps\":12}},{\"step\":3,\"name\":\"Incline push-up, chair seat\",\"target\":{\"sets\":3,\"reps\":12}},{\"step\":4,\"name\":\"Knee push-up\",\"target\":{\"sets\":3,\"reps\":12}},{\"step\":5,\"name\":\"Floor push-up\",\"target\":{\"sets\":3,\"reps\":8}},{\"step\":6,\"name\":\"Floor push-up\",\"target\":{\"sets\":3,\"reps\":15}},{\"step\":7,\"name\":\"Push-up 3-1-0 tempo\",\"target\":{\"sets\":3,\"reps\":12}},{\"step\":8,\"name\":\"Vest push-up (vest_min 10 lb)\",\"target\":{\"sets\":3,\"reps\":12},\"requires\":{\"gear_tier\":{\"chest\":\"bronze\"}}},{\"step\":9,\"name\":\"Vest push-up (vest_min 20 lb)\",\"target\":{\"sets\":3,\"reps\":12}},{\"step\":10,\"name\":\"Feet-on-chair vest push-up\",\"target\":{\"sets\":3,\"reps\":12}}],\"advance_when\":{\"consecutive_qualifying_sessions\":2,\"condition\":\"all_sets_reps>=target\",\"form_ok_required\":true},\"regress_when\":{\"consecutive_sessions\":2,\"condition\":\"any_set_reps<0.6*target\"},\"min_sessions_per_step\":2}. Other ladders use the same schema: goblet squat 20\u219235\u219253 lb via reps 8\u219215, then 3-s pause, then 1.5-rep, then Bulgarian split squat (rear foot on couch) 20 lb\u219235 lb\u21922\u00d735 or vest, then box pistol; KB swing gated by form checkpoint (see Swing School); single-arm row 20\u219235 lb (8\u219215 reps, 2-s pause)\u219253 lb bell row; overhead press 12\u219220 lb (also single-arm)\u219235 lb\u2192pike push-up\u2192feet-elevated pike; treadmill Zone-2 ladder = incline steps 2%\u21924%\u21926%\u21928%\u219210% at 3.0\u20133.5 mph, then add vest 10\u219220 lb, advance when 2 sessions completed at RPE<=6 (self-rated 1 tap). Advance XP: 100 + 25*new_step. Regression: no XP change, message \"Step held\".",
+    "psychology": "Competence (self-determination theory) from visible mastery; goal-gradient effect because the Home card tells you when a single session will trigger an advance. Real progress is the reward, not the check-in. The min_sessions_per_step and form gate keep it safe for a beginner while still allowing an advance roughly every other exposure, which is the \"fast\" the user asked for.",
+    "ui": "Ladders screen shows each exercise as a vertical 10-rung ladder with the current rung lit and the rule spelled out in plain words (\"Hit 3\u00d712 one more time to climb\"). On Quest Complete a \"LADDER UP\" card slides in with the new rung name."
+   },
+   {
+    "name": "Region XP and Region Level (the head-to-toe fill)",
+    "rule": "Every set's XP is split into nine body regions by the exercise's region_weights. Each region has its own level 0\u201310 that fills its part of the silhouette.",
+    "formula_or_data": "region_xp[r] += set_xp * region_weights[r] for every r in the exercise; Zone-2/intervals map 0.7 heart, 0.15 legs, 0.15 calves; walking-incline with vest adds 0.1 core taken from heart. region_level = min(10, floor(sqrt(region_xp / 150))). Thresholds: L1 150, L2 600, L3 1,350, L4 2,400, L5 3,750, L6 5,400, L7 7,350, L8 9,600, L9 12,150, L10 15,000. Expected at 6 sessions/week: most regions L5\u2013L6 by week 12, so the sheet visibly still has room. Symmetry bonus: at the weekly rollover, if max(region_level) - min(region_level) <= 2 across all nine regions, all XP earned next week is multiplied by 1.10 (applied at set time, shown as \"Symmetry x1.1\").",
+    "psychology": "Zeigarnik effect and endowed progress: a partially filled body is unfinished business you can see. The symmetry bonus operationalizes the user's own words (\"head to toe\") and discourages the classic beginner mirror-muscle drift.",
+    "ui": "Silhouette regions fill bottom-up like liquid to the fraction (region_xp - threshold[L]) / (threshold[L+1] - threshold[L]); the level number sits inside the region. Tapping a region opens a card with XP to next level, the ladders that feed it, and the next gear threshold."
+   },
+   {
+    "name": "Gear Tiers (benchmark-locked armor)",
+    "rule": "Each region has one gear slot. Gear tier (none/Bronze/Silver/Gold/Platinum) is set ONLY by benchmark results from boss battles or a verified rematch, never by XP. Tiers never go down.",
+    "formula_or_data": "Slots and thresholds (tier = highest threshold met): HELM (Heart): 12-min treadmill distance mi: B 1.0, S 1.2, G 1.4, P 1.6. PAULDRONS (Shoulders): pike push-up max reps: B 5, S 10, G 15, P 20 (P requires feet on chair). GAUNTLETS (Arms): diamond push-up max reps: B 5, S 12, G 20, P 30. BREASTPLATE (Chest): standard push-up max clean reps: B 10, S 20, G 30, P 40. BACKPLATE (Back): single-arm row best set per arm: B 20 lb x 12, S 35 lb x 10, G 35 lb x 20, P 53 lb x 12. BELT (Core): plank hold seconds: B 45, S 90, G 150, P 240. HIP GUARD (Glutes): KB swing 53 lb: B = form checkpoint passed + 5x10 in a session, S = 100 swings in <=15 min, G = 100 swings in <=10 min, P = 200 swings in <=10 min. GREAVES (Legs): B goblet 53 x 8, S goblet 53 x 15, G Bulgarian split squat 35 lb x 10/leg, P box pistol (to chair height) x 5/leg unassisted. SABATONS (Calves): single-leg calf raise max reps: B 15, S 25, G 40, P 40 with vest >= 20 lb. Composite titles: all nine slots >= Bronze -> \"Bronze Warrior\"; >= Silver -> \"Silver Warrior\"; >= Gold -> \"Gold Warrior\"; all Platinum -> \"Forgeborn\". Gear also unlocks ladder steps (e.g., vest push-up steps require chest >= bronze), which is the safety gate for adding load. XP on tier gain: Bronze 150, Silver 300, Gold 500, Platinum 800 per slot.",
+    "psychology": "Status and identity that cannot be faked by attendance; every piece of armor is a number the user actually hit. Tiers never regress, so a bad test day costs nothing (loss-aversion safe). Bronze thresholds are deliberately reachable at boss 1 (week 4) for most slots so the first armor appears early.",
+    "ui": "Armory screen: nine slot cards with a material swatch, the number that earned it, and \"next: Silver at 20 push-ups (you: 14)\". On the silhouette, the region outline stroke takes the material color (grey #6b7280 none, bronze #CD7F32, silver #C0C0C0, gold #FFD700, platinum #E5E4E2 with a soft glow)."
+   },
+   {
+    "name": "Personal Records (PR) tracking",
+    "rule": "Per exercise variant, store best load-and-reps. A heavier load at the same step or more reps at the same load is a PR.",
+    "formula_or_data": "pr_key = exercise_id + ':' + load_lb (0 for bodyweight, vest weight added). On each set: if reps > best[pr_key].reps -> rep PR (+25 XP); if load > max load ever logged for exercise_id with reps >= 5 -> load PR (+75 XP). Max one of each PR type per exercise per session. Lifetime \"Iron Moved\" = sum(load_lb * reps) over all loaded sets (bodyweight sets count vest weight only), shown as a cumulative stat.",
+    "psychology": "Frequent, concrete competence signals in the gap between ladder steps; on this equipment a rep PR is available almost every session in months 1\u20133.",
+    "ui": "\"NEW RECORD\" chip on the set row and a card on Quest Complete; the Iron Moved counter ticks up on Home."
+   },
+   {
+    "name": "Swing School (form checkpoint gate)",
+    "rule": "The 53 lb kettlebell swing ladder is locked until the user passes a 3-cue self-check lesson; until then, the hinge ladder uses bodyweight hinge, 20 lb and 35 lb dumbbell swings.",
+    "formula_or_data": "checkpoint JSON: {\"id\":\"swing_form\",\"cues\":[\"hips back, shins vertical\",\"bell floats to chest, arms relaxed\",\"stand tall, glutes squeeze, no back arch\"],\"pass_when\":{\"all_cues_rated_green\":true,\"session_number\":\">=3\",\"prior_step\":\"db_swing_35lb 3x10 met\"}}. Pass = +30 XP + badge swing_school + unlocks kb_swing ladder step 1 (53 lb, 5x5). Deliberately 1-tap per cue (three green/amber toggles).",
+    "psychology": "Safety framed as an unlock rather than a restriction. A beginner who learns the swing well gets the single most effective conditioning tool on their equipment list.",
+    "ui": "Lesson card in the quest on Day 3, Day 5 and Day 8 with a short text cue list and three tap toggles; the Hip Guard slot on the silhouette shows a padlock until passed."
+   },
+   {
+    "name": "Skirmish (15-minute quest)",
+    "rule": "Every quest has a 15-minute variant: 2-minute warm-up plus 3 rounds of the quest's three priority exercises. It counts for the streak and attendance, and ladders can still advance from it.",
+    "formula_or_data": "quest JSON field \"skirmish\": [\"goblet_squat\",\"pushup\",\"kb_swing\"] with 3 rounds at the current ladder target reps, 45 s rest. XP: set XP as normal + 25 completion bonus (instead of 50). Counts as a quest for the flame and for the 4-of-6 minimum. Perfect Week requires >= 4 full quests and allows up to 2 skirmishes.",
+    "psychology": "Preserves regularity, the main adherence predictor, on days when volume is impossible; a floor that keeps identity intact (\"I trained\").",
+    "ui": "On the Quest card a small \"Only 15 min? Skirmish\" toggle; the quest list collapses to 9 rows."
+   },
+   {
+    "name": "Shields and the Flame (streak)",
+    "rule": "See streak_rules. Flame = consecutive days that are a quest, a scheduled rest day, or shielded. Shields auto-deploy silently; Perfect Weeks earn Shields; a broken flame can be rekindled.",
+    "formula_or_data": "start_shields = 1; max_shields = 2; +1 shield per Perfect Week (6 quests in the plan week). Perfect Week XP +300. Milestone celebrations at flame 7, 30, 60, 100 (+100/+300/+500/+1000 XP).",
+    "psychology": "Loss aversion with a safety valve; Duolingo found separating the streak from the daily goal lifted D14 retention 3.3% and that milestone animations alone moved D7 retention 1.7%, so the flame here counts effort days, not perfect days, and the 7-day milestone is heavily celebrated.",
+    "ui": "Flame icon with count in the Home header; shield icons beside it; a yellow halo on the flame during a Perfect Week (halo removed if a shield was used that week, keeping the prestige tier visually distinct)."
+   },
+   {
+    "name": "Auto-progression of load on the equipment gaps",
+    "rule": "When a dumbbell ladder step's next load does not exist (12\u219220 lb, 20\u219235 lb), the ladder inserts bridge steps rather than assuming new weights.",
+    "formula_or_data": "bridge_order (applied in sequence before the next available load): [\"reps 8->15\", \"tempo 3-1-0 x12\", \"pause 2s x10\", \"unilateral same load\", \"1.5-rep x8\", \"vest +10 lb (if vest_owned)\"]. A single-dumbbell flag in setup (\"pairs\": false) swaps bilateral exercises to their unilateral variant automatically (goblet, single-arm row, single-arm press, suitcase carry-in-place).",
+    "psychology": "Fast progression that is honest about equipment; every advance is a real capacity gain.",
+    "ui": "The rung name states the bridge (\"20 lb goblet, 3-s pause\") so the user never has to compute."
+   }
+  ],
+  "xp_and_levels": {
+   "xp_sources": [
+    {
+     "source": "Working set completed (any reps)",
+     "xp": "10"
+    },
+    {
+     "source": "Set at or above prescribed reps and load",
+     "xp": "+5"
+    },
+    {
+     "source": "Extra reps over target",
+     "xp": "+1 per rep, cap +5 per set"
+    },
+    {
+     "source": "Zone-2 treadmill minute",
+     "xp": "3 per minute, daily cap 60 min"
+    },
+    {
+     "source": "Interval round completed",
+     "xp": "12"
+    },
+    {
+     "source": "Quest complete (all working sets logged)",
+     "xp": "50 (Skirmish: 25)"
+    },
+    {
+     "source": "Ladder step advance",
+     "xp": "100 + 25 x new_step"
+    },
+    {
+     "source": "Rep PR at same load",
+     "xp": "25 (max 1 per exercise per session)"
+    },
+    {
+     "source": "Load PR (>=5 reps at a new heavier load)",
+     "xp": "75 (max 1 per exercise per session)"
+    },
+    {
+     "source": "Swing School form checkpoint passed",
+     "xp": "30"
+    },
+    {
+     "source": "Boss battle attempt (any results)",
+     "xp": "200"
+    },
+    {
+     "source": "Gear tier gained: Bronze / Silver / Gold / Platinum",
+     "xp": "150 / 300 / 500 / 800 per slot"
+    },
+    {
+     "source": "Perfect Week (6 quests, >=4 full)",
+     "xp": "300 (+1 Shield)"
+    },
+    {
+     "source": "Flame milestones 7 / 30 / 60 / 100 days",
+     "xp": "100 / 300 / 500 / 1000"
+    },
+    {
+     "source": "Rest-day Kindle (10+ min walk or mobility logged)",
+     "xp": "20 (does not extend the flame; rest day is already neutral)"
+    },
+    {
+     "source": "Symmetry bonus week",
+     "xp": "x1.10 on all XP for that week"
+    },
+    {
+     "source": "Rekindle completed (2 quests within 4 days of a break)",
+     "xp": "50 and streak restored"
+    }
+   ],
+   "level_curve_formula": "xp_required(L) = round(120 * (L - 1)^1.5) cumulative XP to reach level L; level = 1 + floor((total_xp / 120)^(2/3)). Checkpoints: L2 120, L3 339, L5 960, L8 2,222, L10 3,240, L15 6,283, L20 9,950, L25 14,110, L30 18,700, L35 23,700, L40 29,600, L50 42,000. Expected earning ~400 XP per full quest plus bonuses = ~2,500\u20133,000 XP/week, so: week 1 ends L8\u20139 (a level-up every session), week 4 about L18, week 8 about L30, week 12 about L40\u201344. Level-ups slow to about two per week by the end, which keeps them meaningful.",
+   "rank_titles": [
+    {
+     "level": 1,
+     "title": "Recruit"
+    },
+    {
+     "level": 5,
+     "title": "Squire"
+    },
+    {
+     "level": 10,
+     "title": "Footsoldier"
+    },
+    {
+     "level": 15,
+     "title": "Shieldbearer"
+    },
+    {
+     "level": 20,
+     "title": "Warrior"
+    },
+    {
+     "level": 25,
+     "title": "Vanguard"
+    },
+    {
+     "level": 30,
+     "title": "Champion"
+    },
+    {
+     "level": 35,
+     "title": "Warlord"
+    },
+    {
+     "level": 40,
+     "title": "Ironborn"
+    },
+    {
+     "level": 50,
+     "title": "Titan"
+    },
+    {
+     "level": 60,
+     "title": "Legend"
+    }
+   ]
+  },
+  "streak_rules": "The Flame counts consecutive calendar days that satisfy ANY of: (a) a full quest or a Skirmish was completed, (b) the day is the user's scheduled rest day (set in setup; the rest day is neutral: it neither increments nor breaks the flame, so a 6-day week shows a flame of 6 after week one, not 7 \u2014 the counter increments only on quest days), (c) the day was covered by a Shield, or (d) Recovery Mode was active. Shields: the user starts with 1, earns +1 per Perfect Week, holds at most 2. A missed training day auto-consumes a Shield silently (Duolingo's finding: silent deployment beats a confirmation prompt); the Home screen simply shows one fewer shield and the text \"Shield used Tuesday\". If a training day is missed with zero Shields, the flame does not reset immediately: it enters EMBER state for 4 days (shown dimmed with the old count). Completing 2 quests within those 4 days Rekindles it at the previous count (+50 XP, badge comeback). If not, the flame resets to 0 but \"Best Flame\" is kept on the sheet forever. Sick or injured: a single tap \"Recovery Mode\" on Home pauses everything for up to 7 days (extendable once): no XP, flame frozen, plan day counter frozen, no Shields consumed; available any number of times, because punishing illness only teaches people to lie to the app. Missed days never skip program content: the plan advances by a day counter (Day 12 of 72), not by calendar, so a missed session is simply the next session; if the user falls more than 10 calendar days behind the nominal schedule, Home offers \"Catch up: jump to current week\" which re-places ladders at their current rungs (no XP change). Perfect Week = 6 quests in the plan week with at least 4 full quests; it pays +300 XP, +1 Shield, and the yellow halo; a week where a Shield was consumed can still be a 5/6 week but is not Perfect. Milestones at 7, 30, 60, 100 flame days get the big animation and XP; nothing else in the app interrupts the user with celebrations. Week boundary is the user's chosen start day (default Monday), giving a fresh-start reset every week.",
+  "badges": [
+   {
+    "id": "first_blood",
+    "name": "First Blood",
+    "criterion": "Complete the first quest (full or Skirmish).",
+    "rarity": "common"
+   },
+   {
+    "id": "mirror_faced",
+    "name": "Faced the Mirror",
+    "criterion": "Complete the Week-0 baseline boss (The Mirror).",
+    "rarity": "common"
+   },
+   {
+    "id": "kindling_7",
+    "name": "Kindling",
+    "criterion": "Flame reaches 7.",
+    "rarity": "common"
+   },
+   {
+    "id": "perfect_week_1",
+    "name": "Perfect Week",
+    "criterion": "First week with 6 quests (>=4 full).",
+    "rarity": "common"
+   },
+   {
+    "id": "ten_clean",
+    "name": "Ten Clean",
+    "criterion": "10 floor push-ups in one set.",
+    "rarity": "common"
+   },
+   {
+    "id": "swing_school",
+    "name": "Swing School",
+    "criterion": "Pass the kettlebell swing form checkpoint.",
+    "rarity": "common"
+   },
+   {
+    "id": "vested_interest",
+    "name": "Vested Interest",
+    "criterion": "First set logged with the weighted vest.",
+    "rarity": "common"
+   },
+   {
+    "id": "first_rung",
+    "name": "First Rung",
+    "criterion": "First ladder advance.",
+    "rarity": "common"
+   },
+   {
+    "id": "kindle_walker",
+    "name": "Kindle Walker",
+    "criterion": "Log 4 rest-day Kindles.",
+    "rarity": "common"
+   },
+   {
+    "id": "skirmisher",
+    "name": "Skirmisher",
+    "criterion": "Complete 5 Skirmishes.",
+    "rarity": "common"
+   },
+   {
+    "id": "comeback",
+    "name": "Comeback",
+    "criterion": "Rekindle a flame from Ember state.",
+    "rarity": "common"
+   },
+   {
+    "id": "zone2_100",
+    "name": "Engine Room",
+    "criterion": "100 Zone-2 minutes in one plan week.",
+    "rarity": "common"
+   },
+   {
+    "id": "bronze_warrior",
+    "name": "Bronze Warrior",
+    "criterion": "All nine gear slots at Bronze or better.",
+    "rarity": "rare"
+   },
+   {
+    "id": "iron_month",
+    "name": "Iron Month",
+    "criterion": "Flame reaches 30.",
+    "rarity": "rare"
+   },
+   {
+    "id": "four_perfect",
+    "name": "Four Perfect",
+    "criterion": "4 Perfect Weeks total.",
+    "rarity": "rare"
+   },
+   {
+    "id": "twenty_clean",
+    "name": "Twenty Clean",
+    "criterion": "20 floor push-ups in one set.",
+    "rarity": "rare"
+   },
+   {
+    "id": "goblet_king",
+    "name": "Goblet Monarch",
+    "criterion": "Goblet squat 53 lb x 15 in one set.",
+    "rarity": "rare"
+   },
+   {
+    "id": "hundred_swings",
+    "name": "Century Bell",
+    "criterion": "100 kettlebell swings (53 lb) in one session.",
+    "rarity": "rare"
+   },
+   {
+    "id": "plank_2",
+    "name": "Stone Belt",
+    "criterion": "Plank hold >= 120 s.",
+    "rarity": "rare"
+   },
+   {
+    "id": "mile_runner",
+    "name": "Mile Runner",
+    "criterion": "1 mile continuous on the treadmill at >= 5.0 mph.",
+    "rarity": "rare"
+   },
+   {
+    "id": "pr_hunter",
+    "name": "Record Hunter",
+    "criterion": "25 lifetime PRs.",
+    "rarity": "rare"
+   },
+   {
+    "id": "ladder_20",
+    "name": "Climber",
+    "criterion": "20 lifetime ladder advances.",
+    "rarity": "rare"
+   },
+   {
+    "id": "symmetry_4",
+    "name": "Symmetry",
+    "criterion": "Earn the Symmetry bonus 4 weeks in a row.",
+    "rarity": "rare"
+   },
+   {
+    "id": "boss_gatekeeper",
+    "name": "Gatekeeper Slain",
+    "criterion": "Complete the Week-4 boss.",
+    "rarity": "rare"
+   },
+   {
+    "id": "boss_colossus",
+    "name": "Colossus Slain",
+    "criterion": "Complete the Week-8 boss.",
+    "rarity": "rare"
+   },
+   {
+    "id": "silver_warrior",
+    "name": "Silver Warrior",
+    "criterion": "All nine gear slots at Silver or better.",
+    "rarity": "epic"
+   },
+   {
+    "id": "iron_moved_100k",
+    "name": "Hundred Thousand",
+    "criterion": "Lifetime Iron Moved >= 100,000 lb.",
+    "rarity": "epic"
+   },
+   {
+    "id": "bell_hundred_10",
+    "name": "Ten-Minute Hundred",
+    "criterion": "100 swings (53 lb) in <= 10 minutes.",
+    "rarity": "epic"
+   },
+   {
+    "id": "forty_clean",
+    "name": "Forty Clean",
+    "criterion": "40 floor push-ups in one set.",
+    "rarity": "epic"
+   },
+   {
+    "id": "mountain_goat",
+    "name": "Mountain Goat",
+    "criterion": "30 continuous minutes at >= 10% incline, >= 3.0 mph, wearing a vest >= 10 lb.",
+    "rarity": "epic"
+   },
+   {
+    "id": "boss_warlord",
+    "name": "Warlord Slain",
+    "criterion": "Complete the Week-12 boss.",
+    "rarity": "epic"
+   },
+   {
+    "id": "centurion",
+    "name": "Centurion",
+    "criterion": "100 quests completed.",
+    "rarity": "epic"
+   },
+   {
+    "id": "gold_warrior",
+    "name": "Gold Warrior",
+    "criterion": "All nine gear slots at Gold or better.",
+    "rarity": "legendary"
+   },
+   {
+    "id": "ironborn",
+    "name": "Ironborn",
+    "criterion": "Reach level 40.",
+    "rarity": "legendary"
+   },
+   {
+    "id": "flame_100",
+    "name": "Eternal Flame",
+    "criterion": "Flame reaches 100.",
+    "rarity": "legendary"
+   },
+   {
+    "id": "forgeborn",
+    "name": "Forgeborn",
+    "criterion": "All nine gear slots at Platinum.",
+    "rarity": "legendary"
+   }
+  ],
+  "boss_battles": "Four bosses, each a test session that replaces one quest and sets gear tiers: Week 0 \"The Mirror\" (baseline, deliberately shortened to ~30 min: push-up max, plank, goblet squat max reps at 35 lb or 53 lb, 12-minute treadmill distance, single-leg calf raise; it places every ladder at its starting rung and paints the first grey outline, so the very first session already produces a filled-in sheet), Week 4 \"The Gatekeeper\", Week 8 \"The Iron Colossus\", Week 12 \"The Warlord\". A boss is data: {\"id\":\"boss_w4\",\"day\":24,\"name\":\"The Gatekeeper\",\"tests\":[{\"id\":\"pushup_max\",\"slot\":\"breastplate\",\"metric\":\"reps\",\"tiers\":{\"bronze\":10,\"silver\":20,\"gold\":30,\"platinum\":40}},{\"id\":\"plank\",\"slot\":\"belt\",\"metric\":\"seconds\",\"tiers\":{\"bronze\":45,\"silver\":90,\"gold\":150,\"platinum\":240}},{\"id\":\"goblet_53\",\"slot\":\"greaves\",\"metric\":\"reps\",\"load\":53,\"tiers\":{\"bronze\":8,\"silver\":15}},{\"id\":\"row_best\",\"slot\":\"backplate\",\"metric\":\"load_reps\",\"tiers\":{\"bronze\":[20,12],\"silver\":[35,10],\"gold\":[35,20],\"platinum\":[53,12]}},{\"id\":\"swing_density\",\"slot\":\"hipguard\",\"metric\":\"swings_in_minutes\",\"tiers\":{\"silver\":[100,15],\"gold\":[100,10],\"platinum\":[200,10]}},{\"id\":\"tread_12min\",\"slot\":\"helm\",\"metric\":\"miles\",\"tiers\":{\"bronze\":1.0,\"silver\":1.2,\"gold\":1.4,\"platinum\":1.6}},{\"id\":\"pike_pushup\",\"slot\":\"pauldrons\",\"metric\":\"reps\",\"tiers\":{\"bronze\":5,\"silver\":10,\"gold\":15,\"platinum\":20}},{\"id\":\"diamond_pushup\",\"slot\":\"gauntlets\",\"metric\":\"reps\",\"tiers\":{\"bronze\":5,\"silver\":12,\"gold\":20,\"platinum\":30}},{\"id\":\"calf_raise_sl\",\"slot\":\"sabatons\",\"metric\":\"reps\",\"tiers\":{\"bronze\":15,\"silver\":25,\"gold\":40}}],\"rest_between_tests_s\":180}. The boss week (weeks 4, 8, 12) is also the deload week: quests on the other five days run at 70% sets, which is the safety valve for a fast beginner program. The event: 3 days before the boss, Home shows a \"BOSS APPROACHING\" banner with the boss art and the tiers you are closest to (\"Silver Breastplate needs 20 push-ups; your best set is 17\"). During the battle each test is a card; you enter the result with the stepper (two taps) and the boss's health bar for that test drains to the tier you reached, the tier pill lights, and the silhouette region's outline changes material live. Bosses cannot be lost: every attempt pays 200 XP and the results screen leads with deltas versus the previous boss (\"+9 push-ups, +0:35 plank, +0.2 mi\"). Rematch rule: if any single test scores below its previous boss result, that test is offered as a Rematch on the rest day within 7 days, best of two counts, so a bad day never blocks a tier. If only 15 minutes are available, \"Split the battle\" runs tests 1\u20134 today and 5\u20139 next session; tiers are applied as each test lands. Gear tiers only move upward. The Week-12 Warlord result screen renders a shareable \"character card\" image (level, title, gear tiers, Iron Moved, flame best) drawn to a canvas so it works offline.",
+  "body_map": "A front-view SVG silhouette (single path set, ~9 closed regions, drawn at 240x520 viewBox so it fits a phone with the header) with nine tappable regions: HEAD/HEART (rendered as a pulsing heart glyph in the upper chest plus a Zone-2 ring around the head), SHOULDERS, ARMS (both arms one region), CHEST, BACK (shown as a lighter band behind the torso edges, since the view is front; tapping flips to a back view), CORE, GLUTES (hip band, also on flip), LEGS, CALVES. Two independent visual channels per region: FILL = region level, drawn as a bottom-up liquid fill of the region using a clipPath whose height = fraction to next level, with a small level number label inside (fill color goes from cool grey-blue at L0 to ember orange at L10 via an HSL interpolation hue 220\u219225); OUTLINE = gear tier, stroke color by material (none grey, bronze, silver, gold, platinum with a 2-px glow filter). A third channel for the Heart: the ring around the head fills clockwise with this week's Zone-2 minutes toward the 150-minute weekly target and a small heart pulse rate matches recent Zone-2 volume (slower pulse = calmer heart, purely cosmetic). Level-up: the region flashes white then does a 1.05 scale \"flex\" for 300 ms; tier-up: the outline sweeps its new material color from top to bottom. Balance cue: if any region is >2 levels below the highest, that region shows a faint dotted outline and Home adds one line (\"Calves lag by 3 levels; today's quest adds a calf ladder set\"), which the program JSON supports via an optional \"lag_boost\": {\"region\":\"calves\",\"extra_sets\":1} per quest. Tapping a region opens its card: level and XP to next, its gear slot with the number that earned it and the next threshold, the ladders that feed it with current rungs, and the last 7 days of region XP as a tiny sparkline. Below the silhouette: Level, title, XP bar, Flame + Shields, Iron Moved, Best Flame. Overall the sheet is meant to be read in two seconds: how full am I, and how much armor am I wearing.",
+  "first_7_days_experience": "Day 0 (setup, 5 min): pick start weekday and rest day; enter vest weight (10\u201340 lb) and whether dumbbells are pairs; choose a character name and see the empty grey silhouette at Level 1 Recruit. Then The Mirror runs immediately or \"tonight\": five short tests, each result two taps, and the sheet gets its first outline plus every ladder is placed (under 10 push-ups places the push-up ladder at rung 2, couch incline; goblet squat at 35 lb rung; plank ladder at 20-s holds; treadmill at 2% incline walking). Badge mirror_faced, +200 XP, level 3 on the spot. Day 1 (Upper Forge A, 45 min): about 20 working sets, every tap pays; first rep PRs fire on nearly every exercise because there is no history, so the Quest Complete screen shows 3\u20134 NEW RECORD chips, ~450 XP, Level 4\u21925 \"Squire\". Day 2 (Lower Forge A + Zone-2 20 min): goblet, hinge with the 35 lb dumbbell, calf ladder, incline walk; Level 6. Day 3 (Engine + Swing School lesson 1): Zone-2 30 min with incline ladder, core ladder, first swing cues rated; Level 7. Day 4 (Upper Forge B): second exposure to the push-up rung; if 3\u00d712 met twice, the first LADDER UP fires here (+150 XP, badge first_rung); Level 8. Day 5 (Lower Forge B + Swing School 2): possibly the swing checkpoint passes (session_number >= 3 and 35 lb DB swing 3\u00d710 met) \u2192 padlock on the Hip Guard opens, badge swing_school. Day 6 (Engine + Skirmish-eligible Full Body): flame reaches 6, and with all six quests done the Perfect Week card fires: +300 XP, +1 Shield (now 2), halo on the flame, Level 9. Day 7 (rest): Home says \"Rest day, flame safe\" with an optional Kindle walk (+20 XP) and the boss countdown \"The Gatekeeper in 17 days\" plus the one thing you are closest to unlocking. The user ends week 1 having levelled up every single session, holding a real ladder advance, a form unlock, a Perfect Week and a Shield, with the silhouette visibly filled on legs, chest and heart, and with the first armor still ahead as the pull toward week 4.",
+  "anti_patterns_deliberately_avoided": [
+   "Daily streak that breaks on the planned rest day (the rest day is neutral by design, and the flame counts effort days rather than perfect days, following Duolingo's finding that decoupling streak from the daily goal raised D14 retention).",
+   "XP for merely opening the app or tapping a check-in; attendance pays only through actually logged sets.",
+   "Uncapped rep XP that rewards junk volume or grinding cardio (extra reps cap +5 per set, Zone-2 caps at 60 min/day).",
+   "Random loot, chests, or gacha-style variable rewards; every reward is deterministic and stated in advance.",
+   "Purchasable or scarce streak freezes that monetize anxiety; Shields are earned by Perfect Weeks and deploy silently.",
+   "Punishing illness or injury (Recovery Mode pauses everything, unlimited uses).",
+   "Gear or titles that can be earned by XP alone; armor is locked to benchmark numbers so the character sheet cannot lie about the body.",
+   "Loading progression that assumes weights the user does not own; every ladder bridges 12\u219220\u219235\u219253 with reps, tempo, pause, unilateral, 1.5-rep and vest steps.",
+   "Adding external load (vest, 53 lb bell) before a form gate or a Bronze tier, which protects a beginner from progressing fast in the wrong direction.",
+   "Leaderboards, friends, or social pressure (single user, offline app).",
+   "Regression penalties: ladder step-downs, failed tests and missed weeks never subtract XP or tiers.",
+   "Multiple currencies (gems, coins, energy); there is one XP number, one Shield inventory, nothing to spend.",
+   "Celebration spam; big animations are reserved for flame 7/30/60/100, ladder advances, PRs and boss tiers.",
+   "Skipping missed content to stay on the calendar; the plan advances by day counter so nothing is lost, with an explicit catch-up option only after 10 days.",
+   "Any mechanic that needs typing during a workout; every log action is one or two taps on a phone."
+  ],
+  "screens": [
+   {
+    "name": "Home / Character Sheet",
+    "purpose": "The two-second read that motivates opening the app: how full is the body, how much armor, what is today.",
+    "key_elements": [
+     "Silhouette with nine regions (fill = level, outline = gear tier), Zone-2 ring, heart pulse",
+     "Level, rank title, XP bar to next level",
+     "Flame count with halo state, Shield icons, Best Flame",
+     "Today's Quest card: name, duration, Day n/72, 'At stake' line, Skirmish toggle, START button",
+     "Boss countdown banner (from 3 days out)",
+     "Iron Moved lifetime counter",
+     "Recovery Mode button (one tap)"
+    ]
+   },
+   {
+    "name": "Quest (workout logging)",
+    "purpose": "Log a 40\u201350 minute session in ~25 taps with XP feedback per set.",
+    "key_elements": [
+     "Warm-up block as a single tap",
+     "Set rows: exercise, rung name, target load and reps; one tap = done at target",
+     "Reps stepper (two taps) and load chip picker limited to owned equipment",
+     "Auto rest timer with next-set preview",
+     "Header mini-silhouette that pulses the region on each set; running XP total",
+     "Form checkpoint cards (three green/amber toggles) when scheduled",
+     "Cardio block: Zone-2 minute counter with incline/speed rung shown; interval round tapper",
+     "Finish button that is enabled once all working sets are logged (or 'End early' that still saves)"
+    ]
+   },
+   {
+    "name": "Quest Complete",
+    "purpose": "Peak-end moment: convert the session into visible character progress.",
+    "key_elements": [
+     "XP tally count-up with breakdown (sets, targets, cardio, bonuses)",
+     "LADDER UP cards, NEW RECORD chips, gear tier changes, badge unlocks",
+     "Flame increment and Shield status; Perfect Week card when earned",
+     "Region bars that fill; level-up animation",
+     "One-sentence 'why it mattered' line vs. a previous session",
+     "DONE button back to Home"
+    ]
+   },
+   {
+    "name": "Armory",
+    "purpose": "Show the nine gear slots, what earned them, and the exact next threshold.",
+    "key_elements": [
+     "Nine slot cards with material swatch and earned number",
+     "'Next: Silver at X (you: Y)' line per slot",
+     "Composite title progress (Bronze/Silver/Gold/Platinum Warrior)",
+     "Rematch offers when a test underperformed"
+    ]
+   },
+   {
+    "name": "Ladders",
+    "purpose": "Make progression rules legible and give a mid-term goal per exercise.",
+    "key_elements": [
+     "One vertical ladder per exercise with lit current rung",
+     "Plain-language advance rule and progress toward it (e.g., 1 of 2 qualifying sessions)",
+     "Bridge-step names that spell out tempo/pause/unilateral/vest",
+     "Locked rungs with their unlock condition (form gate, gear tier, vest owned)"
+    ]
+   },
+   {
+    "name": "Boss Battle",
+    "purpose": "Run the every-4-weeks benchmark as an event that sets gear tiers.",
+    "key_elements": [
+     "Boss art and name, list of tests as cards",
+     "Result stepper per test, boss health bar draining to the tier reached",
+     "Live tier pill and silhouette outline change",
+     "Delta vs previous boss on the results screen",
+     "Split-the-battle option for short days",
+     "Shareable character card at Week 12 (canvas render, offline)"
+    ]
+   },
+   {
+    "name": "Journal / Calendar",
+    "purpose": "Show regularity, which is what actually predicts adherence, and let the user review history.",
+    "key_elements": [
+     "Week strip with quest/skirmish/rest/shield/ember markers and Perfect Week halos",
+     "Flame history and Best Flame",
+     "Per-session log with XP and PRs",
+     "Weekly Zone-2 minutes and Iron Moved",
+     "Symmetry bonus status for the coming week"
+    ]
+   },
+   {
+    "name": "Setup / Settings",
+    "purpose": "Capture equipment facts the program depends on and user preferences.",
+    "key_elements": [
+     "Vest weight (10\u201340 lb), dumbbell pairs yes/no, kettlebell confirm",
+     "Start weekday and rest day",
+     "Character name; reset or export data (JSON download for backup)",
+     "Recovery Mode controls and catch-up option",
+     "All formulas shown on an 'How XP works' page (no hidden rules)"
+    ]
+   }
+  ]
+ },
+ {
+  "concept_name": "CHAINFORGE \u2014 every workout forges one link in a chain; the chain is the habit, the forge is the body",
+  "one_paragraph_pitch": "Chainforge is a Seinfeld-chain habit loop dressed as a warrior's forge. Every day you open the app you see one hollow chain link waiting to be forged, one concrete mission (\"Push-ups: 3x8 clean \u2192 Ladder step 4\"), and a chain behind it that glows brighter the longer it stays unbroken. Logging is one tap per set; finishing reveals a link whose metal (Ember/Bronze/Silver/Gold) reflects how much real work got done, occasionally dropping loot. The chain is generous in exactly the ways research says it should be \u2014 one free rest link per rolling 7 days, up to 2 auto-deploying Shields, a paused-not-broken Recovery mode for illness, a 15-minute Quick Forge that still counts, and a Reforge quest instead of a reset to zero \u2014 and strict in the way that matters: most XP comes from ladder steps, PRs, heavier loads, and Zone-2 minutes, not from showing up. A head-to-toe body map converts that XP into visibly levelling regions so \"hot and strong from head to toe\" is literally drawn on screen, and every fourth week the benchmark tests become a Boss Battle you pre-commit to a week in advance. The result: not forging today's link costs a visible glow, a streak multiplier and a pledge you made yesterday \u2014 enough to make skipping feel worse than 15 minutes of work, never enough to make a missed day catastrophic.",
+  "core_loop": "TRIGGER (0\u20133 s): open app \u2192 Home shows (a) yesterday's chain glowing and today's hollow link, (b) the Pledge you set yesterday (\"Today 6:30 PM \u2014 Day 9: Push + Engine, 45 min\"), (c) ONE headline mission drawn from the ladder rules (\"Hit 3x8 clean push-ups today \u2192 step 4 unlocks\"), (d) the three rings (Strength / Engine / Chain) empty. ACTION (1 tap): tap START. If the user taps \"Only 15 min?\" instead, the same session is compressed into Quick Forge (see mechanic). LOG (during workout, 1\u20132 taps per set): each set is a row showing prescribed reps/load; tap = done as prescribed (1 tap). Tap the rep number = stepper appears, tap +/- = adjusted (2 taps). On every tap: +XP ticker floats up, the body-map thumbnail region pulses, the Strength ring advances. Cardio block: one tap starts a Zone-2 timer, one tap stops it; Engine ring fills as minutes accrue. VARIABLE REWARD (5 s, automatic): tap FINISH \u2192 \"LINK FORGED\" screen: link metal reveals (Ember/Bronze/Silver/Gold) based on % of planned XP earned; then any of: region level-up (\"Chest \u2192 Lv 4\"), ladder climb (\"Push-up ladder: step 4 unlocked\"), PR flag, streak milestone, or a loot drop (Shield / chain cosmetic / armor piece) decided by a date-seeded roll. INVESTMENT (2 taps): (1) RPE face 1\u20135 (\"how hard?\") \u2014 feeds auto-progression; (2) Pledge tomorrow: a pre-filled time chip (\"Tomorrow 6:30 PM\") \u2014 tap to confirm or tap another slot. Tomorrow's session name and its headline mission are shown before the user leaves (Zeigarnik: the next link is already visible). Total non-workout interaction: ~30 seconds.",
+  "mechanics": [
+   {
+    "name": "Chain Links (Seinfeld chain)",
+    "rule": "Each program day produces exactly one link record. Link types: full, quick, ember, rest, shield, recovery, broken. A day gets a real link (full/quick/ember) if at least one working set or \u22655 cardio minutes is logged before the 4:00 AM local boundary of the next day. Chain length = consecutive days (including rest/shield/recovery links) ending today without a 'broken' link. Lifetime links (real links only) never decreases.",
+    "formula_or_data": "link = {date:'YYYY-MM-DD', type:'full'|'quick'|'ember'|'rest'|'shield'|'recovery'|'broken', xp:int, plannedXp:int, quality:'gold'|'silver'|'bronze'|'ember'|null, sessionId}. quality: ratio = xp/plannedXp; gold \u2265 1.00, silver \u2265 0.70, bronze \u2265 0.40 OR type=='quick' with all quick sets done, ember otherwise (\u22651 set). Day boundary: date = (now \u2212 4h).toDateString(). chainLength computed by walking back from today until type=='broken' or missing day (missing day resolved by the streak resolver below at first open).",
+    "psychology": "Seinfeld chain / loss aversion: the chain is a visible asset; each day's hollow link is an open loop (Zeigarnik) the user wants to close. The 4 AM boundary removes midnight-panic (Duolingo's 'streak anxiety' lesson).",
+    "ui": "Home top third: horizontal chain, last 7 links rendered as metal rings with their quality colour; today's link is hollow and pulses slowly. Chain count ('23-link chain \u00b7 best 23 \u00b7 lifetime 41') under it."
+   },
+   {
+    "name": "Chain Heat (gentle loss aversion) and Streak Multiplier",
+    "rule": "The chain has a heat glow and an XP multiplier that both grow with consecutive real weeks and DECAY (not reset) with missed days. Missing a day costs one step of multiplier, never the whole thing.",
+    "formula_or_data": "streakWeeks = floor(chainLength / 7). mult = 1 + 0.05 * min(streakWeeks, 5) \u2192 1.00..1.25. On each 'broken' day: mult = max(1.00, mult \u2212 0.05). Applied to session XP only (not to weekly/boss bonuses). Heat glow (0..1) = mult-based base (streakWeeks/5) rendered as chain brightness; visually, after 36 h since last real link, glow eases toward grey over the next 24 h (pure CSS, hoursSinceLastLink).",
+    "psychology": "Loss aversion made proportional: losing 0.05x is a real, felt cost (research: losses weigh ~2x gains) but is recoverable in a week, so it motivates without catastrophe. Cooling glow is the 'internal trigger' in Hooked \u2014 a mild discomfort that is resolved by opening the app and forging.",
+    "ui": "Chain brightness + a small '\u00d71.15' chip next to XP. When cooling, chip shows '\u00d71.15 \u2192 \u00d71.10 if no link today' in muted text \u2014 informational, never red."
+   },
+   {
+    "name": "Shields (streak freeze) \u2014 auto-deploy, capped",
+    "rule": "A Shield converts what would be a broken day into a 'shield' link. Deploys automatically; no confirmation, no 'buy'. Cap 2. User starts with 1 (endowed).",
+    "formula_or_data": "shields:int (0..2). Earn: +1 per Perfect Week (6 real links in the 7-day program week, zero shield/rest-beyond-scheduled used); +1 per Boss Battle completed (any tier); +1 from loot drop (only if shields<2). Resolver on app open, for each unresolved past program day D with no link, in order: (1) if D is the scheduled rest day OR no 'rest' link exists in the prior 6 days \u2192 type='rest'; (2) else if shields>0 \u2192 shields\u2212=1, type='shield'; (3) else if recoveryMode active \u2192 type='recovery'; (4) else type='broken', mult\u2212=0.05, chainLength resets to 0, trigger Reforge quest.",
+    "psychology": "Duolingo's finding: 'the easy path is the streak-preserving path' \u2014 auto-deploy removes decision friction. A hard cap keeps the shield meaningful (bounded forgiveness prevents both anxiety and abuse).",
+    "ui": "Two shield icons beside the chain (filled/hollow). When a shield deploys, the day's link is drawn as a shield-shaped link with the caption 'Shield held the chain. 1 left.'"
+   },
+   {
+    "name": "Rest Link and Recovery Mode",
+    "rule": "One rest day per program week is a first-class link, not a gap. Rest link is granted to the first non-training day in any rolling 7-day window (so the user can move their rest day freely). Recovery Mode (sick/injured) pauses the chain for up to 7 consecutive days, max 2 activations per 12-week program.",
+    "formula_or_data": "restEligible(D) = count(links in [D\u22126, D\u22121] where type=='rest') == 0. recovery = {active:bool, startDate, maxDays:7, usesLeft:2}. While active: each day \u2192 type='recovery', chainLength unchanged, mult unchanged, Engine ring target = 0, optional 'mobility' session worth 20 XP flat. Auto-ends after 7 days or on first real link.",
+    "psychology": "Lally 2010: missing one day doesn't affect habit formation; what matters is returning. Treating rest as an earned link reframes it as part of the plan (removes 'rest guilt'). Recovery Mode is a commitment device against training sick while protecting the endowed asset (the chain).",
+    "ui": "Rest link drawn as a smooth dark link with a moon icon. Home on rest day: 'Rest link forged. Chain stays warm. Tomorrow: Legs + Engine, 45 min.' Recovery: a bandaged link; toggle lives in Chain screen menu, one tap to enable."
+   },
+   {
+    "name": "Quick Forge (15-minute Minimum Viable Link) and Ember",
+    "rule": "Any day can be compressed to a 15-minute Quick Forge: the session's sets are trimmed to a data-defined subset (first working set of each primary exercise + a 6-minute cardio block). Completing it forges a Bronze link and counts fully for the chain. Logging even a single set (Ember) still forges a link.",
+    "formula_or_data": "session.quick = {sets: first set of each exercise flagged primary:true, cardioMinutes:6}. Quick complete \u2192 +25 XP session bonus (vs +50 full) and quality='bronze'. Ember: \u22651 set logged, +5 XP, quality='ember'. Ladder 'advanceWhen' rules ignore quick/ember sessions (they cannot advance a ladder) so progression stays honest.",
+    "psychology": "BJ Fogg tiny habits: shrink the behaviour until it is easier to do than to skip. Attendance is rewarded at a low fixed rate so the beginner gets early wins, but the small XP and inability to advance ladders means the user isn't paid to sandbag.",
+    "ui": "Home has a secondary button 'Only 15 min?' under START. In-workout, quick sets are highlighted; the rest are collapsed under 'if you have time'."
+   },
+   {
+    "name": "XP for Real Progress (set XP, PRs, ladder climbs, Zone-2)",
+    "rule": "Most XP comes from measurable improvement: exceeding last performance, heavier load, ladder step-ups and Zone-2 minutes. Volume-farming is capped.",
+    "formula_or_data": "Per working set at prescribed reps/load: 10 XP. Extra reps: +2 each, max +10/set. Heavier load than the exercise's last logged load (dumbbell/vest/KB variant weight): +15/set, max once per exercise per session. Rep PR (best reps at this ladder step & load): +25 per exercise per session. Ladder step advance: +100. Zone-2 cardio: 3 XP/min (talk-test pace, treadmill speed+incline logged), max 120/session. Intervals: +5 per completed hard interval, max 60/session. Session complete (all prescribed working sets): +50. Warm-up checklist done: +5. RPE logged: +5. Pledge kept: +15. All of the above \u00d7 mult. Weekly (not multiplied): 6/6 sessions +100, 5/6 +50, Perfect Week +150, weekly Zone-2 \u2265150 min +75. Typical full session \u2248 250\u2013350 XP.",
+    "psychology": "mHealth retention research: 'self-surpassing' and historical performance tracking sustain engagement where attendance-only gamification fades. XP mirrors the training stimulus, so the number the user chases is the number that changes their body.",
+    "ui": "Floating '+10' / '+25 PR' ticks on set tap; PR sets get a small gold flag in the row; session summary lists XP by source."
+   },
+   {
+    "name": "Exercise Ladders with machine-checkable 'advance when' rules",
+    "rule": "Every exercise is a ladder of steps expressed as data. The app auto-advances when the rule is satisfied on full sessions only and auto-regresses one step after 2 consecutive failed sessions (safety for a beginner).",
+    "formula_or_data": "Example JSON: {\"id\":\"pushup\",\"regions\":{\"chest\":0.5,\"shoulders_arms\":0.3,\"core\":0.2},\"steps\":[{\"id\":\"wall\",\"name\":\"Wall push-up\"},{\"id\":\"incline_high\",\"name\":\"Hands on couch back\"},{\"id\":\"incline_low\",\"name\":\"Hands on chair seat\"},{\"id\":\"knee\",\"name\":\"Knee push-up\"},{\"id\":\"full\",\"name\":\"Push-up\"},{\"id\":\"vest_10\",\"name\":\"Push-up + vest 10 lb\",\"requires\":{\"vest\":true}},{\"id\":\"vest_20\"},{\"id\":\"deficit_vest_20\",\"name\":\"Deficit push-up (hands on books) + vest 20\"}],\"advanceWhen\":{\"sets\":3,\"repsEach\":12,\"consecutiveSessions\":2,\"maxRpe\":4},\"regressWhen\":{\"failedSessions\":2},\"prescription\":{\"sets\":3,\"repRange\":[6,12]}}. Loading gaps bridged by step definitions such as {\"id\":\"goblet_35_pause\",\"tempo\":\"3-1-1\",\"pauseSec\":2} and {\"id\":\"kb_53_deadlift\"} before {\"id\":\"kb_swing_53\",\"requires\":{\"skill\":\"swing_form\"}}. Check: advanced = last N full sessions all have every set reps \u2265 repsEach and rpe \u2264 maxRpe.",
+    "psychology": "Endowed-progress + goal gradient: a ladder makes the next step visible and near. Auto-regression prevents the beginner from grinding a step they can't do (protects the habit from injury and from failure loops).",
+    "ui": "Ladders screen: one vertical ladder per exercise; current rung highlighted, next rung shows the exact rule ('2 sessions of 3\u00d712 at RPE \u22644 \u2014 1/2 done'). Headline mission on Home is the closest-to-advancing ladder."
+   },
+   {
+    "name": "Three Daily Rings + Weekly Rings (Apple Fitness)",
+    "rule": "Daily: Strength ring (working sets done / planned), Engine ring (cardio minutes / planned), Chain ring (binary: link forged). Weekly: Sessions (6), Zone-2 minutes (target from program week), Ladder climbs (target 2/week in weeks 1\u20138, 1/week after).",
+    "formula_or_data": "strength = min(1, setsDone/setsPlanned); engine = min(1, cardioMin/cardioPlanned); chain = linkForged?1:0. Rest day: strength & engine targets = 0 and render as complete-by-default (full grey ring). Weekly rings: sessions/6, zone2Min/target (wk1\u20134:90, wk5\u20138:120, wk9\u201312:150), climbs/target. Closing all 3 daily rings = 'Triple' (+10 XP) \u2014 small on purpose.",
+    "psychology": "Rings exploit the completion tendency (Zeigarnik) and give 3 independent chances at a small win; a bad strength day can still close Engine. Weekly rings smooth daily variance so one weak day doesn't feel like failure.",
+    "ui": "Three concentric rings on Home under the chain; tapping a ring shows what's left ('2 sets, 8 min')."
+   },
+   {
+    "name": "Tomorrow's Pledge (commitment device + implementation intention)",
+    "rule": "At the end of each session the user pledges a time window for tomorrow. The pledge appears on Home the next day. Kept pledge = XP; broken pledge = no penalty, but a rolling 'pledge accuracy' stat is shown.",
+    "formula_or_data": "pledge = {date, windowStart:'18:30', windowEnd:'20:30', kept:bool|null}. Kept if session started within [windowStart\u221230m, windowEnd+60m]. +15 XP. pledgeAccuracy = kept/total over last 14 pledges. Default window = median start time of last 5 sessions (habit anchor). Setup asks 'When will you usually train?' and 'What happens right before?' (anchor text shown on Home, e.g., 'After coffee').",
+    "psychology": "Implementation intentions ('when X, I will Y') reliably increase follow-through; the gym-habit study found same-time-of-day training predicts who becomes a steady exerciser. Pledge is a soft commitment device \u2014 the cost of breaking it is self-image, not points.",
+    "ui": "Post-session chip row: '6:30 PM \u2713 | 7:00 AM | Other'. Home shows 'Pledged 6:30 PM \u00b7 After coffee' with a subtle countdown when within 2 h."
+   },
+   {
+    "name": "Link Metal + Loot (variable reward, deterministic)",
+    "rule": "Link quality is revealed only at FINISH (not during). Additionally a loot roll can drop a Shield, a chain metal cosmetic, or a body-map armor cosmetic. The roll is seeded from the date so it is reproducible, offline and cannot be re-rolled.",
+    "formula_or_data": "seed = fnv1a(userId + date). r = mulberry32(seed)() * 100. dropChance = 12 (bronze) / 18 (silver) / 25 (gold) / 0 (ember). If r < dropChance: table roll t = mulberry32(seed+1)()*100 \u2192 t<40 Shield (if shields<2, else reroll to cosmetic), t<70 chain cosmetic (bronze\u2192iron\u2192steel\u2192damascus\u2192gold skin), else armor piece for the region with highest XP that session. Milestone links (chain 7, 30, 66, 84) always drop and use a unique animation.",
+    "psychology": "Hooked: rewards of the self (mastery) plus rewards of the hunt (unpredictable loot) \u2014 but loot is cosmetic only, so variability drives curiosity without distorting training decisions.",
+    "ui": "'LINK FORGED' full-screen: hammer strike, metal reveal, then a stack of cards (region level-up, ladder climb, loot). Skippable with one tap."
+   },
+   {
+    "name": "Reforge Quest (comeback protocol)",
+    "rule": "When a chain breaks (day 'broken'), the app never shows a zero. It opens a 3-of-4 Reforge quest: forge 3 real links in the next 4 days to restore the previous multiplier and re-light the chain. Previous chain length is preserved as 'Best'.",
+    "formula_or_data": "onBreak: reforge = {startDate, needed:3, windowDays:4, restoreMult:previousMult}. Each real link \u2192 progress+1. On completion: mult = restoreMult, badge 'Reforged' count+1, chain display resumes from 3. If not completed, no further penalty; mult just stays where decay left it.",
+    "psychology": "Endowed progress applied to recovery; the biggest churn point in habit apps is the day after a miss (shame \u2192 avoidance). A short, achievable quest replaces shame with a goal and reuses the chain's own reward channel.",
+    "ui": "Home replaces the hollow link with '3-link Reforge: \u25cb\u25cb\u25cb \u00b7 4 days' and a warm copy line: 'Chains are reforged, not restarted.'"
+   },
+   {
+    "name": "Endowed Progress at onboarding",
+    "rule": "Setup (equipment, vest weight, dumbbell pairs, 3 quick assessments: max clean push-ups, 60-s bodyweight squats, 1-min brisk treadmill talk-test) is credited as 'Day 0'. It grants XP toward level 2 and pre-fills the first-week card.",
+    "formula_or_data": "Day 0 grants 60 XP (level 2 needs 150) and 1 Shield. Program bar shows 'Day 1 of 84' with Day 0 already stamped. Week-1 card: '7 links to Week One' with link 0 already forged (2-of-10-stamps analogue). Body map starts with each assessed region at level 1 (40 region XP) instead of 0.",
+    "psychology": "Nunes & Dr\u00e8ze: an artificial head start roughly doubled completion (34% vs 19%). It's honest here \u2014 the assessment genuinely is work and genuinely calibrates the ladders.",
+    "ui": "Setup ends with the first 'LINK FORGED' animation (an Ember link) and 'Level 1 \u00b7 60/150'."
+   },
+   {
+    "name": "Region Levels (head-to-toe body map)",
+    "rule": "Every set's XP is split across body regions using per-exercise weights. Regions level up independently; neglect dims a region.",
+    "formula_or_data": "regions = [head_neck_shoulders? no \u2192 ] 7 regions: shoulders_arms, chest, back, core, glutes_hips, legs, engine (heart/lungs, fed only by cardio XP). regionXP += setXP * weight. regionLevel = floor(sqrt(regionXP / 40)) (Lv1=40, Lv2=160, Lv3=360, Lv5=1000, Lv8=2560, Lv10=4000). Armor cosmetic unlock at region Lv 3/6/9. Neglect: if no regionXP in the last 7 days (excluding recovery), region renders at 50% opacity with 'Cold 8 days'. Balance = minLevel/maxLevel, shown as %.",
+    "psychology": "Makes the stated goals ('hot and strong head to toe') literally visible; neglect dimming is loss aversion targeted at balance, which also protects a beginner from push-only programming.",
+    "ui": "Silhouette with glowing regions; see body_map field."
+   },
+   {
+    "name": "Weekly Forge Report and Perfect Week",
+    "rule": "Every program week ends with a one-screen report: links forged, XP by source, ladder climbs, region gains, Zone-2 minutes, pledge accuracy, and next week's headline. Perfect Week = 6 real links, no shield used, \u22651 ladder climb or PR.",
+    "formula_or_data": "perfectWeek = realLinks==6 && shieldLinks==0 && (climbs+prs)>=1 \u2192 +150 XP, +1 Shield, chain segment drawn with a halo. 5/6 \u2192 +50 XP. Also 'Early-week anchor': \u22653 real links Mon\u2013Wed \u2192 +25 XP (data: early-week sessions predict steady exercisers).",
+    "psychology": "Self-monitoring with historical comparison is the best-evidenced retention driver; the Perfect Week halo is a purely visual status marker (Duolingo showed cosmetic differentiation alone lifts retention).",
+    "ui": "Chain screen shows weeks as 7-link segments; perfect segments glow gold. Report is a swipeable card on the first open after week end."
+   }
+  ],
+  "xp_and_levels": {
+   "xp_sources": [
+    {
+     "source": "Working set completed at prescribed reps/load",
+     "xp": "10 (\u00d7 streak mult)"
+    },
+    {
+     "source": "Extra reps beyond prescription",
+     "xp": "+2 per rep, max +10 per set"
+    },
+    {
+     "source": "Heavier load than last logged for this exercise (dumbbell/KB/vest step)",
+     "xp": "+15, max once per exercise per session"
+    },
+    {
+     "source": "Rep PR at current ladder step + load",
+     "xp": "+25 per exercise per session"
+    },
+    {
+     "source": "Ladder step advance (rule satisfied on full sessions)",
+     "xp": "+100"
+    },
+    {
+     "source": "Zone-2 cardio minute (treadmill, talk-test pace)",
+     "xp": "3 per minute, max 120 per session"
+    },
+    {
+     "source": "Hard interval completed",
+     "xp": "+5 each, max 60 per session"
+    },
+    {
+     "source": "Full session complete (all prescribed working sets)",
+     "xp": "+50"
+    },
+    {
+     "source": "Quick Forge (15-min) complete",
+     "xp": "+25"
+    },
+    {
+     "source": "Ember (\u22651 set logged)",
+     "xp": "+5"
+    },
+    {
+     "source": "Warm-up checklist done",
+     "xp": "+5"
+    },
+    {
+     "source": "RPE logged after session",
+     "xp": "+5"
+    },
+    {
+     "source": "Pledge kept (started within window)",
+     "xp": "+15"
+    },
+    {
+     "source": "All three daily rings closed",
+     "xp": "+10"
+    },
+    {
+     "source": "Weekly: 6/6 sessions",
+     "xp": "+100 (5/6 \u2192 +50); not multiplied"
+    },
+    {
+     "source": "Weekly: Perfect Week",
+     "xp": "+150 and +1 Shield"
+    },
+    {
+     "source": "Weekly: Zone-2 \u2265 program week target",
+     "xp": "+75"
+    },
+    {
+     "source": "Weekly: \u22653 real links Mon\u2013Wed",
+     "xp": "+25"
+    },
+    {
+     "source": "Boss Battle attempt",
+     "xp": "+200 base, +100 per tier (Bronze/Silver/Gold/Warrior), +150 for beating your previous boss score; not multiplied"
+    },
+    {
+     "source": "Recovery-mode mobility session",
+     "xp": "+20 flat"
+    },
+    {
+     "source": "Day 0 setup + assessment (endowed)",
+     "xp": "+60 and +1 Shield"
+    },
+    {
+     "source": "Streak multiplier",
+     "xp": "mult = 1 + 0.05 \u00d7 min(floor(chainLength/7), 5), range 1.00\u20131.25, applied to session XP only; \u22120.05 per broken day, floor 1.00"
+    }
+   ],
+   "level_curve_formula": "XP required to go from level n to n+1: need(n) = 150 + 50\u00b7(n\u22121). Cumulative XP to reach level L: cum(L) = 150\u00b7(L\u22121) + 25\u00b7(L\u22121)\u00b7(L\u22122). Level 2 = 150 (first session), Level 3 = 350 (day 2), Level 5 = 900 (end of week 1), Level 10 = 3,150 (~week 2), Level 20 = 11,400 (~week 6\u20137), Level 30 = 24,650 (~week 12 at ~300 XP/day + weekly/boss bonuses). Level = largest L with cum(L) \u2264 totalXP. No level cap; past 30 the curve continues linearly-quadratic so a second 12-week block lands near level 42.",
+   "rank_titles": [
+    {
+     "level": 1,
+     "title": "Recruit"
+    },
+    {
+     "level": 3,
+     "title": "Initiate"
+    },
+    {
+     "level": 6,
+     "title": "Squire"
+    },
+    {
+     "level": 10,
+     "title": "Fighter"
+    },
+    {
+     "level": 14,
+     "title": "Bruiser"
+    },
+    {
+     "level": 18,
+     "title": "Vanguard"
+    },
+    {
+     "level": 22,
+     "title": "Warrior"
+    },
+    {
+     "level": 26,
+     "title": "Champion"
+    },
+    {
+     "level": 30,
+     "title": "Warlord"
+    },
+    {
+     "level": 36,
+     "title": "Titan"
+    },
+    {
+     "level": 42,
+     "title": "Legend"
+    }
+   ]
+  },
+  "streak_rules": "UNIT: one link per program day; day boundary is 4:00 AM local (a 12:30 AM workout counts for the previous day). REAL LINK: any day with \u22651 logged working set or \u22655 cardio minutes (full, quick or ember). REST: exactly one free rest link per rolling 7-day window \u2014 on a day with no session, if no 'rest' link exists in the previous 6 days, the day becomes a rest link (chain preserved, multiplier unchanged). The user can therefore move their rest day without doing anything. A second no-session day in the same window goes to SHIELDS: if shields > 0 one auto-deploys (chain preserved, multiplier unchanged); shields start at 1, cap at 2, earned via Perfect Week (+1), Boss Battle (+1), loot (+1 if below cap). RECOVERY MODE (sick/injured): user toggles it on; up to 7 consecutive days become 'recovery' links; chain length and multiplier are frozen, not lost; max 2 activations per 12-week program; auto-ends on first real link. If a day has no session, no rest eligibility, no shield and no recovery \u2192 BROKEN: chain length resets, but (a) 'Best chain' and 'Lifetime links' are kept and shown, (b) the multiplier drops by only 0.05 (not to 1.00), (c) the Reforge quest starts: 3 real links within 4 days restores the multiplier and re-lights the chain from 3. Resolution happens lazily on app open (works offline): walk every unresolved program day up to yesterday and apply rest \u2192 shield \u2192 recovery \u2192 broken in that order. MILESTONE links at 7, 30, 66 (Lally habit-formation median) and 84 days get unique animations, guaranteed loot and a badge. PERFECT WEEK requires 6 real links with no shield used \u2014 rest link is allowed and expected. QUICK FORGE (15 min) and EMBER (one set) always count as real links so the honest minimum on a terrible day is one set. Copy rules: never the words 'lost', 'failed', 'broken streak' in the UI; a broken day is 'Chain cooled \u2014 reforge'; no countdown timers before midnight; no red.",
+  "badges": [
+   {
+    "id": "first_link",
+    "name": "First Link",
+    "criterion": "Forge the first real link (any type) after Day 0.",
+    "rarity": "common"
+   },
+   {
+    "id": "week_one",
+    "name": "Week One",
+    "criterion": "7 consecutive links (real, rest or shield) \u2014 chainLength \u2265 7.",
+    "rarity": "common"
+   },
+   {
+    "id": "chain_30",
+    "name": "Thirty Strong",
+    "criterion": "chainLength \u2265 30.",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "chain_66",
+    "name": "Automatic",
+    "criterion": "chainLength \u2265 66 (median days to habit automaticity).",
+    "rarity": "rare"
+   },
+   {
+    "id": "chain_84",
+    "name": "Full Forge",
+    "criterion": "chainLength \u2265 84 \u2014 the whole 12-week program without a broken link.",
+    "rarity": "epic"
+   },
+   {
+    "id": "perfect_week",
+    "name": "Perfect Week",
+    "criterion": "Program week with 6 real links, 0 shields used, \u22651 ladder climb or PR. Stackable count shown.",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "reforged",
+    "name": "Reforged",
+    "criterion": "Complete a Reforge quest (3 real links within 4 days of a broken day).",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "ember_keeper",
+    "name": "Ember Keeper",
+    "criterion": "Forge a Quick Forge or Ember link on a day the Pledge window was missed (kept the chain anyway). ",
+    "rarity": "common"
+   },
+   {
+    "id": "pushup_10",
+    "name": "Ten Clean",
+    "criterion": "Log a set of \u226510 reps at ladder step 'full' push-up with RPE \u2264 4.",
+    "rarity": "common"
+   },
+   {
+    "id": "pushup_25",
+    "name": "Quarter Century",
+    "criterion": "Log a set of \u226525 full push-ups in one set.",
+    "rarity": "rare"
+   },
+   {
+    "id": "vest_up",
+    "name": "Armored",
+    "criterion": "First set completed at any ladder step with requires.vest == true.",
+    "rarity": "common"
+   },
+   {
+    "id": "swing_form",
+    "name": "Hinge Unlocked",
+    "criterion": "Complete the KB swing form checklist (all 5 cues checked in 2 separate sessions: hip hinge, flat back, hike pass, snap hips, float not lift) \u2014 unlocks step 'kb_swing_53'.",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "swing_100",
+    "name": "Hundred Swings",
+    "criterion": "100 kettlebell swings with the 53 lb bell in one session.",
+    "rarity": "rare"
+   },
+   {
+    "id": "swing_300",
+    "name": "Swing Warrior",
+    "criterion": "300 swings in one session (e.g., 15 rounds of 20 EMOM).",
+    "rarity": "epic"
+   },
+   {
+    "id": "press_35",
+    "name": "Big Dumbbell",
+    "criterion": "Log \u22655 reps of single-arm overhead press with the 35 lb dumbbell, each arm.",
+    "rarity": "rare"
+   },
+   {
+    "id": "goblet_53",
+    "name": "Bell Squat",
+    "criterion": "3\u00d78 goblet squats with the 53 lb kettlebell at RPE \u2264 4.",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "one_leg",
+    "name": "One-Leg Stand",
+    "criterion": "3\u00d75 per leg at ladder step 'chair_pistol' (assisted pistol to chair) or higher.",
+    "rarity": "rare"
+   },
+   {
+    "id": "incline_climber",
+    "name": "Hill Climber",
+    "criterion": "20 continuous minutes of treadmill walking at incline \u2265 10% with vest \u2265 10 lb.",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "zone2_150",
+    "name": "Heart Week",
+    "criterion": "\u2265150 Zone-2 minutes in one program week (WHO guideline).",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "zone2_1000",
+    "name": "Iron Lungs",
+    "criterion": "1,000 lifetime Zone-2 minutes.",
+    "rarity": "epic"
+   },
+   {
+    "id": "mile_sub10",
+    "name": "Sub-10 Mile",
+    "criterion": "Treadmill 1-mile time \u2264 10:00 in a Boss Battle.",
+    "rarity": "rare"
+   },
+   {
+    "id": "boss_1",
+    "name": "Gatekeeper Down",
+    "criterion": "Complete Boss Battle 1 (week 4), any tier.",
+    "rarity": "common"
+   },
+   {
+    "id": "boss_2",
+    "name": "Warden Down",
+    "criterion": "Complete Boss Battle 2 (week 8) and beat \u22653 of 5 week-4 scores.",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "boss_3",
+    "name": "Forge Master",
+    "criterion": "Complete Boss Battle 3 (week 12) with \u2265 Silver on every test.",
+    "rarity": "epic"
+   },
+   {
+    "id": "head_to_toe",
+    "name": "Head to Toe",
+    "criterion": "All 7 body-map regions at level \u2265 5.",
+    "rarity": "rare"
+   },
+   {
+    "id": "balanced",
+    "name": "Balanced Warrior",
+    "criterion": "Balance score (minRegionLevel/maxRegionLevel) \u2265 0.8 with maxRegionLevel \u2265 6.",
+    "rarity": "rare"
+   },
+   {
+    "id": "pledge_10",
+    "name": "Word Is Bond",
+    "criterion": "10 kept pledges in the last 14.",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "same_hour",
+    "name": "Clockwork",
+    "criterion": "10 sessions started within the same 60-minute window over 14 days.",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "early_week",
+    "name": "Front-Loader",
+    "criterion": "\u22653 real links Mon\u2013Wed in 4 consecutive weeks.",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "climber_10",
+    "name": "Ten Rungs",
+    "criterion": "10 total ladder step advances.",
+    "rarity": "uncommon"
+   },
+   {
+    "id": "climber_25",
+    "name": "Twenty-Five Rungs",
+    "criterion": "25 total ladder step advances.",
+    "rarity": "epic"
+   }
+  ],
+  "boss_battles": "Boss Battles are the week-4, week-8 and week-12 benchmark sessions (program days 24, 52, 80 \u2014 the 6th training day of those weeks; day 84 is the finale rest/report). BOSSES: week 4 'The Gatekeeper', week 8 'The Warden', week 12 'The Forge Master'. TESTS (all machine-scored, same five every time so scores are comparable): (1) Push-up max \u2014 max unbroken reps at the highest ladder step the user has reached, scored as equivalent reps (step multiplier: incline_high 0.4, incline_low 0.55, knee 0.7, full 1.0, vest_10 1.3, vest_20 1.6); (2) Hinge test \u2014 week 4: KB deadlift 53 lb max reps in 60 s if swing_form not unlocked, otherwise swings in 60 s; weeks 8/12: swings with 53 lb in 3 minutes (any rest); (3) Legs \u2014 bodyweight squats in 2 minutes (vest allowed; each rep with vest \u2265 20 lb counts 1.5); (4) Engine \u2014 treadmill 12-minute distance (Cooper-style; incline 1%); (5) Core \u2014 plank hold max seconds (single attempt). TIERS per test, fixed absolute thresholds: Push-up eq. reps Bronze 10 / Silver 20 / Gold 30 / Warrior 45; Hinge (60-s deadlift) 15/25/35/45 or swings-in-3-min 60/100/150/200; Squats-2-min 40/60/80/100; 12-min distance (miles) 0.9/1.1/1.3/1.5; Plank (s) 45/75/120/180. Overall boss tier = the tier reached on at least 3 of 5 tests. EVENT FRAMING: 7 days out, Home shows the boss card with a countdown and a 'Boss Ticket' (pre-commit the date and time; committed ticket + showing up = +50 XP \u2014 a commitment device). 3 days out the program automatically lightens volume (taper flagged in session data). Boss day uses a distinct dark UI: each test is a boss with a health bar that depletes per rep/second/0.1 mile (one tap = one rep counted, or timer running), so the user sees the Bronze/Silver/Gold marks on the bar as they approach them (goal gradient). REWARDS: +200 XP base, +100 per overall tier, +150 for beating your previous boss on \u22653 tests, +1 Shield, one guaranteed armor cosmetic for the region with the best tier, and the rank badge. NO-FAIL RULE: any completed boss awards the base XP and becomes the new baseline; the copy is 'Boss survived \u2014 scores locked' not 'failed'. A rematch is allowed once within 3 days if any single test is below the previous boss (only that test is retested). Boss results set ladder placement for the next block (e.g., \u226520 eq. push-ups \u2192 ensure step \u2265 'full'; \u2265 Silver hinge \u2192 unlock swing volume progressions).",
+  "body_map": "A front/back androgynous silhouette drawn as inline SVG with 7 tappable regions: shoulders_arms, chest, back, core, glutes_hips, legs (quads/hams/calves), and engine (a heart/lung glyph in the centre of the chest, fed only by cardio XP). Every exercise in the JSON declares region weights (e.g., push-up chest 0.5 / shoulders_arms 0.3 / core 0.2; KB swing glutes_hips 0.5 / back 0.3 / core 0.2; treadmill Zone-2 engine 0.8 / legs 0.2; incline walk with vest engine 0.5 / legs 0.4 / core 0.1). Set XP is multiplied by these weights into regionXP, and regionLevel = floor(sqrt(regionXP/40)). RENDERING: each region has a fill whose opacity scales with (regionXP \u2212 cum(level)) / (cum(level+1) \u2212 cum(level)) inside a base colour tier by level (Lv1\u20132 ember orange, Lv3\u20135 steel, Lv6\u20138 blue-white forge glow, Lv9+ gold), with the level number pinned on the region. Region level-ups unlock cosmetic 'armor' overlays at Lv 3/6/9 (leather \u2192 steel \u2192 gold plate) so the silhouette visibly becomes a warrior over 12 weeks. NEGLECT: a region with no XP in the last 7 training days renders at 50% opacity with a 'Cold 8 days' tag, and the Home headline mission will prefer an exercise that feeds the coldest region (balance nudge, not punishment). A 'Balance' arc under the figure shows minLevel/maxLevel as a percentage. TAP a region \u2192 its exercises, current ladder rungs, next-rung rule, and the region's XP sparkline over 12 weeks. On the workout screen a 48-px thumbnail of the silhouette sits in the header and the relevant region pulses on every set tap, so head-to-toe progress is felt during logging, not only after. Boss Battle tiers add a small crest to the region that scored highest.",
+  "first_7_days_experience": "DAY 0 (setup, ~8 min, Sunday 2026-09-07 evening or Monday morning): equipment questions (vest weight, single vs paired dumbbells), three assessments (max clean push-ups \u2192 sets push-up ladder start rung, e.g., 6 clean \u2192 rung 'knee' at 3\u00d78 target with 'full' as the rule to beat; 60-s bodyweight squats; 1-min brisk treadmill walk with talk test \u2192 sets Zone-2 starting speed/incline), pick rest day (default Sunday), pick usual training time and anchor ('after coffee'). Ends with an Ember link forged, 60/150 XP, 1 Shield, all regions at Lv1, and the message 'Day 1 of 84 \u00b7 Link 1 of 7 already stamped'. DAY 1 (Mon, Push + Engine, 45 min): first full session, huge XP relative to level \u2014 hits Level 2 mid-session and Level 3 near the end (two level-ups on day one). Link reveals Silver or Gold. First loot roll. Pledge set for Tuesday. DAY 2 (Tue, Hinge/Legs + Engine): KB swing form checklist introduced as a 'skill' (5 cues, checked in-session; deadlifts with the 53 lb bell until unlocked). Chest region shows Lv2. Headline mission appears for the first time ('Knee push-ups 3\u00d712 at RPE \u22644 \u2014 session 1 of 2 to climb'). DAY 3 (Wed, Full body + intervals): 'Front-Loader' progress shown (3/3 Mon\u2013Wed); first Heavier-load bonus likely (10 \u2192 12 lb DB). Level 5 by end of session. DAY 4 (Thu, Pull-ish/back with DB rows + core + Zone-2): the app deliberately schedules the first short Quick Forge suggestion in copy ('If today is tight, tap Only 15 min') so the user learns the escape hatch before they need it. DAY 5 (Fri, Push + Legs): probable first ladder climb (+100 XP, 'Ten Rungs' progress 1/10) and swing form unlock if both checklists were completed \u2192 'Hinge Unlocked' badge and first 53 lb swings appear on Saturday's plan. DAY 6 (Sat, Engine long: 30-min Zone-2 incline walk + swings/vest): Engine ring first closes at full target; Zone-2 weekly ring reaches 90. DAY 7 (Sun): rest link forged automatically; Week One badge (chain 7) fires with the milestone animation, guaranteed loot; Weekly Forge Report card: links 6/6, ~1,900 XP, 1\u20132 climbs, region levels, pledge accuracy, Perfect Week (+150, +1 Shield \u2192 2 shields, capped). Tomorrow's plan preview closes the report so the user leaves with the next link already visible.",
+  "anti_patterns_deliberately_avoided": [
+   "Streak reset to zero \u2014 the chain breaks but 'Best' and 'Lifetime links' persist, the multiplier drops one step, and a Reforge quest starts; nothing is erased.",
+   "Paid or infinite streak repair \u2014 Shields are earned only, capped at 2, and auto-deploy; no store, no gems.",
+   "Guilt copy and red UI \u2014 no 'you lost', 'failed', 'broken'; a missed day is 'Chain cooled \u2014 reforge'; rest is a link, not a gap.",
+   "Midnight countdown pressure \u2014 no timers before the day boundary, and the boundary is 4 AM so late sessions count.",
+   "Rewarding attendance over progress \u2014 full-session bonus is 50 XP vs ~200\u2013300 XP from sets/PRs/climbs/Zone-2; Quick Forge and Ember cannot advance ladders.",
+   "Junk-volume farming \u2014 extra-rep XP capped at +10/set, Heavier bonus once per exercise per session, cardio XP capped per session.",
+   "Loot that changes training \u2014 drops are cosmetic or Shields only, deterministic (date-seeded) and never re-rollable, so there is nothing to grind or game.",
+   "XP for opening the app or for notifications \u2014 the trigger is the pledge, the anchor and the cooling chain, not a bribe.",
+   "Punishing rest or illness \u2014 one free rest link per rolling 7 days plus Recovery Mode that freezes rather than breaks the chain.",
+   "Progression by vibes \u2014 every ladder has JSON 'advanceWhen'/'regressWhen' rules over full sessions only, with auto-regression after 2 failed sessions for beginner safety.",
+   "Deceptive endowed progress \u2014 Day 0 XP and the pre-stamped link are earned by a real assessment that calibrates the program and are labelled as such.",
+   "Social leaderboards and public shaming \u2014 a single user; comparison is only against their own history ('self-surpassing').",
+   "Boss battles that can be failed \u2014 any completed boss sets a baseline and pays base XP; 'survived' framing with a one-time single-test rematch.",
+   "Feature creep at logging time \u2014 every mechanic runs on data already produced by 1-tap set completion, 2-tap rep edits, and a 1-tap cardio timer; the only added interactions are the 2 post-session taps (RPE, Pledge)."
+  ],
+  "screens": [
+   {
+    "name": "Home / Today",
+    "purpose": "The trigger: show the open loop (hollow link), the pledge, and exactly one mission; get the user into the workout in one tap.",
+    "key_elements": [
+     "Chain strip (last 7 links, today hollow and pulsing, heat glow, '\u00d71.15' chip, shield icons)",
+     "Pledge line with anchor ('6:30 PM \u00b7 After coffee') and soft countdown within 2 h",
+     "Headline mission from the closest-to-advancing ladder or coldest region",
+     "Session card: name, estimated minutes, region icons",
+     "Three daily rings (Strength / Engine / Chain)",
+     "START button; secondary 'Only 15 min?'",
+     "Boss countdown card when \u22647 days out, with Boss Ticket",
+     "Reforge quest widget when a chain is cooled",
+     "Program bar 'Day 9 of 84' and level/rank chip"
+    ]
+   },
+   {
+    "name": "Workout (logging)",
+    "purpose": "Log at 1\u20132 taps per set with immediate micro-feedback so progress is felt during the work.",
+    "key_elements": [
+     "Exercise blocks with current ladder rung name and the 'next rung' rule in small text",
+     "Set rows: prescribed reps/load; tap = done; tap number = +/- stepper (2 taps); long-press = mark failed",
+     "Floating '+10 / +25 PR / +15 Heavier' ticks",
+     "Body-map thumbnail with pulsing region",
+     "Strength/Engine rings in header",
+     "Cardio block: 1-tap Zone-2 timer with speed/incline chips; interval counter",
+     "KB swing form checklist (5 cues) when skill not yet unlocked",
+     "Quick-Forge highlighting with non-essential sets collapsed",
+     "Rest timer auto-start after each set tap",
+     "FINISH (enabled after \u22651 set)"
+    ]
+   },
+   {
+    "name": "Link Forged (post-session)",
+    "purpose": "Variable reward reveal and the two investment taps.",
+    "key_elements": [
+     "Hammer-strike animation and link metal reveal (Ember/Bronze/Silver/Gold)",
+     "Card stack: region level-ups, ladder climbs, PRs, milestone, loot drop",
+     "XP breakdown by source and multiplier",
+     "RPE 1\u20135 faces (one tap)",
+     "Tomorrow's Pledge chips (one tap) with default from median start time",
+     "Tomorrow's session name and headline mission preview"
+    ]
+   },
+   {
+    "name": "Chain (calendar / streak)",
+    "purpose": "Historical self-monitoring \u2014 the best-evidenced retention driver \u2014 rendered as weeks of links.",
+    "key_elements": [
+     "12-week grid of links, 7 per row, colour by quality; rest, shield, recovery, cooled links distinct",
+     "Perfect Week halos",
+     "Chain length, best chain, lifetime links, shields, multiplier",
+     "Recovery Mode toggle (uses left)",
+     "Milestone markers at 7/30/66/84",
+     "Weekly Forge Report cards (swipe)"
+    ]
+   },
+   {
+    "name": "Body (body map)",
+    "purpose": "Make 'hot and strong from head to toe' visible and steer balance.",
+    "key_elements": [
+     "Front/back SVG silhouette with 7 glowing regions and level numbers",
+     "Armor overlays at region Lv 3/6/9",
+     "Cold-region dimming with day count",
+     "Balance arc (min/max level %)",
+     "Tap region \u2192 exercises, rungs, next-rung rule, XP sparkline",
+     "Boss crests on best-scoring regions"
+    ]
+   },
+   {
+    "name": "Ladders",
+    "purpose": "Show every exercise's progression as rungs with machine-checked rules so the user always knows the exact next target.",
+    "key_elements": [
+     "One vertical ladder per exercise; current rung highlighted",
+     "Next rung with rule progress ('3\u00d712 @ RPE \u22644 \u2014 1/2 sessions')",
+     "Equipment-gated rungs greyed until vest/DB/skill available",
+     "History of climbs with dates (+100 XP each)",
+     "Regression notice with reason ('2 failed sessions \u2192 back to knee push-up')"
+    ]
+   },
+   {
+    "name": "Boss Arena",
+    "purpose": "Turn benchmark weeks into pre-committed events with live health bars.",
+    "key_elements": [
+     "Countdown and Boss Ticket (date/time pre-commit)",
+     "Taper notice 3 days out",
+     "Dark boss UI: 5 tests, each with a health bar marked at Bronze/Silver/Gold/Warrior thresholds",
+     "Tap-per-rep counter, timers, 12-min distance entry",
+     "Previous boss scores overlaid",
+     "Results: tier per test, overall tier, XP, Shield, cosmetic, badge; rematch option (single test, once, within 3 days)"
+    ]
+   },
+   {
+    "name": "Setup (Day 0)",
+    "purpose": "Calibrate ladders and grant honest endowed progress.",
+    "key_elements": [
+     "Equipment: vest weight, single vs paired dumbbells confirmation",
+     "Three assessments: max clean push-ups, 60-s squats, 1-min treadmill talk test",
+     "Rest day, usual time, anchor habit",
+     "First Ember link forged, 60/150 XP, 1 Shield, regions at Lv1",
+     "'Day 1 of 84 \u00b7 link 1 of 7 stamped'"
+    ]
+   },
+   {
+    "name": "Weekly Forge Report",
+    "purpose": "Historical comparison and the perfect-week status marker.",
+    "key_elements": [
+     "Links forged (with quality), XP by source, multiplier",
+     "Ladder climbs and PRs list",
+     "Region level changes",
+     "Zone-2 minutes vs target; Mon\u2013Wed anchor",
+     "Pledge accuracy",
+     "Perfect Week / 6-of-6 / 5-of-6 bonuses",
+     "Next week's headline and first session preview"
+    ]
+   }
+  ]
+ },
+ {
+  "concept_name": "THE ARENA \u2014 Beat Last Week's Warrior",
+  "one_paragraph_pitch": "Every workout is a match against one opponent: the version of you from seven days ago (your \"Ghost\"). The app pre-fills every set with what your Ghost did, so logging is one tap and every tap is a chance to win a number. Sets earn Work Score; beating the Ghost, hitting PRs, and climbing exercise ladders earn XP that levels a head-to-toe body map from grey to bronze to silver to gold. Weeks are \"Seasons\" with a scoreboard (this week vs last week vs best week), Sunday brings a Warrior Report Card with letter grades, and every 4th week is a Boss Week where benchmark tests (max push-ups, 53 lb goblet squat, 5-min swing test, plank, suitcase carry, 1-mile) promote you through Iron -> Bronze -> Silver -> Gold -> Platinum -> Diamond -> Warrior tiers. Research backs the angle: self-referenced goals sustain motivation better than beating others (Strava/sports-psych), the first 28 days of frequency is the strongest predictor of resistance-training adherence (PMC13500638: each SD more active days in the first 4 weeks = 27% lower dropout hazard), Duolingo found day-7 survival is the cliff and that decoupling streak from daily goal plus earnable \"freezes\" raised retention. So the design front-loads early wins, protects the streak with earned Shields, and makes performance (not attendance) the thing that scores.",
+  "core_loop": "1) OPEN (0-5 s): Today card shows \"Season 3 \u00b7 Match 4 of 6 \u00b7 Ghost: 462 pts\" with a two-bar race (You 0 vs Ghost 462) and the 2-3 \"Numbers to beat\" for today, e.g. \"Push-ups: Ghost did 3x8 -> beat with 3x9\" and \"KB deadlift: Ghost 3x8 @53 -> 3x10 steps you up\". Also shows Battle Streak flame and a Shield icon if one is available. 2) START (1 tap): the workout list opens; every set row is pre-filled with its Ghost value (or the ladder target if the ladder advanced). 3) LOG (per set): one tap on the set pill = done at the pre-filled reps/weight (pill turns green, +N Work Score floats up, the race bar moves). Two taps = tap the pill's number to open a stepper (+1/-1 reps chips, weight chips limited to the owned loads: 8/10/12/20/35/53/vest) then tap Done. If the number entered is > Ghost's, the pill gets a small sword icon; if it is a PR the row flashes gold immediately. 4) MID-SESSION: the header always shows \"You 310 \u00b7 Ghost 462 \u00b7 2 sets left\"; when the projection says you will pass the Ghost it shows \"Ghost within reach: +40 needed\". 5) FINISH (auto when the last set is tapped, or the \"Finish\" button): Session Result screen: Work Score vs Ghost (WIN/LOSS/no-ghost), XP breakdown (sets, ghost bonus, PRs, ladder steps, attendance), level bar, and the body map with today's regions pulsing; a single \"Close\" button. 6) Total: ~10 s of tapping outside the actual sets. Rest day: opening the app shows the Scoreboard and next boss countdown instead of a match, with a \"Rest logged\" auto-check.",
+  "mechanics": [
+   {
+    "name": "Work Score (per-set performance points)",
+    "rule": "Every completed set is scored purely on work done. The sum for the session is the Work Score, which is what races the Ghost. No bonuses are inside Work Score so Ghosts stay beatable.",
+    "formula_or_data": "Rep set: pts = round(10 + reps * (1 + ext_lb/20)). ext_lb = total external load: sum of dumbbells used (pair 20s = 40) + vest_lb + 53 if kettlebell. Unilateral sets: reps = left + right. Timed hold/carry: pts = round(10 + (seconds/3) * (1 + ext_lb/20)). Treadmill: Zone-2 minute = 5 pts (Zone-2 = the session's planned Z2 block; user can flag 'talk test failed' which downgrades the block to 3 pts/min), hard interval minute = 8 pts, plus incline bonus 0.5 pts per minute per 1% incline, plus vest bonus (vest_lb/20) pts per minute. Examples: knee push-ups x8 = 18; goblet squat 53 lb x8 = 39; KB swings 53 lb x10 = 47; plank 45 s = 25; 12 min Z2 at 3% incline = 60 + 18 = 78. Exercise JSON: {\"id\":\"kb_swing\",\"type\":\"reps\",\"load\":\"kb\",\"regions\":{\"glutes\":0.4,\"hamstrings\":0.3,\"back\":0.2,\"core\":0.1}}.",
+    "psychology": "Immediate, concrete feedback on effort (operant reinforcement) and a single scalar the user can push. Load factor rewards using the 53 lb bell and the vest, which is exactly how this equipment set progresses; reps and time reward bridging the 12->20->35 gaps without new weights.",
+    "ui": "Floating '+39' toast on every set tap; running total in the sticky header next to the Ghost number."
+   },
+   {
+    "name": "Ghost Race",
+    "rule": "Each session is matched against the same slot last week (same weekday template). Ghost target = last week's Work Score for that slot, scaled if the plan's volume changed. Beat it by 1 point = WIN. Per-exercise ghost values pre-fill every set.",
+    "formula_or_data": "ghost_score = last_week_slot_score * (planned_volume_this_week / planned_volume_last_week), where planned_volume = sum over planned sets of (planned_reps or planned_seconds/3) * (1 + planned_ext_lb/20). Week 1 (no ghost): ghost = 0.9 * planned_volume points (a 'Trainer Ghost'). Quick Strike (15-min) day: ghost scaled by planned_volume of the quick template. After Sick Mode: ghost * 0.85 for the first week back. WIN = session_work_score > ghost_score -> +50 XP; DOMINATE = >= 1.10 * ghost -> +100 XP instead; LOSS -> 0 bonus, no penalty, next week's ghost is max(this week, last week) so a bad day never lowers the bar. Per-set prefill: prefill = ladder_target if ladder advanced since last week else last week's value for that set index.",
+    "psychology": "Self-referenced competition (sports-psych finding: sustains motivation and lowers burnout vs beating others). Loss aversion works for you: a loss costs nothing but a win is visible. Pre-filled ghost values remove decision friction and use anchoring so the default action is 'match or beat last week'.",
+    "ui": "Two horizontal bars (You in orange, Ghost in translucent grey) in the sticky header; per-set pills show 'G: 8' in small text; small sword icon appears on a set that beat its ghost value."
+   },
+   {
+    "name": "Exercise Ladders with auto-promotion",
+    "rule": "Each movement is a data-driven ladder of variants; the app promotes you one rung when a machine-checkable rule is met. Each promotion is a 'Ladder Step' worth XP and a body-map pulse.",
+    "formula_or_data": "Ladder JSON: {\"id\":\"pushup\",\"steps\":[{\"v\":\"wall_pushup\",\"reps\":[10,15]},{\"v\":\"chair_incline_pushup\",\"reps\":[8,15]},{\"v\":\"knee_pushup\",\"reps\":[8,15]},{\"v\":\"pushup\",\"reps\":[5,12]},{\"v\":\"pushup_pause2s\",\"reps\":[6,12]},{\"v\":\"pushup_vest\",\"vest_lb\":10,\"reps\":[6,12]},{\"v\":\"pushup_vest\",\"vest_lb\":20,\"reps\":[6,12]},{\"v\":\"feet_on_chair_pushup\",\"reps\":[6,12]},{\"v\":\"archer_pushup\",\"reps\":[4,8]}],\"advance_when\":{\"consecutive_sessions\":2,\"every_planned_set_reps_gte\":\"reps[1]\"}}. Advance check after each session: if the last 2 sessions containing this exercise both had every planned set >= reps[1] (top of range) -> step_index += 1, +75 XP, region pulse. Dumbbell ladders bridge load gaps via ordered rungs, e.g. row: 12 lb 3x[10,15] -> 20 lb 3x[6,12] -> 20 lb pause-1s 3x[8,12] -> 20 lb 3x[12,15] -> 35 lb 3x[5,10] -> 35 lb 3x[8,12] -> 35 lb single-arm dead-stop 3x[8,12]. Regression rule (safety): if every planned set for 2 consecutive sessions < reps[0], step_index -= 1 with no XP loss and the message 'Consolidating'.",
+    "psychology": "Mastery/competence (self-determination theory). Two-session confirmation makes progression fast but not reckless for a beginner; regression without penalty keeps confidence intact.",
+    "ui": "Each exercise row shows 'Rung 3/9' with a tiny ladder; on promotion the Session Result shows 'LADDER STEP: Knee push-up -> Full push-up' with a chevron animation."
+   },
+   {
+    "name": "PR Board",
+    "rule": "Every exercise variant tracks personal records; any set that beats a record is a PR and scores XP (capped per session so early weeks don't spray bonuses and so nobody sandbaggs).",
+    "formula_or_data": "Tracked records per variant V and load L: best_reps[V][L]; best_e1rm[V] = max(load_lb * (1 + reps/30)) for loaded lifts only (Epley; use ext_lb including vest); best_seconds[V][L] for holds/carries; cardio: fastest_mile_s, longest_z2_min, best_incline_minutes (incline% * minutes in one block). PR detected when the new value > stored value strictly. XP: +25 per PR, max 3 PR bonuses per session (further PRs still recorded and listed, just no extra XP). The Board lists each record with date, and 'Days since PR' per region; a region with no PR in 14 days gets a 'Stale' tag and becomes a suggested Number-to-beat.",
+    "psychology": "Strava data: 66% of users hit a segment PR in a half-year and PRs are the strongest self-competition hook. Gold/silver/bronze medal framing borrowed from Strava, applied to your own history only.",
+    "ui": "Grid of cards sorted by most recent; gold flash on the set row the moment a PR is logged; weekly PR count on the scoreboard."
+   },
+   {
+    "name": "Weekly Seasons and Scoreboard",
+    "rule": "Monday-Sunday is a Season (Season 1..12). The scoreboard compares This Week vs Last Week vs Best Week on 6 stats. Season result is WIN / DRAW / LOSS against last week. Boss Weeks (4, 8, 12) are scored by tier promotions instead of Work Score.",
+    "formula_or_data": "Stats: total_work_score, sessions (quick strike = 0.5), ghosts_beaten, prs, ladder_steps, z2_minutes. Normal season WIN = total_work_score > last_week_total AND sessions >= 4.5 -> +200 XP; DRAW = within +/-3% -> +75 XP; LOSS -> 0. Week 1 is compared to the Trainer Ghost total. Boss season WIN = promotions >= 2 tiers across all benchmarks (week 4 auto-WIN as 'First Blood') -> +300 XP. Season title stored: {\"season\":3,\"result\":\"WIN\",\"score\":2840,\"prev\":2610}. Best Week is highlighted with a crown.",
+    "psychology": "Fresh-start effect: every Monday resets the match so a bad week never accumulates into hopelessness. Short 7-day cycles match the day-7 retention cliff Duolingo documented.",
+    "ui": "Three columns (This / Last / Best) with up/down arrows and deltas; a season banner 'SEASON 3: You lead by 180'."
+   },
+   {
+    "name": "Warrior Report Card",
+    "rule": "When the Season closes (Sunday night or first open on Monday) a letter-grade report card is issued on 4 axes plus GPA and a title; it always ends with 3 concrete numbers to beat next week.",
+    "formula_or_data": "Attendance = sessions/6: A >= 5.5, B >= 4.5, C >= 3.5, D >= 2.5, else F. Strength = ladder_steps*2 + prs: A >= 6, B >= 4, C >= 2, D >= 1, F = 0. Engine = z2_minutes / target (target: wk1-2 = 60, wk3-6 = 90, wk7-12 = 120): A >= 1.0, B >= 0.8, C >= 0.6, D >= 0.4, else F. Ghost Record = ghosts_beaten / sessions_with_ghost: A >= 0.8, B >= 0.6, C >= 0.4, D >= 0.2, else F (week 1 uses Trainer Ghost). GPA = mean(A=4,B=3,C=2,D=1,F=0). Title: GPA >= 3.5 'Warrior Week' (+100 XP), >= 2.5 'Solid Campaign' (+50), >= 1.5 'The Grind', else 'Regroup' (no XP, and the next week's ghosts are frozen at last-beaten values so the bar is not raised).",
+    "psychology": "Feedback with clear standards (goal-setting theory); a 'Regroup' week is framed as a plan, not a failure, which is what keeps beginners from quitting after one bad week.",
+    "ui": "Full-screen card styled like a school report with 4 letter tiles, GPA, title stamp, and the 3 'Numbers to beat next week'."
+   },
+   {
+    "name": "Battle Streak with earned Shields",
+    "rule": "A day counts toward the streak if it is a session (full or Quick Strike), the scheduled rest day, or is covered by a Shield. One Shield is earned per completed week (max 2 banked). A missed day with no Shield cracks the streak rather than killing it; a Reclaim session within 48 h repairs it.",
+    "formula_or_data": "day_status in {session, rest, shield, cracked, broken}. On a miss: if shields > 0 then shields -= 1 and status = shield (auto, no user action). Else status = cracked and a 48 h timer starts; any session (Quick Strike allowed) within 48 h sets status = reclaimed and streak continues (the missed day is not counted but not reset). If the timer expires: streak = 0, best_streak preserved, and the next session grants the 'Comeback' badge and +100 XP. Shield earned when a season closes with sessions >= 5. Training on the scheduled rest day: allowed, logs as 'Active recovery', earns 0 XP and does not change the streak (no incentive to skip rest). Sick Mode: user toggles 'Medic Tent' for up to 7 consecutive days per 30-day window; days are status = medic, streak frozen, ghosts x0.85 on return, +100 XP 'Return to Arena' on the first session back.",
+    "psychology": "Duolingo: streak freezes convert a fragile all-or-nothing counter into a resilient one and the day-7 cliff is where the design must be gentlest. Earned (not bought) shields keep the reward tied to real work.",
+    "ui": "Flame with number on the Today card; shield count as small badges under it; cracked state shows a fractured flame with '48h to reclaim' countdown."
+   },
+   {
+    "name": "Quick Strike (15-minute mode)",
+    "rule": "A one-tap 'I have 15 minutes' toggle generates a compressed match: 2 priority sets each of the day's two ladder-critical exercises plus an 8-minute treadmill block. It counts for the streak, 0.5 attendance, and keeps a scaled ghost so it can still be a WIN.",
+    "formula_or_data": "Template selection: pick the 2 exercises in today's template with the highest priority field (priority = 3 if ladder is one session away from promotion, 2 if region is 'Stale' on PR board, else 1). Sets: 2 each at ghost prefill. Treadmill: 8 min of the day's cardio mode. Ghost scaled by planned_volume ratio as in Ghost Race. XP: attendance +25 (half), all other XP rules unchanged, so PRs and ladder steps are fully rewarded.",
+    "psychology": "Reduces the barrier on low-energy days (implementation-intention research: a smaller concrete plan beats skipping). Keeps the first-28-days frequency count high, which is the strongest adherence predictor in the resistance-training cohort study.",
+    "ui": "Lightning-bolt toggle on the Today card; the workout list collapses to 5 rows."
+   },
+   {
+    "name": "Boss Battles (benchmark events)",
+    "rule": "Weeks 4, 8, 12 are Boss Weeks with two boss days: Strength Boss (Day 1) and Engine Boss (Day 3). Each benchmark has fixed tiers; results promote tiers, award XP, and recolor body-map regions. A countdown runs from Day 1 of the program.",
+    "formula_or_data": "See boss_battles field for tiers. XP: +150 per tier gained per benchmark; +50 for each benchmark attempted even with no promotion; week 4 baseline gets the 'First Blood' auto-WIN. Training camp: the 3 sessions before a boss day show 'Camp' banners and their ghosts are frozen (no bar raise) so the user arrives fresh. Boss JSON: {\"id\":\"pushup_max\",\"metric\":\"reps\",\"higher_is_better\":true,\"tiers\":[[\"Iron\",0],[\"Bronze\",5],[\"Silver\",10],[\"Gold\",20],[\"Platinum\",30],[\"Diamond\",40],[\"Warrior\",50]]}. tier = the highest tier whose threshold <= result (for time-based, threshold >= result).",
+    "psychology": "Event framing and countdowns create anticipation (temporal landmarks) and turn testing into a milestone, which the user explicitly asked for in 'boss battles every 4 weeks'.",
+    "ui": "Boss Arena screen with a countdown ring ('Boss in 9 days'), six boss cards each showing current tier medal and the next threshold."
+   },
+   {
+    "name": "Body Map Region XP",
+    "rule": "Every exercise distributes its Work Score into body regions by weights; regions level independently and colour the silhouette by tier, so 'head to toe' is literally visible.",
+    "formula_or_data": "region_xp[r] += set_work_score * regions[r] for every set. Region level = floor(sqrt(region_xp / 60)). Region tier colour by level: 0-2 Grey, 3-5 Bronze, 6-8 Silver, 9-11 Gold, 12-14 Platinum, 15+ Diamond. Cardio minutes feed the 'Heart' region 100%. Regions: chest, shoulders, arms, back, core, glutes, quads, hamstrings_calves, heart. 'Weakest region' = min level; the app injects it as a Number-to-beat once per week. Full-Warrior check: all 9 regions >= level 9 (Gold).",
+    "psychology": "Progress visualisation plus balance nudges. A visible weak region motivates without shaming (it is framed as the next target, not a failure).",
+    "ui": "Front/back silhouette with 9 tappable zones; tap shows level, XP to next level, and the top 3 exercises feeding it."
+   }
+  ],
+  "xp_and_levels": {
+   "xp_sources": [
+    {
+     "source": "Work Score (every completed set / cardio minute, formulas in mechanics)",
+     "xp": "1 XP per Work Score point (typical beginner session 350-550)"
+    },
+    {
+     "source": "Session completed (attendance)",
+     "xp": "+50 full session, +25 Quick Strike"
+    },
+    {
+     "source": "Ghost beaten / dominated (>= 110%)",
+     "xp": "+50 / +100"
+    },
+    {
+     "source": "Personal record",
+     "xp": "+25 each, max 3 per session"
+    },
+    {
+     "source": "Ladder step (promotion)",
+     "xp": "+75 per rung"
+    },
+    {
+     "source": "Benchmark tier promotion",
+     "xp": "+150 per tier gained; +50 per benchmark attempted"
+    },
+    {
+     "source": "Season WIN / DRAW",
+     "xp": "+200 / +75 (Boss season WIN +300)"
+    },
+    {
+     "source": "Report card title",
+     "xp": "+100 Warrior Week, +50 Solid Campaign"
+    },
+    {
+     "source": "Comeback (first session after a broken streak) / Return to Arena (after Medic Tent)",
+     "xp": "+100 each"
+    },
+    {
+     "source": "Badge unlock",
+     "xp": "+50 common, +100 rare, +200 epic, +500 legendary"
+    },
+    {
+     "source": "Rest day",
+     "xp": "0 XP (logged, keeps streak, no incentive to skip rest)"
+    }
+   ],
+   "level_curve_formula": "cumulative_xp_required(L) = round(150 * L^1.6) for L >= 2; level 1 = 0 XP. Level = max L such that total_xp >= cumulative_xp_required(L). Examples: L2 = 455, L3 = 870, L5 = 1,977, L10 = 5,972, L15 = 11,466, L20 = 18,109, L25 = 25,860, L30 = 34,673, L40 = 54,640, L50 = 78,127. Expected pace: ~3,000 XP/week for a compliant beginner -> level 3 after session 2, level 10 by end of week 2, level 20 by week 6, level 30 around week 12.",
+   "rank_titles": [
+    {
+     "level": 1,
+     "title": "Recruit"
+    },
+    {
+     "level": 5,
+     "title": "Initiate"
+    },
+    {
+     "level": 10,
+     "title": "Fighter"
+    },
+    {
+     "level": 15,
+     "title": "Brawler"
+    },
+    {
+     "level": 20,
+     "title": "Gladiator"
+    },
+    {
+     "level": 25,
+     "title": "Champion"
+    },
+    {
+     "level": 30,
+     "title": "Warrior"
+    },
+    {
+     "level": 40,
+     "title": "Warlord"
+    },
+    {
+     "level": 50,
+     "title": "Legend"
+    }
+   ]
+  },
+  "streak_rules": "Battle Streak counts calendar days, not sessions. Day statuses: session (full or Quick Strike), rest (the one scheduled rest day, auto-logged when the app is opened or retroactively when the next session is logged), shield, medic, cracked, broken. Rules: (1) A scheduled rest day always counts toward the streak; training on it logs as Active Recovery for 0 XP. (2) Shields: earn 1 per Season closed with >= 5 sessions, bank up to 2; a missed non-rest day automatically consumes a Shield with no user action. (3) No Shield: the streak becomes CRACKED (fractured flame, 48 h countdown). Any session, including a 15-minute Quick Strike, within 48 h reclaims it; the streak number continues (the missed day is simply not counted). (4) If the 48 h expires the streak resets to 0, best_streak is preserved and shown next to it, and the next session grants the Comeback badge (+100 XP) so the return is a win, not a walk of shame. (5) Medic Tent (sick/injured): a toggle freezes the streak for up to 7 consecutive days per rolling 30 days; on return ghosts are scaled x0.85 for one week and the first session gives +100 'Return to Arena'. (6) Two missed days in a row while cracked: the second day is not double-penalised; only the 48 h timer matters. (7) Streak milestones (7, 14, 30, 60, 90 days) unlock badges; the counter never gates content, so a beginner who breaks it loses nothing but the number.",
+  "badges": [
+   {
+    "id": "first_blood",
+    "name": "First Blood",
+    "criterion": "Complete the Day 1 Recon baseline (push-up max, plank, 1-min bodyweight squats, 1-mile walk/jog time).",
+    "rarity": "common"
+   },
+   {
+    "id": "ghost_hunter",
+    "name": "Ghost Hunter",
+    "criterion": "Beat your Ghost for the first time (session_work_score > ghost_score).",
+    "rarity": "common"
+   },
+   {
+    "id": "week_one_warrior",
+    "name": "Week One Warrior",
+    "criterion": "Complete >= 5 sessions in Season 1.",
+    "rarity": "common"
+   },
+   {
+    "id": "quick_strike",
+    "name": "Quick Strike",
+    "criterion": "Complete a 15-minute Quick Strike session that still beats its scaled Ghost.",
+    "rarity": "common"
+   },
+   {
+    "id": "shield_wall",
+    "name": "Shield Wall",
+    "criterion": "Bank 2 Shields at once (two consecutive Seasons with >= 5 sessions).",
+    "rarity": "common"
+   },
+   {
+    "id": "comeback",
+    "name": "Comeback",
+    "criterion": "Log a session after a broken streak (streak reset to 0).",
+    "rarity": "common"
+   },
+   {
+    "id": "ten_clean",
+    "name": "Ten Clean",
+    "criterion": "Log a set of 10 full push-ups (variant = pushup, reps >= 10).",
+    "rarity": "rare"
+   },
+   {
+    "id": "bell_ringer",
+    "name": "Bell Ringer",
+    "criterion": "Clear the KB swing form ladder (hip hinge -> deadlift -> dead-stop swing -> swing) and log 3x10 swings @53 lb.",
+    "rarity": "rare"
+   },
+   {
+    "id": "goblet_king",
+    "name": "Goblet King",
+    "criterion": "Log 10 unbroken goblet squats @53 lb.",
+    "rarity": "rare"
+   },
+   {
+    "id": "iron_grip",
+    "name": "Iron Grip",
+    "criterion": "Suitcase carry 53 lb for >= 60 s per hand in one session.",
+    "rarity": "rare"
+   },
+   {
+    "id": "engine_room",
+    "name": "Engine Room",
+    "criterion": "Log >= 120 Zone-2 minutes in one Season.",
+    "rarity": "rare"
+   },
+   {
+    "id": "hill_climber",
+    "name": "Hill Climber",
+    "criterion": "Complete a 20-minute treadmill block at >= 10% incline.",
+    "rarity": "rare"
+   },
+   {
+    "id": "vest_up",
+    "name": "Vest Up",
+    "criterion": "Reach any ladder rung whose variant uses the weighted vest.",
+    "rarity": "rare"
+   },
+   {
+    "id": "streak_7",
+    "name": "Seven Days Standing",
+    "criterion": "Battle Streak >= 7.",
+    "rarity": "common"
+   },
+   {
+    "id": "streak_30",
+    "name": "Thirty Days Standing",
+    "criterion": "Battle Streak >= 30.",
+    "rarity": "rare"
+   },
+   {
+    "id": "streak_84",
+    "name": "The Full Campaign",
+    "criterion": "Battle Streak >= 84 (the whole 12 weeks).",
+    "rarity": "legendary"
+   },
+   {
+    "id": "pr_machine",
+    "name": "PR Machine",
+    "criterion": "5 or more PRs in a single Season.",
+    "rarity": "rare"
+   },
+   {
+    "id": "three_peat",
+    "name": "Three-Peat",
+    "criterion": "Win three consecutive Seasons.",
+    "rarity": "epic"
+   },
+   {
+    "id": "boss_slayer",
+    "name": "Boss Slayer",
+    "criterion": "Gain >= 4 total tier promotions in a single Boss Week.",
+    "rarity": "epic"
+   },
+   {
+    "id": "sub_10",
+    "name": "Sub-10 Mile",
+    "criterion": "1-mile treadmill time < 10:00.",
+    "rarity": "epic"
+   },
+   {
+    "id": "gold_all_over",
+    "name": "Gold Head to Toe",
+    "criterion": "All 9 body-map regions at Gold (level >= 9).",
+    "rarity": "epic"
+   },
+   {
+    "id": "straight_a",
+    "name": "Straight-A Warrior",
+    "criterion": "Report card with A on all four axes.",
+    "rarity": "epic"
+   },
+   {
+    "id": "warrior_tier",
+    "name": "Warrior Tier",
+    "criterion": "Reach the Warrior tier on any benchmark.",
+    "rarity": "legendary"
+   },
+   {
+    "id": "strong_as_hell",
+    "name": "Strong As Hell",
+    "criterion": "Gold or better on all six benchmarks.",
+    "rarity": "legendary"
+   }
+  ],
+  "boss_battles": "Countdown: the Today card and Boss Arena screen show a ring with 'Boss in N days' from program Day 1 (boss days on Day 1 and Day 3 of weeks 4, 8, 12; a light Day 1 'Recon' baseline covers push-ups, plank, 1-min bodyweight squats and 1-mile time so tiers and ghosts exist from the start). The 3 sessions before a boss day are 'Training Camp': ghosts frozen (no bar raise), lighter volume, camp banner. Boss Week Day 1 = STRENGTH BOSS: (1) Push-up max reps, strict, one set: Iron 0-4, Bronze 5, Silver 10, Gold 20, Platinum 30, Diamond 40, Warrior 50. (2) Goblet squat 53 lb max unbroken reps (0 = Iron; the app records 35 lb DB reps as a sub-score for the ghost but tiers are on the 53 only): Bronze 1, Silver 6, Gold 11, Platinum 16, Diamond 21, Warrior 31. (3) Suitcase carry 53 lb, seconds per hand, score = min(left, right): Bronze 20, Silver 40, Gold 60, Platinum 90, Diamond 120, Warrior 180. (4) Plank hold seconds: Bronze 30, Silver 60, Gold 90, Platinum 120, Diamond 180, Warrior 240. Boss Week Day 3 = ENGINE BOSS: (5) 1-mile treadmill time (0% incline, any run/walk): Bronze < 15:00, Silver < 12:00, Gold < 10:00, Platinum < 9:00, Diamond < 8:00, Warrior < 7:00. (6) 5-minute KB swing test, 53 lb, total reps, any rest (locked until the swing form ladder is cleared, shown as 'Sealed' with the unlock rule): Bronze 30, Silver 50, Gold 75, Platinum 100, Diamond 125, Warrior 150. Each boss card shows current tier medal, the number needed for the next tier, and your Recon/previous result as the Ghost. Scoring: +150 XP per tier gained, +50 per attempt; the Boss Season is WON with >= 2 total promotions (week 4 auto-WIN 'First Blood'). Result screen: a 'BOSS DEFEATED' or 'BOSS SURVIVED' stamp, medal upgrades animating on the body map, and the week-8/12 projection ('At this pace: Gold push-ups by Boss 3'). Safety gates in data: goblet and swing tests require the corresponding ladder rung >= the loaded variant; push-up max stops at form break (user taps stop); all tests are single attempts with a 3-minute rest between.",
+  "body_map": "A front/back silhouette (single SVG, 9 clickable path groups: chest, shoulders, arms, back, core, glutes, quads, hamstrings_calves, and a heart icon for cardio) sits on the Home tab under the Ghost race and fills the Body screen. Every set's Work Score is split into regions by the exercise's regions weights; region level = floor(sqrt(region_xp/60)); regions fill from grey (0-2) to bronze (3-5), silver (6-8), gold (9-11), platinum (12-14), diamond (15+), with a thin animated fill line showing progress to the next level. Today's trained regions pulse for 2 s on the Session Result screen and show a small '+level' tag if they levelled. Benchmark tiers overlay as medal pins: push-ups pin on chest, goblet on quads, carry on arms/core, plank on core, mile on heart, swings on glutes. The weakest region gets a dashed outline and appears once a week as a 'Number to beat' so the map drives balance head to toe. Tapping a region shows its level, XP to next, top-3 feeding exercises, and days since last PR in that region. Milestone: all nine regions at Gold turns the whole silhouette gold with the 'Gold Head to Toe' badge.",
+  "first_7_days_experience": "Day 0 (setup, 2 min): ask vest weight, whether dumbbells are pairs, treadmill max incline; pick rest day. Day 1 'Recon' (Mon): light baseline in-session (push-up max, plank, 1-min bodyweight squats, 1-mile walk/jog) plus a short beginner circuit at Trainer Ghost 0.9x targets; the user sees First Blood, their first tiers (mostly Iron/Bronze, framed as 'starting tiers, every one goes up'), reaches level 2 in one session, and the body map lights chest/core/heart bronze. Day 2 (Tue): first real match vs Trainer Ghost; pre-filled sets mean the whole log is ~12 taps; almost certainly a WIN (+50) and 1-3 PRs since everything is new (cap 3); level 3-4. Day 3 (Wed): KB hinge/deadlift rung and incline treadmill; 'Vest Up' hint shows what rung unlocks the vest; first ladder step is likely on Day 4-5 because week-1 targets are deliberately at the bottom of ranges. Day 4 (Thu): Boss Arena tab surfaces 'Boss in 24 days' with the six cards and the swing test 'Sealed' (unlock rule visible), turning week 3's form work into a quest. Day 5 (Fri): first Quick Strike suggestion if the session is started after 8 pm ('15 min? Take a Quick Strike'). Day 6 (Sat): the scoreboard shows Season 1 nearly complete: 'Finish today for a Shield'. Day 7 (Sun, rest): opening the app auto-logs Rest, shows the first Warrior Report Card (expected B/A on Attendance, A on Strength thanks to first ladder steps, C-B Engine, A Ghost Record), a title, the Shield earned, 'Week One Warrior' badge, level ~9-10 'Fighter' within reach, and the three Numbers to beat in Season 2 (now against real Ghosts). Everything in the first week is engineered so the user wins visibly (early wins) while the score already comes from work, not attendance.",
+  "anti_patterns_deliberately_avoided": [
+   "No daily streak reset on a single miss: Shields auto-apply and a 48 h Reclaim window exists, because a beginner's day-7 dropout cliff is where hard resets do the most damage.",
+   "No leaderboards or comparison against other people: every opponent is the user's own past week (self-referenced goals sustain motivation and lower burnout).",
+   "No XP for opening the app, watching, or tapping through screens: XP is only earned by work, ghosts, PRs, ladders, tiers, and attendance.",
+   "No incentive to train on the rest day or 7 days a week: rest day scores 0 XP but keeps the streak; season WIN requires >= 4.5 sessions, not 7.",
+   "No 'beat the ghost at any cost' arms race: ghost is beaten by +1 point, dominate caps at 110%, PRs cap at 3 per session, camp weeks freeze ghosts, and a LOSS never lowers next week's bar or adds a penalty.",
+   "No assuming equipment you do not own: weight chips only show 8/10/12/20/35/53 and the vest; ladders bridge gaps with reps, tempo, pauses, unilateral and vest rungs.",
+   "No benchmark on untrained skills: swing and goblet tests are sealed behind form-ladder rungs so week 4 cannot injure a beginner.",
+   "No exponential level curve or paywall-style loot: level cost grows ~L^1.6 so levelling stays visible in week 12, and every reward is earned, never bought.",
+   "No shame states: a bad week is 'Regroup' with a 3-item plan; a broken streak yields the Comeback badge; the weakest body region is framed as the next target.",
+   "No dependence on notifications: all motivation is on-open (race bar, countdown, numbers to beat, report card), since a static GitHub Pages PWA cannot push."
+  ],
+  "screens": [
+   {
+    "name": "Today / Arena Home",
+    "purpose": "The daily match card: who you are fighting today and the numbers to beat.",
+    "key_elements": [
+     "Season N \u00b7 Match k/6 banner",
+     "You vs Ghost race bars with ghost score",
+     "2-3 Numbers to beat (auto-picked: ladder-imminent, stale region, weakest region)",
+     "Battle Streak flame + Shields",
+     "Boss countdown ring",
+     "Start / Quick Strike (15 min) buttons",
+     "Rest day variant: auto-logged rest, scoreboard preview"
+    ]
+   },
+   {
+    "name": "Workout Logger",
+    "purpose": "One-tap set logging pre-filled with ghost values.",
+    "key_elements": [
+     "Sticky header: You / Ghost / sets left",
+     "Exercise rows with rung indicator 'Rung 3/9'",
+     "Set pills: tap = done at prefill; tap number = stepper with +/-1 reps and owned-weight chips (8/10/12/20/35/53/vest)",
+     "Ghost value 'G: 8' under each pill; sword icon on beat; gold flash on PR",
+     "Treadmill block: minutes/incline/speed chips and 'talk test failed' toggle",
+     "Finish button"
+    ]
+   },
+   {
+    "name": "Session Result",
+    "purpose": "The win/loss moment and XP payout.",
+    "key_elements": [
+     "GHOST BEATEN / GHOST WINS / TRAINER GHOST stamp with scores",
+     "XP breakdown lines (work, attendance, ghost, PRs, ladder steps)",
+     "Level bar and rank title",
+     "Ladder Step callouts",
+     "Body map with pulsing regions",
+     "Single Close button"
+    ]
+   },
+   {
+    "name": "PR Board",
+    "purpose": "All personal records in one place, sorted by recency.",
+    "key_elements": [
+     "Record cards per variant/load with date",
+     "Cardio records (mile, longest Z2, incline-minutes)",
+     "Days-since-PR per region with 'Stale' tags",
+     "Weekly PR count"
+    ]
+   },
+   {
+    "name": "Season Scoreboard",
+    "purpose": "This week vs last week vs best week.",
+    "key_elements": [
+     "Three-column table: work score, sessions, ghosts beaten, PRs, ladder steps, Z2 minutes",
+     "Deltas with arrows; crown on best week",
+     "Season history strip (W/D/L per season)",
+     "Shield earn progress ('5/5 sessions for a Shield')"
+    ]
+   },
+   {
+    "name": "Boss Arena",
+    "purpose": "Benchmark events with countdown and tier medals.",
+    "key_elements": [
+     "Countdown ring to next boss day",
+     "Six boss cards: current tier medal, next threshold, last result as ghost",
+     "Sealed state with unlock rule for swing/goblet tests",
+     "Boss-day mode: guided test flow with timers and single-input entry",
+     "Result stamp and projection to next boss"
+    ]
+   },
+   {
+    "name": "Body Map",
+    "purpose": "Head-to-toe level visualization.",
+    "key_elements": [
+     "Front/back silhouette with 9 regions coloured by tier",
+     "Medal pins from benchmarks",
+     "Weakest region dashed outline",
+     "Region detail sheet: level, XP to next, top-3 exercises, days since PR"
+    ]
+   },
+   {
+    "name": "Warrior Report Card",
+    "purpose": "Weekly letter grades and the plan for next week.",
+    "key_elements": [
+     "Four grade tiles (Attendance, Strength, Engine, Ghost Record) with formula tooltips",
+     "GPA and title stamp",
+     "Badges earned this week",
+     "Three Numbers to beat next season",
+     "Archive of previous cards"
+    ]
+   },
+   {
+    "name": "Settings / Setup",
+    "purpose": "Capture the equipment facts that all formulas depend on.",
+    "key_elements": [
+     "Vest weight (lb), dumbbell pairs yes/no, treadmill max incline",
+     "Rest day picker",
+     "Medic Tent toggle",
+     "Export/import JSON backup (localStorage)"
+    ]
+   }
+  ]
+ }
+]

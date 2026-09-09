@@ -1,0 +1,627 @@
+{
+  "exercises": [
+    {
+      "id": "goblet_squat",
+      "name": "Goblet squat",
+      "region": "thighs",
+      "pattern": "squat",
+      "equipment": "chair, dumbbells 12/20/35, 53 lb kettlebell, vest",
+      "cues": [
+        "Weight at the chest, elbows inside the knees at the bottom",
+        "Heels stay down, knees track over the toes, hips to knee height or lower",
+        "Big breath and brace before every descent, exhale on the way up",
+        "53 lb bell: deadlift the bell to the knees, then curl it to the chest with both hands - never swing it up"
+      ],
+      "stop_if": "Sharp knee, hip or low-back pain, heels lifting you cannot fix, or knees collapsing inward on the way up",
+      "region_weights": {
+        "thighs": 0.6,
+        "glutes": 0.3,
+        "core": 0.1
+      },
+      "checklist": {
+        "n": 5,
+        "cues": [
+          "Heels stayed down the whole rep",
+          "Knees tracked over the toes, no inward collapse",
+          "Hips reached knee height or lower",
+          "Chest stayed up, no forward pitch",
+          "Stood up without rocking or bouncing"
+        ]
+      },
+      "ladder": [
+        {
+          "id": "goblet_squat.chair",
+          "ord": 1,
+          "name": "Chair sit-to-stand",
+          "how": "Stand in front of the chair, arms forward. Sit back over 3 s until the seat just brushes you, then stand without rocking. Tick the 5-item checklist on every set.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw", "chair"],
+          "checklist_required": true,
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 15,
+            "consecutive": 2,
+            "requires": [{ "rule": "checklist_all_ok" }]
+          }
+        },
+        {
+          "id": "goblet_squat.bw_squat",
+          "ord": 2,
+          "name": "Bodyweight full squat",
+          "how": "No chair. Arms straight out as a counterweight, 2 s down to full depth, stand tall. Keep the chair behind you as a safety net for the first sets.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 20,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 20, "consecutive": 2 }
+        },
+        {
+          "id": "goblet_squat.db12",
+          "ord": 3,
+          "name": "12 lb goblet squat",
+          "how": "Hold one 12 lb dumbbell vertically against the chest, top bell cupped in both hands. 2 s down, elbows inside the knees at the bottom.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "db", "lb": 12, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db12",
+          "requires": ["bw", "db:12"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "goblet_squat.db20",
+          "ord": 4,
+          "name": "20 lb goblet squat",
+          "how": "Same hold with one 20 lb dumbbell. 2 s down, stand tall between reps.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db20",
+          "requires": ["bw", "db:20"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "goblet_squat.db20_pause",
+          "ord": 5,
+          "name": "20 lb goblet, 2 s pause",
+          "how": "Same 20 lb hold. Hold the bottom for a silent 2 count with the chest up and the brace on, then stand.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db20",
+          "requires": ["bw", "db:20"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "goblet_squat.db35",
+          "ord": 6,
+          "name": "35 lb goblet squat",
+          "how": "One 35 lb dumbbell at the chest. Deadlift it to the knees first, then bring it up the body - do not curl it from the floor.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db35",
+          "requires": ["bw", "db:35"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "goblet_squat.db35_pause",
+          "ord": 7,
+          "name": "35 lb goblet, 3 s pause",
+          "how": "Same 35 lb hold, 3 s motionless in the bottom with the elbows inside the knees. This is the bridge to the 53 lb bell - own it before you touch the bell.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db35",
+          "requires": ["bw", "db:35"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "goblet_squat.kb53",
+          "ord": 8,
+          "name": "53 lb kettlebell goblet squat",
+          "how": "Deadlift the bell to the knees, then curl it to the chest with both hands and hold it by the horns - never swing it up. 2 s down, elbows inside the knees. Set it down the same way you picked it up.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 6,
+          "B": 12,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "kb53",
+          "requires": ["bw", "kb:53"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 12,
+            "consecutive": 2,
+            "unlocks": ["vest:goblet_squat"]
+          }
+        },
+        {
+          "id": "goblet_squat.kb53_vest",
+          "ord": 9,
+          "name": "53 lb goblet + vest 10% BW, 2 s pause",
+          "how": "Vest on first, then deadlift the bell to the knees and curl it to the chest with both hands. 2 s pause in the bottom. Vest is 10% of bodyweight, capped at 30 lb.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": 10, "cap_lb": 30 },
+          "implement_id": "kb53",
+          "requires": ["bw", "kb:53", "vest"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "split_squat",
+      "name": "Split squat to reverse lunge to Bulgarian split squat",
+      "region": "thighs",
+      "pattern": "lunge",
+      "equipment": "wall, couch cushion, chair, dumbbells 12/20/35, 53 lb kettlebell",
+      "cues": [
+        "Front shin close to vertical, rear knee travels straight down toward the floor",
+        "Torso tall for the quads, a small forward lean for the glutes - pick one and keep it",
+        "Rear foot laces-down on the cushion or seat, all the work in the front leg",
+        "Fingertips on the wall for balance only, never to push"
+      ],
+      "stop_if": "Sharp knee or front-of-hip pinching, the front heel lifting every rep, or a rear knee you cannot control on the way down",
+      "region_weights": {
+        "thighs": 0.5,
+        "glutes": 0.4,
+        "core": 0.1
+      },
+      "ladder": [
+        {
+          "id": "split_squat.wall_assist",
+          "ord": 1,
+          "name": "Wall-assisted split squat",
+          "how": "Split stance, both feet on the floor, one hand on the wall. 2 s down until the rear knee is a hand's width off the floor, then drive through the front heel.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "split_squat.reverse_lunge",
+          "ord": 2,
+          "name": "Reverse lunge (bodyweight)",
+          "how": "From standing, step straight back and lower the rear knee to about an inch off the floor, then pull yourself back to standing with the front leg. Hand on the wall while you learn it.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "split_squat.rl_db12",
+          "ord": 3,
+          "name": "12 lb goblet reverse lunge",
+          "how": "One 12 lb dumbbell held vertically at the chest, both hands. Same reverse lunge, 2 s down.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 12, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db12",
+          "requires": ["bw", "db:12"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "split_squat.bulg_cushion",
+          "ord": 4,
+          "name": "Bulgarian split squat, low elevation (bodyweight)",
+          "how": "Rear foot laces-down on a couch cushion laid on the floor (6-10 in). Front foot about two of your foot-lengths forward. 2 s down, fingertips on the wall for balance.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw", "couch"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "split_squat.bulg_chair",
+          "ord": 5,
+          "name": "Bulgarian split squat, chair height (bodyweight)",
+          "how": "Rear foot laces-down on the chair seat - but only if the seat sits at or below your knee height. If the seat is higher than your knee, stay on the couch cushion or a stack of cushions and add reps instead.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw", "chair"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "split_squat.bulg_db12",
+          "ord": 6,
+          "name": "Bulgarian + 12 lb goblet",
+          "how": "One 12 lb dumbbell at the chest, rear foot on the cushion or seat you settled on. 2 s down.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 12, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db12",
+          "requires": ["bw", "db:12", "chair"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "split_squat.bulg_db20",
+          "ord": 7,
+          "name": "Bulgarian + 20 lb goblet",
+          "how": "One 20 lb dumbbell at the chest. Set it on the floor between sides rather than carrying it around.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db20",
+          "requires": ["bw", "db:20", "chair"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "split_squat.bulg_db20_pause",
+          "ord": 8,
+          "name": "Bulgarian + 20 lb goblet, 2 s pause",
+          "how": "Same 20 lb hold, 2 s motionless at the bottom with the rear knee just off the floor.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db20",
+          "requires": ["bw", "db:20", "chair"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "split_squat.bulg_db35",
+          "ord": 9,
+          "name": "Bulgarian + 35 lb goblet",
+          "how": "One 35 lb dumbbell at the chest. Deadlift it to the knees, then bring it up the body before you set the split stance.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 6,
+          "B": 12,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db35",
+          "requires": ["bw", "db:35", "chair"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "split_squat.bulg_db35_pause",
+          "ord": 10,
+          "name": "Bulgarian + 35 lb goblet, 2 s pause",
+          "how": "Same 35 lb hold with a 2 s pause at the bottom of every rep. This is the bridge to the bell - there is no 45 lb dumbbell, so the pause buys the strength instead.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 6,
+          "B": 10,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db35",
+          "requires": ["bw", "db:35", "chair"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 10, "consecutive": 2 }
+        },
+        {
+          "id": "split_squat.bulg_kb53",
+          "ord": 11,
+          "name": "Bulgarian + 53 lb kettlebell goblet",
+          "how": "Deadlift the bell to the knees, then curl it to the chest with both hands and hold it by the horns - never swing it up. Set the split stance, 2 s down, drive through the front heel. Set the bell down before you switch sides.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 6,
+          "B": 10,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "kb53",
+          "requires": ["bw", "kb:53", "chair"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 10, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "step_up",
+      "name": "Step-up",
+      "region": "glutes",
+      "pattern": "lunge",
+      "equipment": "couch cushion, chair, 35 lb dumbbell, vest",
+      "cues": [
+        "Whole foot on the surface, drive through that heel - no push-off from the bottom foot",
+        "3 s lowering to a soft touch, not a drop",
+        "Stand all the way tall at the top before you come down",
+        "Fingertips on the wall or a doorframe for balance, never for a pull"
+      ],
+      "stop_if": "Sharp knee pain, the surface sliding or tipping, or a lowering you can no longer control",
+      "region_weights": {
+        "glutes": 0.5,
+        "thighs": 0.35,
+        "calves": 0.15
+      },
+      "ladder": [
+        {
+          "id": "step_up.low",
+          "ord": 1,
+          "name": "Low step-up (bottom couch cushion on the floor, 8-12 in)",
+          "how": "Use a bottom couch cushion laid flat on the floor (8-12 in) against a wall so it cannot slide. Whole foot on it, stand up through that heel, 3 s down. Alternate legs.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 12,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw", "couch"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "step_up.chair",
+          "ord": 2,
+          "name": "Chair step-up (bodyweight)",
+          "how": "Full chair-seat height, chair braced against a wall. If the seat is above your knee height, stack cushions to knee height instead and use that. 3 s down.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw", "chair"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 }
+        },
+        {
+          "id": "step_up.chair_slow",
+          "ord": 3,
+          "name": "Chair step-up, slow and high-rep",
+          "how": "Same height, bodyweight, 1 s pause standing tall at the top and 3 s down on every rep. Completing this step is what unlocks the vest for step-ups.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw", "chair"],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 15,
+            "consecutive": 2,
+            "unlocks": ["vest:step_up"]
+          }
+        },
+        {
+          "id": "step_up.vest10",
+          "ord": 4,
+          "name": "Vest 10% BW step-up",
+          "how": "Vest set to 10% of bodyweight, capped at 30 lb. Same chair height, 3 s down.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 10, "cap_lb": 30 },
+          "implement_id": "vest",
+          "requires": ["bw", "chair", "vest"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "step_up.vest15",
+          "ord": 5,
+          "name": "Vest 15% BW step-up",
+          "how": "Vest set to 15% of bodyweight, capped at 30 lb. Same chair height and 3 s lowering.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 15, "cap_lb": 30 },
+          "implement_id": "vest",
+          "requires": ["bw", "chair", "vest"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "step_up.vest15_load",
+          "ord": 6,
+          "name": "Vest 15% BW + 35 lb suitcase step-up",
+          "how": "Vest at 15% of bodyweight (cap 30 lb) plus one 35 lb dumbbell hanging in the hand opposite the stepping leg. Deadlift the dumbbell off the floor with a flat back between sides - that pickup is why this rung waits for the hinge gate. 3 s down, ribs stacked, do not let the loaded side pull you over.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": { "kind": "db_vest", "lb": 35, "n": 1, "vest_pct": 15, "cap_lb": 30 },
+          "implement_id": "db35",
+          "requires": ["bw", "chair", "vest", "db:35"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 12, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "calf_raise",
+      "name": "Calf raise",
+      "region": "calves",
+      "pattern": "squat",
+      "equipment": "wall, dumbbells 20/35, 53 lb kettlebell",
+      "cues": [
+        "Full stretch at the bottom, 2 s squeeze at the very top, 3 s down - about 6 s a rep, so the sets are short on purpose",
+        "Fingertips on the wall for balance only",
+        "Push through the big toe, do not let the ankle roll to the outside",
+        "Two short sets on Monday and two more on Thursday beat one long grinder"
+      ],
+      "stop_if": "Sharp Achilles or arch pain, or a cramp that does not release in a few seconds",
+      "region_weights": {
+        "calves": 1.0
+      },
+      "ladder": [
+        {
+          "id": "calf_raise.two_leg",
+          "ord": 1,
+          "name": "Two-leg calf raise",
+          "how": "Both feet flat on the floor, fingertips on the wall. Rise to the top of the toes, 2 s squeeze, 3 s down to a full stretch.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 20,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 20, "consecutive": 2 }
+        },
+        {
+          "id": "calf_raise.two_leg_slow",
+          "ord": 2,
+          "name": "Two-leg calf raise, 3 s squeeze / 4 s down",
+          "how": "Same movement, slower: 3 s squeeze at the top, 4 s to lower, full stretch at the bottom. Roughly 8 s a rep, so 12-15 reps is a full set.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 12,
+          "B": 15,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "calf_raise.single",
+          "ord": 3,
+          "name": "Single-leg calf raise",
+          "how": "One foot on the floor, the other hooked behind the ankle. Fingertips on the wall for balance only. 2 s squeeze, 3 s down.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 15,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "calf_raise.single_db20",
+          "ord": 4,
+          "name": "Single-leg calf raise + 20 lb",
+          "how": "One 20 lb dumbbell hanging in the same-side hand, other hand's fingertips on the wall. Same 2 s squeeze, 3 s down.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "db", "lb": 20, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db20",
+          "requires": ["bw", "db:20"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "calf_raise.single_db35",
+          "ord": 5,
+          "name": "Single-leg calf raise + 35 lb",
+          "how": "One 35 lb dumbbell in the same-side hand. Deadlift it off the floor with a flat back, do not bend sideways to grab it.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 10,
+          "B": 15,
+          "load": { "kind": "db", "lb": 35, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "db35",
+          "requires": ["bw", "db:35"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 }
+        },
+        {
+          "id": "calf_raise.single_kb53",
+          "ord": 6,
+          "name": "Single-leg calf raise + 53 lb kettlebell, 2 s stretch pause",
+          "how": "Bell hanging in the same-side hand, picked up with a flat-back deadlift. 2 s squeeze at the top and a 2 s pause in the stretch at the bottom.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 15,
+          "load": { "kind": "kb", "lb": 53, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "kb53",
+          "requires": ["bw", "kb:53"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "hinge_deadlift", "step_id": "hinge_deadlift.kb53_floor" }
+          ],
+          "advance": { "rule": "all_sets_reps_gte", "value": 15, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "tibialis_raise",
+      "name": "Wall tibialis raise",
+      "region": "calves",
+      "pattern": "squat",
+      "equipment": "wall",
+      "cues": [
+        "Back and shoulders flat on the wall, heels about 12 in out from the baseboard",
+        "Keep the knees straight-ish and pull the toes up toward the shins as far as they will go",
+        "Lower slowly, do not let the forefoot slap the floor",
+        "This is shin insurance for the incline walking and the running ramp - warm-up work, never a grinder"
+      ],
+      "stop_if": "Sharp shin pain rather than the expected burn, or numbness in the foot",
+      "region_weights": {
+        "calves": 1.0
+      },
+      "ladder": [
+        {
+          "id": "tibialis_raise.wall_20",
+          "ord": 1,
+          "name": "Wall tibialis raise, 20 reps",
+          "how": "Stand with your back on the wall and your heels about 12 in out. Keeping the heels planted, pull the toes and forefeet up toward your shins, hold a beat at the top, then lower over 2 s. Two sets in the lower-day warm-up.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 15,
+          "B": 20,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 20, "consecutive": 2 }
+        },
+        {
+          "id": "tibialis_raise.wall_25",
+          "ord": 2,
+          "name": "Wall tibialis raise, 25 reps",
+          "how": "Same position, same tempo, more reps. If 25 becomes easy, step the heels an inch further from the wall rather than adding load - there is nothing to load this with.",
+          "unit": "reps",
+          "sides": "both",
+          "A": 20,
+          "B": 25,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": 30 },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": { "rule": "all_sets_reps_gte", "value": 25, "consecutive": 2 },
+          "terminal": true
+        }
+      ]
+    }
+  ]
+}

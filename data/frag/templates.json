@@ -1,0 +1,831 @@
+{
+  "templates": [
+    {
+      "id": "mon_lower_a",
+      "dow": 1,
+      "name": "Lower A",
+      "focus": "Squat + hinge school + single-leg + calves + core",
+      "minutes": 48,
+      "blocks": [
+        {
+          "kind": "warmup",
+          "minutes": 6,
+          "items": [
+            {
+              "exercise_id": "warmup_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Lower variant: 3 min easy walk, leg swings, 10 wall hinges, 10 glute bridges, 5 chair squats.",
+              "counts_for_progression": false,
+              "time_override_min": 3.5
+            },
+            {
+              "exercise_id": "tibialis_raise",
+              "sets": 2,
+              "rest_sec": 30,
+              "note": "2 x 20, heels about 12 in from the wall. Shin health for the walking and interval volume.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "strength_a",
+          "minutes": 17,
+          "items": [
+            {
+              "exercise_id": "goblet_squat",
+              "sets": 4,
+              "rest_sec": 90,
+              "note": "Phase 1: 3 s eccentric. Budget 4 x (about 50 s work + 90 s rest).",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "hinge_deadlift",
+              "sets": 3,
+              "rest_sec": 90,
+              "note": "HINGE GATE lift, session 1 of 2 this week (Thursday is session 2). 5-item hinge checklist every set until the gate passes.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "strength_b",
+          "minutes": 14,
+          "items": [
+            {
+              "exercise_id": "split_squat",
+              "sets": 3,
+              "rest_sec": 45,
+              "note": "Each side. Rest cut to 45 s so the block fits: 3 x (about 70 s for both sides + 45 s).",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "calf_raise",
+              "sets": 2,
+              "rest_sec": 45,
+              "note": "Calf session 1 of 2 this week (Thursday is session 2). 2 sets is about 4 min at the slow tempo.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "hollow_hold",
+              "sets": 3,
+              "rest_sec": 30,
+              "note": "Ribs down, low back flat on the floor.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "finisher",
+          "minutes": 7,
+          "items": [
+            {
+              "exercise_id": "zone2_finisher",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "7 min easy walk at talk-test pace, incline read from the current treadmill_zone2 step. Never feeds the Zone-2 ladder.",
+              "counts_for_progression": false,
+              "time_override_min": 7,
+              "substitutes": [
+                {
+                  "exercise_id": "march_step_zone2",
+                  "reason": "The treadmill is in use \u2014 march at the same talk-test pace."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "cooldown",
+          "minutes": 4,
+          "items": [
+            {
+              "exercise_id": "cooldown_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Couch stretch, hamstring, calf, 60 s nasal breathing.",
+              "counts_for_progression": false,
+              "time_override_min": 4
+            }
+          ]
+        }
+      ],
+      "skirmish": {
+        "warmup_min": 2,
+        "rounds": 3,
+        "rest_sec": 45,
+        "exercise_ids": [
+          "goblet_squat",
+          "hinge_deadlift",
+          "calf_raise"
+        ]
+      }
+    },
+    {
+      "id": "tue_upper_a",
+      "dow": 2,
+      "name": "Upper A",
+      "focus": "Horizontal push + overhead press + row + lateral delts + biceps + grip/neck",
+      "minutes": 48,
+      "blocks": [
+        {
+          "kind": "warmup",
+          "minutes": 6,
+          "items": [
+            {
+              "exercise_id": "warmup_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Upper variant: 2 min walk, arm circles, 10 wall slides, 10 wall hinges, 8 push-ups one ladder step easier.",
+              "counts_for_progression": false,
+              "time_override_min": 4.5
+            },
+            {
+              "exercise_id": "prone_ytw",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "1 light set of Y-T-W as shoulder prep. Warm-up only, it never moves the ladder; the 2 working sets are in the finisher.",
+              "counts_for_progression": false,
+              "time_override_min": 1.5
+            }
+          ]
+        },
+        {
+          "kind": "strength_a",
+          "minutes": 15,
+          "items": [
+            {
+              "exercise_id": "push_up",
+              "sets": 4,
+              "rest_sec": 75,
+              "note": "Phase 1: 3 s down. If on step 1, do the wall push-ups with a closer stance.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "db_overhead_press",
+              "sets": 3,
+              "rest_sec": 75,
+              "note": "Each side. Requires the shoulder screen passed at onboarding.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "strength_b",
+          "minutes": 15,
+          "items": [
+            {
+              "exercise_id": "db_row",
+              "sets": 3,
+              "rest_sec": 60,
+              "note": "Each side, chair supported. Ribs to hip pocket, no twist.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "db_lateral_raise",
+              "sets": 3,
+              "rest_sec": 45,
+              "note": "Phase 3: last set to RIR 0.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "db_curl",
+              "sets": 3,
+              "rest_sec": 45,
+              "note": "Elbows pinned, no swing.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "finisher",
+          "minutes": 8,
+          "items": [
+            {
+              "exercise_id": "prone_ytw",
+              "sets": 2,
+              "rest_sec": 45,
+              "note": "Added as the second pull of the day (weekly pull volume). No diamond_push_up on Tuesday: triceps were over-dosed and this slot is now upper-back work.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "farmer_carry",
+              "sets": 2,
+              "rest_sec": 40,
+              "note": "Grip and traps. Walk the hallway, tall posture.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "neck_isometrics",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "One round, 4 directions.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "cooldown",
+          "minutes": 4,
+          "items": [
+            {
+              "exercise_id": "cooldown_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "2 min easy walk, chest / lat / neck stretch.",
+              "counts_for_progression": false,
+              "time_override_min": 4
+            }
+          ]
+        }
+      ],
+      "skirmish": {
+        "warmup_min": 2,
+        "rounds": 3,
+        "rest_sec": 45,
+        "exercise_ids": [
+          "push_up",
+          "db_overhead_press",
+          "db_row"
+        ]
+      }
+    },
+    {
+      "id": "wed_heart",
+      "dow": 3,
+      "name": "Heart + Warrior Skill",
+      "focus": "Zone-2 engine + Turkish get-up + obliques and carries",
+      "minutes": 49,
+      "blocks": [
+        {
+          "kind": "warmup",
+          "minutes": 3,
+          "items": [
+            {
+              "exercise_id": "zone2_finisher",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "3 min easy walk ramping to talk-test pace. Warm-up walk only: it must never move the treadmill_zone2 ladder.",
+              "counts_for_progression": false,
+              "time_override_min": 3,
+              "substitutes": [
+                {
+                  "exercise_id": "march_step_zone2",
+                  "reason": "The treadmill is in use \u2014 march at the same talk-test pace."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "conditioning",
+          "minutes": 33,
+          "items": [
+            {
+              "exercise_id": "treadmill_zone2",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "The ONLY block in the program that feeds the Zone-2 ladder. Phase 1 30 min, Phase 2 33 min, Phase 3 stays 33 min (not 36) so the day fits 50. Block budgeted at its longest, 33 min. vest_walk replaces this once unlocked. Change one variable per week.",
+              "counts_for_progression": true,
+              "time_override_min": null,
+              "substitutes": [
+                {
+                  "exercise_id": "march_step_zone2",
+                  "reason": "The treadmill is in use \u2014 march at the same talk-test pace."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "strength_b",
+          "minutes": 6,
+          "items": [
+            {
+              "exercise_id": "turkish_get_up",
+              "sets": 3,
+              "rest_sec": 30,
+              "note": "3 per side (6 total) with 30 s rest: 3 x (about 90 s for both sides + 30 s) = 6 min. 4 sets did not fit. Slow and perfect, never to fatigue. Time guard may never drop this block.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "finisher",
+          "minutes": 5,
+          "items": [
+            {
+              "exercise_id": "suitcase_carry",
+              "sets": 2,
+              "rest_sec": 20,
+              "note": "Each side. Anti-lateral-flexion, do not lean.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "plank_side_plank",
+              "sets": 1,
+              "rest_sec": 20,
+              "note": "1 set: plank then each side plank.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "cooldown",
+          "minutes": 2,
+          "items": [
+            {
+              "exercise_id": "cooldown_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Hip flexor, hamstring, breathing.",
+              "counts_for_progression": false,
+              "time_override_min": 2
+            }
+          ]
+        }
+      ],
+      "skirmish": {
+        "warmup_min": 2,
+        "rounds": 3,
+        "rest_sec": 45,
+        "exercise_ids": [
+          "turkish_get_up",
+          "suitcase_carry"
+        ],
+        "cardio": {
+          "exercise_id": "zone2_finisher",
+          "minutes": 12
+        }
+      }
+    },
+    {
+      "id": "thu_lower_b",
+      "dow": 4,
+      "name": "Lower B",
+      "focus": "Hinge school session 2 + power (swing ladder) + glutes + hamstrings + step-ups + calves",
+      "minutes": 50,
+      "blocks": [
+        {
+          "kind": "warmup",
+          "minutes": 6,
+          "items": [
+            {
+              "exercise_id": "warmup_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Lower variant: 3 min easy walk, leg swings, 10 wall hinges, 10 glute bridges, 15 s hollow-hold brace rehearsal.",
+              "counts_for_progression": false,
+              "time_override_min": 3.5
+            },
+            {
+              "exercise_id": "tibialis_raise",
+              "sets": 2,
+              "rest_sec": 30,
+              "note": "2 x 20 against the wall.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "strength_a",
+          "minutes": 15,
+          "items": [
+            {
+              "exercise_id": "hinge_deadlift",
+              "sets": 3,
+              "rest_sec": 90,
+              "note": "HINGE GATE session 2 of 2, placed AHEAD of the swing on purpose. Twice-weekly hinge practice is what makes the 53 lb bell reachable inside 12 weeks; without it the Phase 2 and Phase 3 promises are false. Checklist 5/5 every set until the gate passes.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "swing",
+              "sets": 4,
+              "rest_sec": 60,
+              "note": "Thursday is the swing LADDER day (exercise_id swing). Steps 1-5 use a dumbbell; the 53 lb bell only from swing.deadstop_53. While the step's entry gate (hinge_deadlift.rdl_20 and up) is unmet the app runs the fallback below instead. The fallback block runs about 1 min long; the time guard trims the last hinge set, never the swing.",
+              "counts_for_progression": true,
+              "time_override_min": null,
+              "fallback_when_locked": [
+                {
+                  "exercise_id": "hinge_deadlift",
+                  "sets": 2,
+                  "rest_sec": 90,
+                  "note": "Extra hinge practice while the swing is still locked."
+                },
+                {
+                  "exercise_id": "glute_bridge",
+                  "sets": 2,
+                  "rest_sec": 45
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "strength_b",
+          "minutes": 17,
+          "items": [
+            {
+              "exercise_id": "hip_thrust",
+              "sets": 3,
+              "rest_sec": 60,
+              "note": "Chin tucked, ribs down, 1 s squeeze at the top.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "single_leg_rdl",
+              "sets": 2,
+              "rest_sec": 45,
+              "note": "Each side. Cut to 2 sets so the twice-weekly hinge and calf work fit inside 50 min.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "step_up",
+              "sets": 2,
+              "rest_sec": 45,
+              "note": "Each side, onto the bottom couch cushion on the floor (8-12 in), not a chair seat unless the seat is at or below knee height.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "calf_raise",
+              "sets": 2,
+              "rest_sec": 45,
+              "note": "Calf session 2 of 2 this week. This is what makes the 'twice weekly' claim true.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "finisher",
+          "minutes": 8,
+          "items": [
+            {
+              "exercise_id": "zone2_finisher",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "8 min easy flush walk. Never feeds the Zone-2 ladder.",
+              "counts_for_progression": false,
+              "time_override_min": 8,
+              "substitutes": [
+                {
+                  "exercise_id": "march_step_zone2",
+                  "reason": "The treadmill is in use \u2014 march at the same talk-test pace."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "cooldown",
+          "minutes": 4,
+          "items": [
+            {
+              "exercise_id": "cooldown_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Hamstring, glute, calf, breathing.",
+              "counts_for_progression": false,
+              "time_override_min": 4
+            }
+          ]
+        }
+      ],
+      "skirmish": {
+        "warmup_min": 2,
+        "rounds": 3,
+        "rest_sec": 45,
+        "exercise_ids": [
+          "hinge_deadlift",
+          "swing",
+          "hip_thrust"
+        ]
+      }
+    },
+    {
+      "id": "fri_upper_b",
+      "dow": 5,
+      "name": "Upper B",
+      "focus": "Heavy row + floor press + vertical push + rear delts + triceps + traps + neck",
+      "minutes": 48,
+      "blocks": [
+        {
+          "kind": "warmup",
+          "minutes": 6,
+          "items": [
+            {
+              "exercise_id": "warmup_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Upper variant: 2 min walk, arm circles, 10 wall slides, 10 wall hinges, 8 push-ups one ladder step easier.",
+              "counts_for_progression": false,
+              "time_override_min": 4.5
+            },
+            {
+              "exercise_id": "prone_ytw",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "1 light set of Y-T-W as shoulder prep. Warm-up only; the 2 working sets are in the finisher.",
+              "counts_for_progression": false,
+              "time_override_min": 1.5
+            }
+          ]
+        },
+        {
+          "kind": "strength_a",
+          "minutes": 15,
+          "items": [
+            {
+              "exercise_id": "db_row",
+              "sets": 4,
+              "rest_sec": 60,
+              "note": "Each side. Heaviest row of the week.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "db_floor_press",
+              "sets": 3,
+              "rest_sec": 75,
+              "note": "Elbows about 45 degrees, pause when the triceps touch the floor.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "strength_b",
+          "minutes": 16,
+          "items": [
+            {
+              "exercise_id": "pike_push_up",
+              "sets": 3,
+              "rest_sec": 60,
+              "note": "Hips high, crown of the head to the floor between the hands.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "db_rear_delt_fly",
+              "sets": 3,
+              "rest_sec": 45,
+              "note": "Thumbs up, lead with the elbows.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "diamond_push_up",
+              "sets": 3,
+              "rest_sec": 45,
+              "phase_sets": {
+                "1": 3,
+                "2": 0,
+                "3": 0
+              },
+              "note": "PHASE 1 ONLY. It replaces db_triceps_extension in this one slot (it does not add volume) so Phase 1 triceps land near 14 sets/week instead of 18. Moved off Tuesday. 0 sets in Phases 2-3, where db_triceps_extension takes the slot back.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "db_triceps_extension",
+              "sets": 3,
+              "rest_sec": 45,
+              "phase_sets": {
+                "1": 0,
+                "2": 3,
+                "3": 3
+              },
+              "note": "PHASES 2-3 ONLY. Same slot as diamond_push_up above: exactly one of the two runs in any given session, never both.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "db_shrug",
+              "sets": 2,
+              "rest_sec": 30,
+              "note": "Straight up, 1 s hold, no rolling.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "finisher",
+          "minutes": 7,
+          "items": [
+            {
+              "exercise_id": "db_hammer_curl",
+              "sets": 2,
+              "rest_sec": 30,
+              "note": "Superset with prone_ytw.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "prone_ytw",
+              "sets": 2,
+              "rest_sec": 30,
+              "note": "Working sets. Superset with the hammer curls.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "neck_isometrics",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "One round, 4 directions.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "cooldown",
+          "minutes": 4,
+          "items": [
+            {
+              "exercise_id": "cooldown_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Lat, pec, triceps, neck, breathing.",
+              "counts_for_progression": false,
+              "time_override_min": 4
+            }
+          ]
+        }
+      ],
+      "skirmish": {
+        "warmup_min": 2,
+        "rounds": 3,
+        "rest_sec": 45,
+        "exercise_ids": [
+          "db_row",
+          "db_floor_press",
+          "pike_push_up"
+        ]
+      }
+    },
+    {
+      "id": "sat_warrior",
+      "dow": 6,
+      "name": "Warrior Day",
+      "focus": "Intervals + swing density engine + core. Weeks 4, 8 and 12 the Boss Battle script replaces this session.",
+      "minutes": 49,
+      "blocks": [
+        {
+          "kind": "warmup",
+          "minutes": 5,
+          "items": [
+            {
+              "exercise_id": "warmup_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Lower variant plus 8 hike-and-park reps with the current swing implement. These rehearsal reps feed the swing checklist, never the swing ladder.",
+              "counts_for_progression": false,
+              "time_override_min": 5
+            }
+          ]
+        },
+        {
+          "kind": "conditioning",
+          "minutes": 20,
+          "items": [
+            {
+              "exercise_id": "treadmill_intervals",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Includes 2 min easy in and out. Step 1 is brisk-walk intervals; jogging only from step 3. No shin, knee or Achilles pain flag in 14 days to advance from step 3 up.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "strength_b",
+          "minutes": 12,
+          "items": [
+            {
+              "exercise_id": "swing_density",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Saturday uses swing_density, NOT swing: its own ladder (EMOM to density clock) so the Saturday engine and the Thursday swing ladder can never advance or regress each other. 8-10 min of work plus setup. Entry gates on the steps hold this at the hinge/goblet EMOM until the Thursday swing ladder earns the harder rungs.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "finisher",
+          "minutes": 6,
+          "items": [
+            {
+              "exercise_id": "hollow_hold",
+              "sets": 2,
+              "rest_sec": 20,
+              "note": "Low back flat throughout.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "plank_side_plank",
+              "sets": 1,
+              "rest_sec": 20,
+              "note": "1 set, not 2: 2 sets overflowed this block.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            },
+            {
+              "exercise_id": "leg_raise",
+              "sets": 2,
+              "rest_sec": 20,
+              "note": "Lower only as far as the low back stays down.",
+              "counts_for_progression": true,
+              "time_override_min": null
+            }
+          ]
+        },
+        {
+          "kind": "cooldown",
+          "minutes": 6,
+          "items": [
+            {
+              "exercise_id": "zone2_finisher",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "4 min flush walk. Never feeds the Zone-2 ladder.",
+              "counts_for_progression": false,
+              "time_override_min": 4,
+              "substitutes": [
+                {
+                  "exercise_id": "march_step_zone2",
+                  "reason": "The treadmill is in use \u2014 march at the same talk-test pace."
+                }
+              ]
+            },
+            {
+              "exercise_id": "cooldown_flow",
+              "sets": 1,
+              "rest_sec": 0,
+              "note": "Hip flexor, hamstring, forearm, breathing.",
+              "counts_for_progression": false,
+              "time_override_min": 2
+            }
+          ]
+        }
+      ],
+      "skirmish": {
+        "warmup_min": 2,
+        "rounds": 3,
+        "rest_sec": 45,
+        "exercise_ids": [
+          "swing_density",
+          "hollow_hold",
+          "plank_side_plank"
+        ],
+        "cardio": {
+          "exercise_id": "zone2_finisher",
+          "minutes": 6
+        }
+      }
+    },
+    {
+      "id": "sun_rest",
+      "dow": 0,
+      "name": "Rest",
+      "focus": "Full rest. An optional easy walk keeps the duo streak alive; skipping it costs nothing.",
+      "minutes": 0,
+      "blocks": [],
+      "kindle": {
+        "exercise_id": "zone2_finisher",
+        "minutes_min": 20,
+        "minutes_max": 30,
+        "optional": true,
+        "counts_for_progression": false,
+        "counts_as_trained": true,
+        "note": "Optional 20-30 min easy walk at talk-test pace, outdoors or on the treadmill. Logs Zone-2 minutes and holds the duo streak, but never moves the treadmill_zone2 ladder and never penalises a skip. If the treadmill is taken, march_step_zone2 substitutes."
+      }
+    }
+  ]
+}

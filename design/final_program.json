@@ -1,0 +1,2562 @@
+{
+ "title": "Warrior Forge 12: Duo Edition (Hypertrophy-First Upper/Lower + Kettlebell Power + Heart Engine)",
+ "philosophy": "Spine = Design 2 (judges' winner): an upper/lower split with a Zone-2 day in the middle, every visible muscle trained twice a week at a prescribed effort (reps-in-reserve), and load manufactured from light dumbbells with tempo, pauses, 1.5-reps, unilateral work, density and the vest. Grafted on top: Design 0's kettlebell discipline (StrongFirst hinge-before-swing chain, Turkish get-up skill ladder, Simple & Sinister swing density clock, two-hand rack for the 53 lb press, no week-1 max tests) and Design 1's machine-drivable data model (target grammar, SUCCESS/FAIL definitions, gate expressions, missed-training rules, vest as % bodyweight, one-ruck-variable-per-week). Every ladder now starts low enough for a smaller or weaker beginner: wall push-ups, chair sit-to-stand, 8 lb presses, 12 lb rows and goblets, two-hand DUMBBELL swings at 20 then 35 lb before the 53 lb bell is ever hiked. The 53 lb bell, the vest and running are milestones earned through exact form gates, per user. Cardio follows the AHA/HHS guideline (150 min/week moderate or 75 vigorous, plus muscle-strengthening on 2+ days). Two players share one program and one set of iron but own their ladder positions, XP, streaks and benchmark history; rivalry is scored on relative progress only.",
+ "why_this_gets_results_fast": "Beginners adapt to almost any consistent stimulus, so the biggest levers are (1) showing up 6x/week with a plan that is always completable, (2) frequency: chest, back, shoulders, arms, glutes, quads, hamstrings, calves and core each hit twice weekly, (3) effective reps: RIR 3 -> 2 -> 1 across phases so the last reps of every set recruit high-threshold fibers, (4) double progression with auto-advance so no target sits stale more than two sessions, (5) load-gap engineering so 8->10->12->20->35->53 lb never stalls a lift, (6) conditioning that runs in parallel without stealing recovery: Zone 2 is easy by the talk test, one weekly interval day and short swing EMOMs raise VO2max and stamina fast, (7) Boss Battles every 4 weeks plus a duo scoreboard make progress visible, which drives adherence, which is what actually makes it fast.",
+ "weekly_template": [
+  {
+   "day": "Mon",
+   "focus": "Lower A: squat + hinge school + single-leg + calves + core",
+   "duration_min": 48,
+   "blocks": [
+    {
+     "block": "warm-up",
+     "minutes": 6,
+     "items": [
+      {
+       "exercise_id": "warmup_flow",
+       "sets": "1",
+       "reps_or_time": "6 min (lower variant)",
+       "rest_sec": 0,
+       "notes": "3 min walk, leg swings, 10 wall hinges, 10 glute bridges, 5 chair squats"
+      }
+     ]
+    },
+    {
+     "block": "strength A",
+     "minutes": 16,
+     "items": [
+      {
+       "exercise_id": "goblet_squat",
+       "sets": "4",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 90,
+       "notes": "Phase 1: 3 s eccentric"
+      },
+      {
+       "exercise_id": "hinge_deadlift",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 90,
+       "notes": "5-item hinge checklist shown every set until HINGE GATE passed"
+      }
+     ]
+    },
+    {
+     "block": "strength B",
+     "minutes": 15,
+     "items": [
+      {
+       "exercise_id": "split_squat",
+       "sets": "3",
+       "reps_or_time": "ladder step target each side",
+       "rest_sec": 60
+      },
+      {
+       "exercise_id": "calf_raise",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 45
+      },
+      {
+       "exercise_id": "hollow_hold",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 30
+      }
+     ]
+    },
+    {
+     "block": "conditioning",
+     "minutes": 7,
+     "items": [
+      {
+       "exercise_id": "treadmill_zone2",
+       "sets": "1",
+       "reps_or_time": "7 min",
+       "rest_sec": 0,
+       "notes": "Zone-2 incline walk at current ladder incline; vest_walk may substitute once unlocked"
+      }
+     ]
+    },
+    {
+     "block": "cooldown",
+     "minutes": 4,
+     "items": [
+      {
+       "exercise_id": "cooldown_flow",
+       "sets": "1",
+       "reps_or_time": "4 min",
+       "rest_sec": 0,
+       "notes": "couch stretch, hamstring, calf, breathing"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Tue",
+   "focus": "Upper A: push + shoulders + row + biceps + triceps + grip/traps/neck",
+   "duration_min": 47,
+   "blocks": [
+    {
+     "block": "warm-up",
+     "minutes": 6,
+     "items": [
+      {
+       "exercise_id": "warmup_flow",
+       "sets": "1",
+       "reps_or_time": "6 min (upper variant)",
+       "rest_sec": 0,
+       "notes": "2 min walk, arm circles, 10 wall slides, 10 wall hinges, 8 push-ups one step easier, 6 prone Y-T-W"
+      }
+     ]
+    },
+    {
+     "block": "strength A",
+     "minutes": 15,
+     "items": [
+      {
+       "exercise_id": "push_up",
+       "sets": "4",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 75
+      },
+      {
+       "exercise_id": "db_overhead_press",
+       "sets": "3",
+       "reps_or_time": "ladder step target each side",
+       "rest_sec": 75,
+       "notes": "requires shoulder screen passed"
+      }
+     ]
+    },
+    {
+     "block": "strength B",
+     "minutes": 17,
+     "items": [
+      {
+       "exercise_id": "db_row",
+       "sets": "3",
+       "reps_or_time": "ladder step target each side",
+       "rest_sec": 60
+      },
+      {
+       "exercise_id": "db_lateral_raise",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 45,
+       "notes": "Phase 3: last set RIR 0"
+      },
+      {
+       "exercise_id": "db_curl",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 45
+      },
+      {
+       "exercise_id": "diamond_push_up",
+       "sets": "2",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 30
+      }
+     ]
+    },
+    {
+     "block": "finisher",
+     "minutes": 5,
+     "items": [
+      {
+       "exercise_id": "farmer_carry",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 40
+      },
+      {
+       "exercise_id": "neck_isometrics",
+       "sets": "1",
+       "reps_or_time": "ladder step target (one round, 4 directions)",
+       "rest_sec": 0
+      }
+     ]
+    },
+    {
+     "block": "cooldown",
+     "minutes": 4,
+     "items": [
+      {
+       "exercise_id": "cooldown_flow",
+       "sets": "1",
+       "reps_or_time": "4 min",
+       "rest_sec": 0,
+       "notes": "2 min easy walk, chest/lat/neck stretch"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Wed",
+   "focus": "Heart + Warrior Skill: Zone-2 engine + Turkish get-up + obliques",
+   "duration_min": 49,
+   "blocks": [
+    {
+     "block": "warm-up",
+     "minutes": 3,
+     "items": [
+      {
+       "exercise_id": "treadmill_zone2",
+       "sets": "1",
+       "reps_or_time": "3 min",
+       "rest_sec": 0,
+       "notes": "easy walk ramping to talk-test pace"
+      }
+     ]
+    },
+    {
+     "block": "conditioning",
+     "minutes": 32,
+     "items": [
+      {
+       "exercise_id": "treadmill_zone2",
+       "sets": "1",
+       "reps_or_time": "ladder step (P1 30 min / P2 33 / P3 36; get-up block shrinks to 6 min in P3)",
+       "rest_sec": 0,
+       "notes": "vest_walk replaces this block once unlocked; change one variable per week"
+      }
+     ]
+    },
+    {
+     "block": "strength B",
+     "minutes": 8,
+     "items": [
+      {
+       "exercise_id": "turkish_get_up",
+       "sets": "4",
+       "reps_or_time": "1 each side at ladder step",
+       "rest_sec": 45,
+       "notes": "slow and perfect, never to fatigue"
+      }
+     ]
+    },
+    {
+     "block": "finisher",
+     "minutes": 4,
+     "items": [
+      {
+       "exercise_id": "suitcase_carry",
+       "sets": "2",
+       "reps_or_time": "ladder step target each side",
+       "rest_sec": 20
+      },
+      {
+       "exercise_id": "plank_side_plank",
+       "sets": "1",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 20
+      }
+     ]
+    },
+    {
+     "block": "cooldown",
+     "minutes": 2,
+     "items": [
+      {
+       "exercise_id": "cooldown_flow",
+       "sets": "1",
+       "reps_or_time": "2 min",
+       "rest_sec": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Thu",
+   "focus": "Lower B: power (swing ladder) + glutes + hamstrings + step-ups",
+   "duration_min": 48,
+   "blocks": [
+    {
+     "block": "warm-up",
+     "minutes": 6,
+     "items": [
+      {
+       "exercise_id": "warmup_flow",
+       "sets": "1",
+       "reps_or_time": "6 min (lower variant)",
+       "rest_sec": 0,
+       "notes": "add 15 s hollow hold brace rehearsal"
+      }
+     ]
+    },
+    {
+     "block": "strength A",
+     "minutes": 15,
+     "items": [
+      {
+       "exercise_id": "swing",
+       "sets": "5",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 60,
+       "notes": "steps 1-5 use a dumbbell; 53 lb bell only from step 6 (BELL GATE)"
+      },
+      {
+       "exercise_id": "hip_thrust",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 75
+      }
+     ]
+    },
+    {
+     "block": "strength B",
+     "minutes": 15,
+     "items": [
+      {
+       "exercise_id": "single_leg_rdl",
+       "sets": "3",
+       "reps_or_time": "ladder step target each side",
+       "rest_sec": 60
+      },
+      {
+       "exercise_id": "step_up",
+       "sets": "3",
+       "reps_or_time": "ladder step target each side",
+       "rest_sec": 60
+      }
+     ]
+    },
+    {
+     "block": "conditioning",
+     "minutes": 8,
+     "items": [
+      {
+       "exercise_id": "treadmill_zone2",
+       "sets": "1",
+       "reps_or_time": "8 min",
+       "rest_sec": 0
+      }
+     ]
+    },
+    {
+     "block": "cooldown",
+     "minutes": 4,
+     "items": [
+      {
+       "exercise_id": "cooldown_flow",
+       "sets": "1",
+       "reps_or_time": "4 min",
+       "rest_sec": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Fri",
+   "focus": "Upper B: heavy row + floor press + vertical push + rear delts + triceps + traps + neck",
+   "duration_min": 48,
+   "blocks": [
+    {
+     "block": "warm-up",
+     "minutes": 6,
+     "items": [
+      {
+       "exercise_id": "warmup_flow",
+       "sets": "1",
+       "reps_or_time": "6 min (upper variant)",
+       "rest_sec": 0
+      }
+     ]
+    },
+    {
+     "block": "strength A",
+     "minutes": 15,
+     "items": [
+      {
+       "exercise_id": "db_row",
+       "sets": "4",
+       "reps_or_time": "ladder step target each side",
+       "rest_sec": 60
+      },
+      {
+       "exercise_id": "db_floor_press",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 75
+      }
+     ]
+    },
+    {
+     "block": "strength B",
+     "minutes": 16,
+     "items": [
+      {
+       "exercise_id": "pike_push_up",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 60
+      },
+      {
+       "exercise_id": "db_rear_delt_fly",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 45
+      },
+      {
+       "exercise_id": "db_triceps_extension",
+       "sets": "3",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 45
+      },
+      {
+       "exercise_id": "db_shrug",
+       "sets": "2",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 45
+      }
+     ]
+    },
+    {
+     "block": "finisher",
+     "minutes": 7,
+     "items": [
+      {
+       "exercise_id": "db_hammer_curl",
+       "sets": "2",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 30,
+       "notes": "superset with prone_ytw"
+      },
+      {
+       "exercise_id": "prone_ytw",
+       "sets": "2",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 30
+      },
+      {
+       "exercise_id": "neck_isometrics",
+       "sets": "1",
+       "reps_or_time": "ladder step target (one round)",
+       "rest_sec": 0
+      }
+     ]
+    },
+    {
+     "block": "cooldown",
+     "minutes": 4,
+     "items": [
+      {
+       "exercise_id": "cooldown_flow",
+       "sets": "1",
+       "reps_or_time": "4 min",
+       "rest_sec": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Sat",
+   "focus": "Warrior Day: intervals + swing density + core. Weeks 4, 8, 12: BOSS BATTLE script replaces this session",
+   "duration_min": 50,
+   "blocks": [
+    {
+     "block": "warm-up",
+     "minutes": 5,
+     "items": [
+      {
+       "exercise_id": "warmup_flow",
+       "sets": "1",
+       "reps_or_time": "5 min (lower variant, 8 hinges with current swing implement hike-and-park)",
+       "rest_sec": 0
+      }
+     ]
+    },
+    {
+     "block": "conditioning",
+     "minutes": 20,
+     "items": [
+      {
+       "exercise_id": "treadmill_intervals",
+       "sets": "1",
+       "reps_or_time": "ladder step (2 min easy in/out included)",
+       "rest_sec": 0,
+       "notes": "step 1 brisk-walk intervals; jogging only from step 3; locked to step 1 until treadmill_zone2.step >= 2"
+      }
+     ]
+    },
+    {
+     "block": "strength B",
+     "minutes": 12,
+     "items": [
+      {
+       "exercise_id": "swing",
+       "sets": "1",
+       "reps_or_time": "8-10 min EMOM or density clock per ladder step (steps 1-5: 8-min EMOM of 8 DB swings odd minutes / 8 goblet squats even minutes)",
+       "rest_sec": 0,
+       "notes": "S&S density clock from step 9: log 100 swings for time"
+      }
+     ]
+    },
+    {
+     "block": "finisher",
+     "minutes": 7,
+     "items": [
+      {
+       "exercise_id": "hollow_hold",
+       "sets": "2",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 20
+      },
+      {
+       "exercise_id": "plank_side_plank",
+       "sets": "2",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 20
+      },
+      {
+       "exercise_id": "leg_raise",
+       "sets": "2",
+       "reps_or_time": "ladder step target",
+       "rest_sec": 20
+      }
+     ]
+    },
+    {
+     "block": "cooldown",
+     "minutes": 6,
+     "items": [
+      {
+       "exercise_id": "treadmill_zone2",
+       "sets": "1",
+       "reps_or_time": "4 min flush walk",
+       "rest_sec": 0
+      },
+      {
+       "exercise_id": "cooldown_flow",
+       "sets": "1",
+       "reps_or_time": "2 min",
+       "rest_sec": 0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Sun",
+   "focus": "REST. Optional 20-30 min easy walk (logs as Zone-2 minutes, no XP penalty for skipping). Duo streak counts a logged walk as 'trained'.",
+   "duration_min": 0,
+   "blocks": []
+  }
+ ],
+ "phases": [
+  {
+   "name": "Phase 1: Recruit (Foundation & Form)",
+   "weeks": "1-4",
+   "goal": "Own every pattern, pass the hinge gate and (for most users) the bell gate, build a Zone-2 base, earn first ladder steps. No max tests until the week-4 Boss Battle.",
+   "what_changes": "RIR 3 on every set; 3 s eccentric on dumbbell lifts; form checklists on hinge_deadlift, goblet_squat, push_up, hip_thrust, swing until ticked 2 sessions running. Vest locked everywhere. Swings are dumbbell swings (20 then 35 lb). Intervals locked to brisk-walk step 1 for weeks 1-2. Week 4 = deload (sets x0.6) + first Boss Battle on Saturday."
+  },
+  {
+   "name": "Phase 2: Soldier (Build)",
+   "weeks": "5-8",
+   "goal": "Real load: 53 lb bell in deadlift/swing/goblet/row as gates pass, vest unlocks per exercise, dumbbells 12->20->35 via tempo and 1.5-reps, Zone 2 to 33 min.",
+   "what_changes": "RIR 2; eccentric 2 s unless the step says otherwise; one ladder advance per exercise per session; intervals steps 2-4; Saturday swing block becomes 10-min EMOM when reached; Wednesday 33 min Zone 2. Week 8 = deload + Boss Battle 2."
+  },
+  {
+   "name": "Phase 3: Warrior (Peak)",
+   "weeks": "9-12",
+   "goal": "S&S density clock (100 swings toward 5:00), one-hand swings if earned, 35 lb presses, 53 lb goblets, vest push-ups/step-ups/walks, run intervals, get-ups with 20-35 lb. Final Boss Battle week 12.",
+   "what_changes": "RIR 1 on compounds; last set of isolations to RIR 0; rest timers on strength B cut 15 s (density); vest_walk replaces Zone 2 where unlocked; Wednesday 36 min; intervals steps 4-6. Week 12: Mon-Wed at 50% sets, Thu 25-min easy walk, Fri off, Sat final Boss Battle."
+  }
+ ],
+ "exercises": [
+  {
+   "id": "warmup_flow",
+   "name": "Warm-up Flow (walk + hinge rehearsal + pattern rehearsal)",
+   "region": "full-body",
+   "pattern": "locomotion",
+   "equipment": "treadmill, wall, chair, bodyweight",
+   "coaching_cues": [
+    "Walk first, then move every joint through range",
+    "10 wall hinges every single day: the hinge is rehearsed 6x/week",
+    "Finish warm, never tired"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Recruit flow",
+     "how": "2-3 min walk 3.0 mph; lower days: leg swings x10, hip circles, 10 wall hinges, 10 glute bridges, 5 chair squats; upper days: arm circles, 10 wall slides, 10 wall hinges, 8 push-ups one step easier than working step, 6 prone Y-T-W.",
+     "target": "6 min",
+     "advance_when": "completed 12 sessions"
+    },
+    {
+     "step": 2,
+     "name": "Operator flow",
+     "how": "Same, plus 20 s deep squat hold prying knees, 8 thoracic rotations/side, 5 goblet pry squats with 12-20 lb (lower) or 8 slow 12 lb halos each way (upper).",
+     "target": "6 min",
+     "advance_when": "terminal"
+    }
+   ]
+  },
+  {
+   "id": "cooldown_flow",
+   "name": "Cooldown Flow (static stretch + breathing)",
+   "region": "full-body",
+   "pattern": "locomotion",
+   "equipment": "floor, wall, couch",
+   "coaching_cues": [
+    "Hold 30-45 s, no bouncing, long nasal exhales",
+    "Stretch what you trained: hip flexors after lunges, chest after pushing"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Reset",
+     "how": "Lower days: couch stretch 45 s/side, standing hamstring 45 s, wall calf 30 s/side. Upper days: doorway/wall chest 45 s, lat stretch on chair 45 s/side, overhead triceps 30 s/side, neck side-bend 30 s/side. Then 1 min slow breathing.",
+     "target": "prescribed min",
+     "advance_when": "terminal"
+    }
+   ]
+  },
+  {
+   "id": "push_up",
+   "name": "Push-up ladder",
+   "region": "chest",
+   "pattern": "push",
+   "equipment": "wall, chair/couch, floor, vest",
+   "coaching_cues": [
+    "One straight plank line: squeeze glutes, ribs down",
+    "Hands under shoulders, elbows ~45 degrees",
+    "Chest to fist-height from the surface every rep, full lockout"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Wall push-up",
+     "how": "Hands on wall at shoulder height, feet 2-3 ft back.",
+     "target": "3x10-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 2,
+     "name": "Incline push-up (chair/couch seat)",
+     "how": "Hands on a sturdy seat edge, body straight, chest to edge.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 3,
+     "name": "Knee push-up",
+     "how": "Knees down, hips extended, chest to fist height.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 4,
+     "name": "Full push-up",
+     "how": "Floor push-up, 2 s down.",
+     "target": "3x5-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 5,
+     "name": "Full push-up, high reps (VEST GATE)",
+     "how": "Sets of 15-20.",
+     "target": "3x15-20",
+     "advance_when": "all sets >= 20 x2 -> vest unlocked for push-ups"
+    },
+    {
+     "step": 6,
+     "name": "Vest push-up 10% BW",
+     "how": "Vest at 10% BW (rounded to vest increment, min setting if lighter).",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 7,
+     "name": "Decline push-up",
+     "how": "Feet on chair seat, no vest.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 8,
+     "name": "Vest decline push-up 15% BW",
+     "how": "Feet on chair, vest 15% BW (cap 30 lb).",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "db_floor_press",
+   "name": "Dumbbell floor press",
+   "region": "chest",
+   "pattern": "push",
+   "equipment": "dumbbells 8-35 (single = one arm at a time), 53 lb KB, floor",
+   "coaching_cues": [
+    "Knees bent, upper arms touch the floor lightly, 1 s pause, press",
+    "Elbows ~45 degrees, wrists over elbows",
+    "Single-DB: free hand on ribs, brace so you do not roll"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "8-10 lb press, tempo",
+     "how": "8 lb (10 lb if 8 lb is trivially easy at placement), 3 s down, 1 s pause; pair or single-arm.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 2,
+     "name": "12 lb press",
+     "how": "Pair of 12s or single-arm 12.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 3,
+     "name": "20 lb press",
+     "how": "Pair or single-arm 20.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 4,
+     "name": "20 lb tempo + pause",
+     "how": "3 s down, 1 s dead stop on floor.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 5,
+     "name": "35 lb press",
+     "how": "Pair or single-arm 35.",
+     "target": "3x6-10",
+     "advance_when": "all sets >= 10 x2"
+    },
+    {
+     "step": 6,
+     "name": "35 lb 1.5-rep press",
+     "how": "Press up, lower halfway, press, lower fully = 1 rep; single-arm allowed.",
+     "target": "3x10-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 7,
+     "name": "Single-arm 53 lb KB floor press",
+     "how": "Bell bottom resting on forearm, other hand braces floor. Requires swing.step >= 7.",
+     "target": "3x6-10 each side",
+     "advance_when": "all sets >= 10 each side x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "db_overhead_press",
+   "name": "Overhead press (half-kneeling single-arm first)",
+   "region": "shoulders",
+   "pattern": "push",
+   "equipment": "dumbbells 8/10/12/20/35 (single works), 53 lb KB at top",
+   "coaching_cues": [
+    "Ribs down, glutes tight, no back arch",
+    "Finish with biceps by the ear, full lockout",
+    "Half-kneeling: down-knee on the pressing side"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Half-kneeling press 8 lb",
+     "how": "One arm, 2 s down.",
+     "target": "3x10-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 2,
+     "name": "Half-kneeling press 10 lb",
+     "how": "Same.",
+     "target": "3x10-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 3,
+     "name": "Half-kneeling press 12 lb",
+     "how": "Same.",
+     "target": "3x10-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 4,
+     "name": "Standing press 12 lb, tempo + 1.5 reps",
+     "how": "Standing; press full, lower halfway, press, lower over 3 s = 1 rep.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 5,
+     "name": "Standing press 20 lb",
+     "how": "Strict, no leg drive.",
+     "target": "3x6-10 each side",
+     "advance_when": "all sets >= 10 each side x2"
+    },
+    {
+     "step": 6,
+     "name": "Standing press 20 lb, tempo",
+     "how": "3 s eccentric, 1 s pause at shoulder.",
+     "target": "3x12-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 7,
+     "name": "Push press 35 lb",
+     "how": "Small knee dip, drive up, 3 s lower.",
+     "target": "3x5-8 each side",
+     "advance_when": "all sets >= 8 each side x2"
+    },
+    {
+     "step": 8,
+     "name": "Strict press 35 lb",
+     "how": "No leg drive.",
+     "target": "3x5-8 each side",
+     "advance_when": "all sets >= 8 each side x2"
+    },
+    {
+     "step": 9,
+     "name": "53 lb KB press (two-hand rack, no clean)",
+     "how": "Lift the bell into the rack with both hands, then strict press one arm. Requires step 8 x2 and swing.step >= 7.",
+     "target": "3x3-5 each side",
+     "advance_when": "all sets >= 5 each side x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "pike_push_up",
+   "name": "Pike push-up (vertical push)",
+   "region": "shoulders",
+   "pattern": "push",
+   "equipment": "chair, floor, wall, vest",
+   "coaching_cues": [
+    "Hips high, torso vertical, look between the feet",
+    "Head travels to the floor just in front of the hands",
+    "Stop if wrist/shoulder pain > 3/10"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Incline pike (hands on chair)",
+     "how": "Hands on seat, hips piked.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 2,
+     "name": "Floor pike push-up",
+     "how": "Hands and feet on floor.",
+     "target": "3x6-10",
+     "advance_when": "all sets >= 10 x2"
+    },
+    {
+     "step": 3,
+     "name": "Floor pike, tempo",
+     "how": "3 s down, 1 s pause.",
+     "target": "3x10-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 4,
+     "name": "Feet-elevated pike",
+     "how": "Feet on chair seat, hips over hands.",
+     "target": "3x6-10",
+     "advance_when": "all sets >= 10 x2 -> vest unlocked for pike"
+    },
+    {
+     "step": 5,
+     "name": "Feet-elevated pike + vest 10% BW",
+     "how": "Same with vest.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 6,
+     "name": "Wall handstand hold + pike",
+     "how": "Chest-to-wall handstand hold, then 1 set pike push-ups.",
+     "target": "3x30s + 3x12",
+     "advance_when": "all holds >= 30 s and all sets >= 12 x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "db_lateral_raise",
+   "name": "Dumbbell lateral raise",
+   "region": "shoulders",
+   "pattern": "push",
+   "equipment": "dumbbells 8/10/12/20 (single = alternate sides), chair",
+   "coaching_cues": [
+    "Lead with the elbows, stop at shoulder height",
+    "Slight forward lean, no swinging",
+    "3 s lower every rep"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "8 lb raise",
+     "how": "2 s up, 3 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 2,
+     "name": "10 lb raise",
+     "how": "Same.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 3,
+     "name": "12 lb raise",
+     "how": "Same.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 4,
+     "name": "12 lb raise, 1 s top pause",
+     "how": "Hold at shoulder height.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 5,
+     "name": "12 lb 1.5-rep raise",
+     "how": "Up, halfway down, up, fully down = 1 rep.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 6,
+     "name": "20 lb lean-away single-arm raise",
+     "how": "Hold chair with free hand, lean away, raise 20 lb.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "diamond_push_up",
+   "name": "Diamond push-up (triceps)",
+   "region": "arms",
+   "pattern": "push",
+   "equipment": "chair, floor, vest",
+   "coaching_cues": [
+    "Hands form a diamond under the sternum",
+    "Elbows brush the ribs, chest to hands"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Wall diamond",
+     "how": "Hands in diamond on wall.",
+     "target": "3x10-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 2,
+     "name": "Incline diamond (chair)",
+     "how": "Hands on seat.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 3,
+     "name": "Knee diamond",
+     "how": "Knees down, hips extended. Requires push_up.step >= 4.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 4,
+     "name": "Full diamond",
+     "how": "Standard.",
+     "target": "3x6-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 5,
+     "name": "Vest diamond 10% BW",
+     "how": "Requires push_up.step >= 6.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "db_triceps_extension",
+   "name": "Overhead triceps extension",
+   "region": "arms",
+   "pattern": "push",
+   "equipment": "one dumbbell 8-35, 53 lb KB at top",
+   "coaching_cues": [
+    "Both hands cup the top plate, elbows point forward and stay narrow",
+    "Full stretch (forearm to biceps), full lockout, ribs down"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "8-10 lb two-hand extension",
+     "how": "3 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 2,
+     "name": "12 lb extension",
+     "how": "3 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 3,
+     "name": "20 lb extension",
+     "how": "Controlled.",
+     "target": "3x10-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 4,
+     "name": "20 lb extension, tempo + stretch pause",
+     "how": "3 s down, 1 s pause at bottom.",
+     "target": "3x15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 5,
+     "name": "35 lb extension",
+     "how": "Two hands.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 6,
+     "name": "35 lb extension, high reps",
+     "how": "2 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "db_row",
+   "name": "Single-arm row (chair supported)",
+   "region": "upper-back",
+   "pattern": "pull",
+   "equipment": "dumbbells 12/20/35 (single works), 53 lb KB, chair",
+   "coaching_cues": [
+    "Hand on chair, back flat, hips square",
+    "Elbow to hip pocket, 1 s squeeze, full stretch at bottom",
+    "No torso rotation"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "12 lb row",
+     "how": "2 s down, 1 s squeeze.",
+     "target": "3x10-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 2,
+     "name": "20 lb row",
+     "how": "Same.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 3,
+     "name": "20 lb row, 2 s top pause",
+     "how": "High reps.",
+     "target": "3x12-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 4,
+     "name": "35 lb row",
+     "how": "Controlled.",
+     "target": "3x6-10 each side",
+     "advance_when": "all sets >= 10 each side x2"
+    },
+    {
+     "step": 5,
+     "name": "35 lb row, tempo + pause",
+     "how": "3 s eccentric, 1 s pause at top.",
+     "target": "3x12-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 6,
+     "name": "53 lb KB row",
+     "how": "Bell by the handle. Requires hinge_deadlift.step >= 5.",
+     "target": "3x6-10 each side",
+     "advance_when": "all sets >= 10 each side x2"
+    },
+    {
+     "step": 7,
+     "name": "53 lb gorilla row",
+     "how": "Wide stance, hinge held, bell between feet, row one side while the other hand rests on the bell; alternate.",
+     "target": "3x10-12 each side",
+     "advance_when": "all sets >= 12 each side x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "prone_ytw",
+   "name": "Prone Y-T-W raises",
+   "region": "upper-back",
+   "pattern": "pull",
+   "equipment": "floor, 8/10/12 lb dumbbells",
+   "coaching_cues": [
+    "Forehead on a folded towel, neck neutral",
+    "Lift from the shoulder blades, not the low back; 2 s hold"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Bodyweight Y-T-W",
+     "how": "8 of each letter = 1 set.",
+     "target": "2x8 each letter",
+     "advance_when": "all sets >= 8 each letter x2"
+    },
+    {
+     "step": 2,
+     "name": "Bodyweight Y-T-W, 2 s holds",
+     "how": "10 each letter.",
+     "target": "3x10 each letter",
+     "advance_when": "all sets >= 10 each letter x2"
+    },
+    {
+     "step": 3,
+     "name": "8 lb Y, bodyweight T-W",
+     "how": "One arm at a time if single DB.",
+     "target": "3x10 each letter",
+     "advance_when": "all sets >= 10 each letter x2"
+    },
+    {
+     "step": 4,
+     "name": "10-12 lb Y-T-W",
+     "how": "10 lb then 12 lb, 2 s hold.",
+     "target": "3x12 each letter",
+     "advance_when": "all sets >= 12 each letter at 12 lb x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "db_rear_delt_fly",
+   "name": "Bent-over rear delt fly",
+   "region": "shoulders",
+   "pattern": "pull",
+   "equipment": "dumbbells 8/10/12/20 (single = one hand on chair)",
+   "coaching_cues": [
+    "Hinge to 45+ degrees, flat back",
+    "Sweep out and back, thumbs down, 1 s squeeze, no shrug"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Prone T raise (bodyweight)",
+     "how": "Face down, arms in a T, thumbs up, 2 s hold.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 2,
+     "name": "8 lb fly",
+     "how": "3 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 3,
+     "name": "10 lb fly",
+     "how": "3 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 4,
+     "name": "12 lb fly, 1 s top pause",
+     "how": "3 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 5,
+     "name": "20 lb fly",
+     "how": "2 s down, strict.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "db_curl",
+   "name": "Dumbbell biceps curl",
+   "region": "arms",
+   "pattern": "pull",
+   "equipment": "dumbbells 8-35 (single = alternate arms)",
+   "coaching_cues": [
+    "Elbows pinned, no swing",
+    "Full extension at the bottom, supinate at the top"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "8 lb curl",
+     "how": "2 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 2,
+     "name": "10-12 lb curl",
+     "how": "10 lb then 12 lb.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 at 12 lb x2"
+    },
+    {
+     "step": 3,
+     "name": "12 lb curl, tempo 3-1-3",
+     "how": "3 s up, 1 s squeeze, 3 s down.",
+     "target": "3x12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 4,
+     "name": "20 lb curl",
+     "how": "Strict.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 5,
+     "name": "20 lb 1.5-rep curl",
+     "how": "Curl, lower halfway, curl, lower fully = 1 rep.",
+     "target": "3x10-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 6,
+     "name": "35 lb alternating curl",
+     "how": "Strict, no body english.",
+     "target": "3x6-10 each arm",
+     "advance_when": "all sets >= 10 each arm x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "db_hammer_curl",
+   "name": "Hammer curl (brachialis + forearms)",
+   "region": "arms",
+   "pattern": "pull",
+   "equipment": "dumbbells 8-35 (single = alternate arms)",
+   "coaching_cues": [
+    "Thumbs up, elbows pinned, 3 s lower",
+    "Crush the handle: this is forearm work too"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "8-10 lb hammer curl",
+     "how": "3 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 at 10 lb x2"
+    },
+    {
+     "step": 2,
+     "name": "12 lb hammer curl",
+     "how": "3 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 3,
+     "name": "20 lb hammer curl",
+     "how": "Controlled.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 4,
+     "name": "20 lb hammer curl, tempo",
+     "how": "3 s eccentric, 1 s top pause.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 5,
+     "name": "35 lb cross-body hammer curl",
+     "how": "Alternate arms, curl toward the opposite shoulder.",
+     "target": "3x6-10 each arm",
+     "advance_when": "all sets >= 10 each arm x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "db_shrug",
+   "name": "Dumbbell / kettlebell shrug",
+   "region": "neck-traps",
+   "pattern": "pull",
+   "equipment": "dumbbells 12-35, 53 lb KB, vest",
+   "coaching_cues": [
+    "Straight up to the ears, 2 s hold, 3 s down; no rolling",
+    "Single implement: hold on one side, shrug that side, resist side-bending"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "12 lb shrug",
+     "how": "Pair or single side.",
+     "target": "3x15-20",
+     "advance_when": "all sets >= 20 x2"
+    },
+    {
+     "step": 2,
+     "name": "20 lb shrug",
+     "how": "Same.",
+     "target": "3x15-20",
+     "advance_when": "all sets >= 20 x2"
+    },
+    {
+     "step": 3,
+     "name": "35 lb shrug",
+     "how": "Same.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 4,
+     "name": "35 lb shrug, tempo",
+     "how": "2 s top pause, 3 s down.",
+     "target": "3x15-20",
+     "advance_when": "all sets >= 20 x2"
+    },
+    {
+     "step": 5,
+     "name": "53 lb KB + 35 lb offset shrug",
+     "how": "Bell one hand, 35 the other, swap each set. Requires hinge_deadlift.step >= 5.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "neck_isometrics",
+   "name": "Neck strengthening (4-way)",
+   "region": "neck-traps",
+   "pattern": "core",
+   "equipment": "bodyweight, hand resistance",
+   "coaching_cues": [
+    "Chin tucked, spine tall, push at 50-70% effort",
+    "Stop on sharp pain, dizziness or tingling"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "4-way isometric 10 s",
+     "how": "Palm on forehead, back of head, each side.",
+     "target": "1x10s each direction",
+     "advance_when": "completed pain-free x2"
+    },
+    {
+     "step": 2,
+     "name": "4-way isometric 20 s",
+     "how": "70% effort.",
+     "target": "1x20s each direction",
+     "advance_when": "completed pain-free x2"
+    },
+    {
+     "step": 3,
+     "name": "Lying neck flexion + extension",
+     "how": "Supine chin tuck and lift 2 in; prone lift to neutral.",
+     "target": "1x15 each",
+     "advance_when": "all sets >= 15 both directions x2"
+    },
+    {
+     "step": 4,
+     "name": "Lying flexion + extension, tempo",
+     "how": "2 s up, 1 s hold, 2 s down.",
+     "target": "1x25 each",
+     "advance_when": "all sets >= 25 x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "goblet_squat",
+   "name": "Goblet squat",
+   "region": "quads",
+   "pattern": "squat",
+   "equipment": "chair, dumbbells 12/20/35, 53 lb KB, vest",
+   "coaching_cues": [
+    "Weight at the chest, elbows inside the knees at the bottom",
+    "Heels down, knees track over toes, hips below the knee",
+    "Brace before descending"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Chair sit-to-stand",
+     "how": "Sit back to lightly touch the seat, 3 s down, stand without rocking; form checklist.",
+     "target": "3x10-15",
+     "advance_when": "all sets >= 15 with checklist x2"
+    },
+    {
+     "step": 2,
+     "name": "Bodyweight full squat",
+     "how": "Arms forward, full depth, 2 s down.",
+     "target": "3x12-20",
+     "advance_when": "all sets >= 20 x2"
+    },
+    {
+     "step": 3,
+     "name": "12 lb goblet",
+     "how": "Dumbbell vertical at chest.",
+     "target": "3x10-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 4,
+     "name": "20 lb goblet",
+     "how": "Same.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 5,
+     "name": "20 lb goblet, 2 s pause",
+     "how": "Pause in the hole.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 6,
+     "name": "35 lb goblet",
+     "how": "Same.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 7,
+     "name": "35 lb goblet, 1.5 reps",
+     "how": "Down, halfway up, down, up = 1 rep.",
+     "target": "3x10-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 8,
+     "name": "53 lb KB goblet",
+     "how": "Bell by the horns.",
+     "target": "3x6-12",
+     "advance_when": "all sets >= 12 x2 -> vest unlocked for squats"
+    },
+    {
+     "step": 9,
+     "name": "53 lb goblet + vest 10% BW, 2 s pause",
+     "how": "Vest plus bell.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "split_squat",
+   "name": "Split squat -> reverse lunge -> Bulgarian split squat",
+   "region": "quads",
+   "pattern": "lunge",
+   "equipment": "wall, chair, dumbbells 12/20/35, 53 lb KB, vest",
+   "coaching_cues": [
+    "Front shin near vertical, rear knee toward the floor",
+    "Torso tall for quads, slight lean for glutes",
+    "Rear foot laces-down on the chair seat for the Bulgarian"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Wall-assisted split squat",
+     "how": "Hand on wall, rear foot on floor, 2 s down.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 2,
+     "name": "Reverse lunge (bodyweight)",
+     "how": "Step back, knee to 1 in off floor.",
+     "target": "3x10-15 each side",
+     "advance_when": "all sets >= 15 each side x2 -> vest unlocked for lunges"
+    },
+    {
+     "step": 3,
+     "name": "Goblet reverse lunge 12 lb",
+     "how": "Dumbbell at chest.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 4,
+     "name": "Bulgarian split squat (bodyweight)",
+     "how": "Rear foot on chair.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 5,
+     "name": "Bulgarian + 12 lb goblet",
+     "how": "One 12 lb at chest.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 6,
+     "name": "Bulgarian + 20 lb goblet, 2 s pause",
+     "how": "Pause at bottom.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 7,
+     "name": "Bulgarian + 35 lb goblet",
+     "how": "One 35 at chest.",
+     "target": "3x6-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 8,
+     "name": "Bulgarian + 53 lb goblet (or 35 lb + vest 10% BW)",
+     "how": "Bell at chest.",
+     "target": "3x6-10 each side",
+     "advance_when": "all sets >= 10 each side x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "step_up",
+   "name": "Step-up (chair, braced against wall)",
+   "region": "glutes",
+   "pattern": "lunge",
+   "equipment": "chair/couch, dumbbells, 53 lb KB, vest",
+   "coaching_cues": [
+    "Whole foot on the seat, drive through that heel, no push-off from the bottom foot",
+    "3 s lowering to a soft touch"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Low step-up (couch cushion / stair, 8-12 in)",
+     "how": "Alternate legs.",
+     "target": "3x10-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 2,
+     "name": "Chair step-up (bodyweight)",
+     "how": "Full seat height, 3 s down.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 3,
+     "name": "Chair step-up, high reps (VEST GATE)",
+     "how": "Bodyweight.",
+     "target": "3x12-15 each side",
+     "advance_when": "all sets >= 15 each side x2 -> vest unlocked for step-ups"
+    },
+    {
+     "step": 4,
+     "name": "Vest 10% BW step-up",
+     "how": "Vest on.",
+     "target": "3x10-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 5,
+     "name": "Vest 10% BW + 20 lb suitcase",
+     "how": "Dumbbell in hand opposite the stepping leg.",
+     "target": "3x10-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 6,
+     "name": "Vest 15% BW + 35 lb (or 53 lb goblet)",
+     "how": "Heaviest step-up.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "calf_raise",
+   "name": "Calf raise",
+   "region": "calves",
+   "pattern": "squat",
+   "equipment": "wall, dumbbells, 53 lb KB, vest",
+   "coaching_cues": [
+    "Full stretch at the bottom, 2 s squeeze at the top, 3 s down",
+    "Wall fingertips for balance only"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Two-leg calf raise",
+     "how": "Bodyweight.",
+     "target": "3x15-25",
+     "advance_when": "all sets >= 25 x2"
+    },
+    {
+     "step": 2,
+     "name": "Single-leg calf raise",
+     "how": "Bodyweight.",
+     "target": "3x10-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 3,
+     "name": "Single-leg, high reps",
+     "how": "3 s down.",
+     "target": "3x15-20 each side",
+     "advance_when": "all sets >= 20 each side x2"
+    },
+    {
+     "step": 4,
+     "name": "Single-leg + 20 lb",
+     "how": "Same-side hand.",
+     "target": "3x12-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 5,
+     "name": "Single-leg + 35 lb",
+     "how": "Same.",
+     "target": "3x10-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 6,
+     "name": "Single-leg + 53 lb KB, 2 s stretch pause",
+     "how": "Bell in same-side hand.",
+     "target": "3x10-15 each side",
+     "advance_when": "all sets >= 15 each side x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "hinge_deadlift",
+   "name": "Hinge drill -> dumbbell RDL -> kettlebell deadlift (HINGE GATE)",
+   "region": "hamstrings",
+   "pattern": "hinge",
+   "equipment": "wall, dumbbells 12/20/35, 53 lb KB, vest",
+   "coaching_cues": [
+    "Hips BACK, shins near vertical, soft knees (not a squat)",
+    "Flat back neck to tailbone, hands slide down the thighs",
+    "Stand by squeezing glutes, finish tall",
+    "CHECKLIST (every set until gated): 1 hips move first, 2 shins vertical, 3 back flat, 4 weight close to legs, 5 glute lockout, no arch"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Wall hinge drill",
+     "how": "Stand 6 in from a wall facing away, push hips back to touch it, hands to knees, squeeze glutes to stand.",
+     "target": "3x10 checklist 5/5",
+     "advance_when": "all sets >= 10 with checklist 5/5 x2"
+    },
+    {
+     "step": 2,
+     "name": "12 lb DB RDL, tempo",
+     "how": "One 12 lb in both hands (or pair), 3 s down to mid-shin.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 with checklist x2"
+    },
+    {
+     "step": 3,
+     "name": "20 lb DB RDL",
+     "how": "One 20 lb in both hands or pair.",
+     "target": "3x10-12",
+     "advance_when": "all sets >= 12 with checklist x2"
+    },
+    {
+     "step": 4,
+     "name": "35 lb DB RDL",
+     "how": "One 35 lb in both hands.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 with checklist x2"
+    },
+    {
+     "step": 5,
+     "name": "53 lb KB deadlift from floor (HINGE GATE)",
+     "how": "Bell between the feet, hinge, grip, stand tall, return to floor each rep.",
+     "target": "3x5-10 checklist 5/5",
+     "advance_when": "all sets >= 10 with checklist 5/5 x2 -> HINGE GATE passed"
+    },
+    {
+     "step": 6,
+     "name": "53 lb deadlift, high reps",
+     "how": "Touch-and-go, 2 s down.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 7,
+     "name": "53 lb deadlift, hover pause",
+     "how": "3 s down, 2 s hover 1 in off the floor.",
+     "target": "3x10-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 8,
+     "name": "53 lb deadlift + vest 10% BW",
+     "how": "Requires vest gate.",
+     "target": "3x10-15",
+     "advance_when": "all sets >= 15 x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "swing",
+   "name": "Swing ladder: two-hand dumbbell swing -> 53 lb kettlebell swing -> one-hand",
+   "region": "glutes",
+   "pattern": "power",
+   "equipment": "dumbbells 20/35 (held by one end in both hands), 53 lb KB",
+   "coaching_cues": [
+    "Hike it back like a football snap, forearms hit the inner thighs high",
+    "Snap the hips, arms are ropes, weight floats to chest height",
+    "Standing plank at the top; park it safely between the feet",
+    "SWING CHECKLIST: 1 hinge not squat, 2 flat back, 3 weight above knees on backswing, 4 hip snap with lockout, 5 arms relaxed, chest height"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Hike-and-park, 20 lb DB",
+     "how": "Requires hinge_deadlift.step >= 3. Hinge, hike the dumbbell back between the legs, park it forward. No swing yet.",
+     "target": "5x5 checklist 5/5",
+     "advance_when": "all sets >= 5 with checklist 5/5 x2"
+    },
+    {
+     "step": 2,
+     "name": "Dead-stop DB swing, 20 lb",
+     "how": "Hike, one swing to chest height, park. Every rep from the floor.",
+     "target": "5x5 checklist 5/5",
+     "advance_when": "all sets >= 5 with checklist x2"
+    },
+    {
+     "step": 3,
+     "name": "Continuous two-hand DB swing, 20 lb",
+     "how": "Sets of 10.",
+     "target": "5x10",
+     "advance_when": "all sets >= 10 with checklist x2"
+    },
+    {
+     "step": 4,
+     "name": "Two-hand DB swing, 35 lb",
+     "how": "Sets of 10.",
+     "target": "5x10",
+     "advance_when": "all sets >= 10 with checklist x2"
+    },
+    {
+     "step": 5,
+     "name": "Two-hand DB swing, 35 lb, sets of 15 (BELL GATE)",
+     "how": "Continuous.",
+     "target": "5x15",
+     "advance_when": "all sets >= 15 with checklist x2 AND hinge_deadlift.step >= 6 AND hollow_hold.step >= 4 -> 53 lb bell unlocked"
+    },
+    {
+     "step": 6,
+     "name": "Dead-stop 53 lb swing",
+     "how": "Hike, one swing, park.",
+     "target": "5x5 checklist 5/5",
+     "advance_when": "all sets >= 5 with checklist x2"
+    },
+    {
+     "step": 7,
+     "name": "Continuous 53 lb two-hand swing",
+     "how": "Sets of 10, rest 60 s.",
+     "target": "5x10",
+     "advance_when": "all sets >= 10 with checklist x2"
+    },
+    {
+     "step": 8,
+     "name": "53 lb EMOM 8x10",
+     "how": "10 swings at the top of each minute for 8 min (Saturday block); Thursday stays 5x10.",
+     "target": "8x10 EMOM",
+     "advance_when": "all rounds completed x2"
+    },
+    {
+     "step": 9,
+     "name": "Density clock: 100 swings in <= 8:00",
+     "how": "10x10, rest as needed, app stopwatch.",
+     "target": "100 in <= 8:00",
+     "advance_when": "100 in <= 8:00 x2"
+    },
+    {
+     "step": 10,
+     "name": "Density clock: 100 in <= 6:00",
+     "how": "Same.",
+     "target": "100 in <= 6:00",
+     "advance_when": "100 in <= 6:00 x2"
+    },
+    {
+     "step": 11,
+     "name": "S&S Simple pace: 100 in <= 5:00",
+     "how": "Set every 30 s.",
+     "target": "100 in <= 5:00",
+     "advance_when": "100 in <= 5:00 x2 AND no low-back pain flag in 14 days -> one-hand unlocked"
+    },
+    {
+     "step": 12,
+     "name": "One-hand 53 lb swing",
+     "how": "Alternate sides each set, free hand mirrors, switch on the floor.",
+     "target": "5x10 each side",
+     "advance_when": "all sets >= 10 each side with checklist x3 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "single_leg_rdl",
+   "name": "Single-leg Romanian deadlift",
+   "region": "hamstrings",
+   "pattern": "hinge",
+   "equipment": "wall/chair, dumbbells 8-35 (single), 53 lb KB",
+   "coaching_cues": [
+    "Hips square, rear leg reaches back as the chest lowers",
+    "Weight in the hand opposite the standing leg"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Supported bodyweight SL RDL",
+     "how": "Fingertips on wall/chair.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 2,
+     "name": "Unsupported bodyweight SL RDL",
+     "how": "3 s down.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 3,
+     "name": "8-12 lb SL RDL",
+     "how": "Contralateral hand; 8 then 12 lb.",
+     "target": "3x10-12 each side",
+     "advance_when": "all sets >= 12 each side at 12 lb x2"
+    },
+    {
+     "step": 4,
+     "name": "20 lb SL RDL",
+     "how": "Same.",
+     "target": "3x10-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 5,
+     "name": "20 lb SL RDL, tempo",
+     "how": "3 s down, 1 s pause.",
+     "target": "3x12-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 6,
+     "name": "35 lb SL RDL",
+     "how": "Same.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side x2"
+    },
+    {
+     "step": 7,
+     "name": "53 lb KB SL RDL",
+     "how": "Bell in contralateral hand. Requires hinge_deadlift.step >= 5.",
+     "target": "3x6-10 each side",
+     "advance_when": "all sets >= 10 each side x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "hip_thrust",
+   "name": "Glute bridge -> hip thrust",
+   "region": "glutes",
+   "pattern": "hinge",
+   "equipment": "floor, couch/chair edge, dumbbells 20/35, 53 lb KB",
+   "coaching_cues": [
+    "Chin tucked, ribs down, finish with a posterior tilt not a back arch",
+    "2 s squeeze at the top; pad the weight with a towel"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Glute bridge",
+     "how": "Feet flat, 2 s squeeze.",
+     "target": "3x12-20",
+     "advance_when": "all sets >= 20 x2"
+    },
+    {
+     "step": 2,
+     "name": "Single-leg glute bridge",
+     "how": "Other knee to chest.",
+     "target": "3x8-15 each side",
+     "advance_when": "all sets >= 15 each side x2"
+    },
+    {
+     "step": 3,
+     "name": "Couch hip thrust (bodyweight)",
+     "how": "Upper back on the seat edge, full lockout.",
+     "target": "3x12-20",
+     "advance_when": "all sets >= 20 x2"
+    },
+    {
+     "step": 4,
+     "name": "Hip thrust + 20 lb",
+     "how": "Dumbbell across hips.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 5,
+     "name": "Hip thrust + 35 lb",
+     "how": "Same.",
+     "target": "3x10-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 6,
+     "name": "Hip thrust + 53 lb KB, 2 s pause",
+     "how": "Bell on hips, 3 s down.",
+     "target": "3x10-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 7,
+     "name": "Single-leg hip thrust + 20-35 lb",
+     "how": "Weight on the working-side hip; 20 then 35.",
+     "target": "3x8-12 each side",
+     "advance_when": "all sets >= 12 each side at 35 lb x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "turkish_get_up",
+   "name": "Turkish get-up (warrior skill)",
+   "region": "full-body",
+   "pattern": "core",
+   "equipment": "bodyweight, a shoe, dumbbells 8/12/20/35, 53 lb KB",
+   "coaching_cues": [
+    "Eyes on the weight until standing; arm locked, shoulder packed",
+    "Roll to elbow, to hand, sweep the leg, lunge up; reverse the exact path",
+    "Never rush, never to fatigue"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Naked get-up",
+     "how": "Fist raised, no weight. Checklist: arm vertical, no knee slam, smooth.",
+     "target": "4x1 each side checklist 3/3",
+     "advance_when": "all reps with checklist 3/3 x2"
+    },
+    {
+     "step": 2,
+     "name": "Shoe get-up",
+     "how": "Balance a shoe on the fist; a drop = failed rep.",
+     "target": "4x1 each side, 0 drops",
+     "advance_when": "0 drops x2"
+    },
+    {
+     "step": 3,
+     "name": "8 lb get-up",
+     "how": "Dumbbell held vertical.",
+     "target": "4x1 each side",
+     "advance_when": "all reps clean x2"
+    },
+    {
+     "step": 4,
+     "name": "12 lb get-up",
+     "how": "Same.",
+     "target": "4x1 each side",
+     "advance_when": "all reps clean x2"
+    },
+    {
+     "step": 5,
+     "name": "20 lb get-up",
+     "how": "Same.",
+     "target": "4x1 each side",
+     "advance_when": "all reps clean x3"
+    },
+    {
+     "step": 6,
+     "name": "35 lb get-up",
+     "how": "Same.",
+     "target": "4x1 each side",
+     "advance_when": "all reps clean x3"
+    },
+    {
+     "step": 7,
+     "name": "53 lb KB get-up",
+     "how": "Requires swing.step >= 9. Five per side inside 10 min = S&S Simple.",
+     "target": "5x1 each side in <= 10:00",
+     "advance_when": "x3 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "hollow_hold",
+   "name": "Hollow body progression",
+   "region": "core",
+   "pattern": "core",
+   "equipment": "floor, 8-12 lb dumbbell",
+   "coaching_cues": [
+    "Low back pressed flat the whole time; if it lifts, the set ends",
+    "Ribs down, shoulder blades off the floor, breathe"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Dead bug",
+     "how": "Opposite arm and leg extend slowly, back flat.",
+     "target": "3x8-10 each side",
+     "advance_when": "all sets >= 10 each side with back flat x2"
+    },
+    {
+     "step": 2,
+     "name": "Tuck hollow hold",
+     "how": "Knees bent, shins parallel, shoulders lifted.",
+     "target": "3x15-20s",
+     "advance_when": "all sets >= 20 s x2"
+    },
+    {
+     "step": 3,
+     "name": "One-leg-extended hollow",
+     "how": "Switch legs halfway.",
+     "target": "3x20-30s",
+     "advance_when": "all sets >= 30 s x2"
+    },
+    {
+     "step": 4,
+     "name": "Full hollow hold",
+     "how": "Legs straight, arms overhead.",
+     "target": "3x20-30s",
+     "advance_when": "all sets >= 30 s x2"
+    },
+    {
+     "step": 5,
+     "name": "Full hollow hold, long",
+     "how": "Same.",
+     "target": "3x45s",
+     "advance_when": "all sets >= 45 s x2"
+    },
+    {
+     "step": 6,
+     "name": "Hollow rocks",
+     "how": "Rock without breaking shape.",
+     "target": "3x15-20",
+     "advance_when": "all sets >= 20 x2"
+    },
+    {
+     "step": 7,
+     "name": "Hollow hold + 8-12 lb overhead",
+     "how": "Dumbbell in both hands overhead.",
+     "target": "3x30-45s",
+     "advance_when": "all sets >= 45 s at 12 lb x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "plank_side_plank",
+   "name": "Plank + side plank family (obliques)",
+   "region": "core",
+   "pattern": "core",
+   "equipment": "floor, dumbbell 12/20, vest",
+   "coaching_cues": [
+    "Elbows under shoulders, glutes squeezed, pelvis tucked",
+    "Side plank: hips stacked and lifted high"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Knee plank + knee side plank",
+     "how": "Both on knees.",
+     "target": "1x20-30s + 1x15s each side",
+     "advance_when": "all holds >= target x2"
+    },
+    {
+     "step": 2,
+     "name": "Full plank + knee side plank",
+     "how": "Plank on toes.",
+     "target": "1x30-45s + 1x20s each side",
+     "advance_when": "all holds >= target x2"
+    },
+    {
+     "step": 3,
+     "name": "Plank 45 s + full side plank 30 s",
+     "how": "Side plank on feet.",
+     "target": "1x45s + 1x30s each side",
+     "advance_when": "all holds >= target x2"
+    },
+    {
+     "step": 4,
+     "name": "Plank 60 s + side plank 45 s",
+     "how": "Same.",
+     "target": "1x60s + 1x45s each side",
+     "advance_when": "all holds >= target x2 -> vest unlocked for planks"
+    },
+    {
+     "step": 5,
+     "name": "Vest 10% BW plank + top-leg-raised side plank",
+     "how": "Vest for front plank only.",
+     "target": "1x45s + 1x30s each side",
+     "advance_when": "all holds >= target x2"
+    },
+    {
+     "step": 6,
+     "name": "Long-lever plank + 12-20 lb weighted side plank",
+     "how": "Elbows 6 in ahead of shoulders; dumbbell on the top hip.",
+     "target": "1x30s + 1x30s each side",
+     "advance_when": "all holds >= target x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "leg_raise",
+   "name": "Lying leg raise (lower abs)",
+   "region": "core",
+   "pattern": "core",
+   "equipment": "floor, 8-12 lb dumbbell",
+   "coaching_cues": [
+    "Low back stays flat; bend the knees if it lifts",
+    "3 s lowering, hover above the floor"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Reverse crunch",
+     "how": "Knees bent, curl hips off the floor.",
+     "target": "3x10-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 2,
+     "name": "Straight-leg raise, hands under hips",
+     "how": "Support with hands.",
+     "target": "3x8-12",
+     "advance_when": "all sets >= 12 x2"
+    },
+    {
+     "step": 3,
+     "name": "Straight-leg raise, no support",
+     "how": "Hands at sides.",
+     "target": "3x12-15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 4,
+     "name": "Leg raise, tempo",
+     "how": "3 s down, 1 s hover.",
+     "target": "3x15",
+     "advance_when": "all sets >= 15 x2"
+    },
+    {
+     "step": 5,
+     "name": "Leg raise + 8-12 lb between feet",
+     "how": "8 then 12 lb.",
+     "target": "3x10-12",
+     "advance_when": "all sets >= 12 at 12 lb x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "suitcase_carry",
+   "name": "Suitcase carry (obliques + grip)",
+   "region": "core",
+   "pattern": "carry",
+   "equipment": "dumbbells 12/20/35, 53 lb KB, vest, room to walk laps or march in place",
+   "coaching_cues": [
+    "One weight, one side, perfectly upright: the anti-lean is the exercise",
+    "Crush the handle"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "12 lb suitcase carry",
+     "how": "Walk laps or march.",
+     "target": "2x30s each side",
+     "advance_when": "all sets >= 30 s each side x2"
+    },
+    {
+     "step": 2,
+     "name": "20 lb suitcase carry",
+     "how": "Same.",
+     "target": "2x30-40s each side",
+     "advance_when": "all sets >= 40 s each side x2"
+    },
+    {
+     "step": 3,
+     "name": "35 lb suitcase carry",
+     "how": "Same.",
+     "target": "2x30-45s each side",
+     "advance_when": "all sets >= 45 s each side x2"
+    },
+    {
+     "step": 4,
+     "name": "53 lb KB suitcase carry",
+     "how": "Requires hinge_deadlift.step >= 5.",
+     "target": "2x30-45s each side",
+     "advance_when": "all sets >= 45 s each side x2"
+    },
+    {
+     "step": 5,
+     "name": "53 lb suitcase carry + vest 10% BW",
+     "how": "Vest on.",
+     "target": "2x40-45s each side",
+     "advance_when": "all sets >= 45 s each side x2"
+    },
+    {
+     "step": 6,
+     "name": "53 lb suitcase carry, 60 s",
+     "how": "No vest.",
+     "target": "2x60s each side",
+     "advance_when": "all sets >= 60 s each side x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "farmer_carry",
+   "name": "Farmer / rack carry (traps + grip)",
+   "region": "neck-traps",
+   "pattern": "carry",
+   "equipment": "dumbbells 12/20/35 (single = alternate-side suitcase), 53 lb KB, vest",
+   "coaching_cues": [
+    "Tall, shoulders packed, short quick steps",
+    "Single dumbbell: carry on one side for half the time, switch"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "2 x 12 lb carry (or 12 lb alternating sides)",
+     "how": "Walk laps.",
+     "target": "3x30-40s",
+     "advance_when": "all sets >= 40 s x2"
+    },
+    {
+     "step": 2,
+     "name": "2 x 20 lb carry (or 20 lb alternating)",
+     "how": "Same.",
+     "target": "3x30-40s",
+     "advance_when": "all sets >= 40 s x2"
+    },
+    {
+     "step": 3,
+     "name": "2 x 35 lb carry (or 35 lb alternating)",
+     "how": "Same.",
+     "target": "3x30-40s",
+     "advance_when": "all sets >= 40 s x2"
+    },
+    {
+     "step": 4,
+     "name": "Offset carry 53 lb KB + 35 lb",
+     "how": "Swap sides halfway. Requires hinge_deadlift.step >= 5.",
+     "target": "3x40s",
+     "advance_when": "all sets >= 40 s x2"
+    },
+    {
+     "step": 5,
+     "name": "Rack + farmer carry",
+     "how": "Bell racked at the shoulder, 35 lb in the other hand, swap halfway.",
+     "target": "3x40s",
+     "advance_when": "all sets >= 40 s x2"
+    },
+    {
+     "step": 6,
+     "name": "Offset carry + vest 10% BW",
+     "how": "Vest on.",
+     "target": "3x40s",
+     "advance_when": "all sets >= 40 s x2 (terminal)"
+    }
+   ]
+  },
+  {
+   "id": "treadmill_zone2",
+   "name": "Zone-2 incline walk",
+   "region": "cardio",
+   "pattern": "locomotion",
+   "equipment": "treadmill",
+   "coaching_cues": [
+    "Talk test: full sentences, cannot sing; HR 60-70% of (220 - age) if measured",
+    "No handrails; incline before speed"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "3.0 mph, 2% incline",
+     "how": "Steady walk.",
+     "target": "30 min RPE <= 4",
+     "advance_when": "completed at RPE <= 4 x2"
+    },
+    {
+     "step": 2,
+     "name": "3.2 mph, 4%",
+     "how": "Steady.",
+     "target": "30 min RPE <= 4",
+     "advance_when": "completed at RPE <= 4 x2 -> intervals may advance past step 1"
+    },
+    {
+     "step": 3,
+     "name": "3.4 mph, 6%",
+     "how": "Steady.",
+     "target": "33 min RPE <= 4",
+     "advance_when": "completed at RPE <= 4 x2"
+    },
+    {
+     "step": 4,
+     "name": "3.5 mph, 8% (VEST WALK GATE)",
+     "how": "Steady.",
+     "target": "33 min RPE <= 4",
+     "advance_when": "completed at RPE <= 4 with no knee/shin pain x2 -> vest_walk unlocked"
+    },
+    {
+     "step": 5,
+     "name": "3.5 mph, 10%",
+     "how": "Drop to 3.3 mph if talk test fails.",
+     "target": "36 min RPE <= 4",
+     "advance_when": "completed at RPE <= 4 x2"
+    },
+    {
+     "step": 6,
+     "name": "3.5 mph, 12%",
+     "how": "Steady.",
+     "target": "36 min RPE <= 4",
+     "advance_when": "terminal"
+    }
+   ]
+  },
+  {
+   "id": "treadmill_intervals",
+   "name": "Treadmill intervals (walk -> jog -> run)",
+   "region": "cardio",
+   "pattern": "locomotion",
+   "equipment": "treadmill",
+   "coaching_cues": [
+    "2 min easy walk in and out of every session",
+    "Hard = RPE 8-9 (a few words at a time); easy = walking",
+    "Slow the belt, never grab the rails to survive an interval"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Brisk-walk intervals 6 x (1 min / 1.5 min)",
+     "how": "1 min at 4.0 mph or 3.5 mph 8% incline (RPE 6-7), 1.5 min easy walk. Locked here until treadmill_zone2.step >= 2 and 2 weeks elapsed.",
+     "target": "6 rounds",
+     "advance_when": "completed with hard reps RPE >= 6 x2 AND treadmill_zone2.step >= 2"
+    },
+    {
+     "step": 2,
+     "name": "Hard incline walk intervals 8 x (1 min / 1 min)",
+     "how": "1 min at 3.8 mph 10% (RPE 8), 1 min easy.",
+     "target": "8 rounds",
+     "advance_when": "completed x2, no shin/knee pain flag"
+    },
+    {
+     "step": 3,
+     "name": "Walk/jog intervals 8 x (1 min / 1 min)",
+     "how": "1 min jog 5.0-5.5 mph 1% incline, 1 min walk.",
+     "target": "8 rounds",
+     "advance_when": "completed x2, no pain flag"
+    },
+    {
+     "step": 4,
+     "name": "Run/walk 10 x (1 min / 1 min)",
+     "how": "Run 5.5-6.5 mph, walk.",
+     "target": "10 rounds",
+     "advance_when": "completed x2"
+    },
+    {
+     "step": 5,
+     "name": "10 x (45 s hard / 75 s easy)",
+     "how": "RPE 9.",
+     "target": "10 rounds",
+     "advance_when": "completed x2"
+    },
+    {
+     "step": 6,
+     "name": "4 x (3 min hard / 2 min easy)",
+     "how": "VO2max style, RPE 8.",
+     "target": "4 rounds",
+     "advance_when": "terminal"
+    }
+   ]
+  },
+  {
+   "id": "vest_walk",
+   "name": "Weighted-vest incline walk (ruck) - LOCKED until Zone 2 step 4",
+   "region": "cardio",
+   "pattern": "locomotion",
+   "equipment": "treadmill, vest",
+   "coaching_cues": [
+    "Vest snug and high; Zone 2 by talk test",
+    "Change ONE variable per week: time -> incline -> vest",
+    "Never above 3.5 mph in the vest; stop for joint/back pain > 3/10"
+   ],
+   "ladder": [
+    {
+     "step": 1,
+     "name": "Vest 10% BW, 3.3 mph, 6%",
+     "how": "Steady.",
+     "target": "30 min RPE <= 5",
+     "advance_when": "completed at RPE <= 5 x2"
+    },
+    {
+     "step": 2,
+     "name": "Vest 10% BW, 8%",
+     "how": "Steady.",
+     "target": "33 min RPE <= 5",
+     "advance_when": "completed at RPE <= 5 x2"
+    },
+    {
+     "step": 3,
+     "name": "Vest 15% BW, 8%",
+     "how": "Steady.",
+     "target": "33 min RPE <= 5",
+     "advance_when": "completed at RPE <= 5 x2"
+    },
+    {
+     "step": 4,
+     "name": "Vest 15% BW, 10%",
+     "how": "Steady.",
+     "target": "36 min RPE <= 5",
+     "advance_when": "completed at RPE <= 5 x2"
+    },
+    {
+     "step": 5,
+     "name": "Vest 20% BW (cap 30 lb), 10-12%",
+     "how": "Steady.",
+     "target": "36 min RPE <= 5",
+     "advance_when": "terminal"
+    }
+   ]
+  }
+ ],
+ "conditioning_protocols": [
+  {
+   "id": "zone2_engine",
+   "name": "Zone-2 engine (Wed main block + Mon/Thu finishers + Sat flush)",
+   "equipment": "treadmill, vest once gated",
+   "protocol": "Wednesday: 3 min ramp then 30/33/36 min (Phase 1/2/3) at the current treadmill_zone2 (or vest_walk) step at talk-test intensity. Monday 7 min and Thursday 8 min finishers at the same incline. Saturday 4 min flush after the core block. Warm-ups add 2-3 min of walking on strength days. Optional Sunday 20-30 min walk logs as Zone 2.",
+   "progression": "treadmill_zone2 ladder: incline first, then speed, then duration; advance after 2 sessions at RPE <= 4. vest_walk after Zone 2 step 4: one variable per week (time -> incline -> vest). Vest capped at min(20% BW, 30 lb) and never above 3.5 mph.",
+   "heart_health_rationale": "AHA/HHS: 150 min/week moderate (or 75 vigorous, vigorous counts x2), spread through the week, plus muscle-strengthening 2+ days (this program has 4). Honest tally of dedicated aerobic work: week 1 about 85 moderate-equivalent min (Zone 2 ~60 + brisk-walk intervals 20 + DB swings); Phase 2-3 about 125-140 (Zone 2 ~65-70, intervals 16 vigorous = 32, swing EMOM/density 8-10 vigorous = 16-20, Thursday swing sets 5 vigorous = 10). The home-screen cardio guard shows the 150 line and the optional Sunday walk (20-30 min) closes the gap; with it, every phase clears 150."
+  },
+  {
+   "id": "interval_engine",
+   "name": "Saturday intervals (HIC)",
+   "equipment": "treadmill",
+   "protocol": "2 min easy walk, current treadmill_intervals step, 2 min easy walk = 18-20 min. Phase 1 weeks 1-2 locked to brisk-walk step 1; jogging only at step 3. Weeks 4, 8, 12: replaced by the Boss Battle script (mile test first).",
+   "progression": "Advance per ladder (completed x2, no pain flag, Zone 2 step >= 2). Running minutes never rise more than 10% week to week. Health-screen 'yes' locks intervals until the user confirms clearance.",
+   "heart_health_rationale": "One weekly vigorous session raises VO2max and lowers resting HR fastest in untrained adults; VO2max is among the strongest predictors of cardiovascular mortality. Walk-based start for 2 weeks reduces cardiac and musculoskeletal risk."
+  },
+  {
+   "id": "swing_engine",
+   "name": "Swing EMOM and S&S density clock (Thu sets + Sat block)",
+   "equipment": "dumbbell 20/35 then 53 lb KB",
+   "protocol": "Thursday: 5 sets at the swing ladder step, 60 s rest. Saturday: steps 1-5 run an 8-min EMOM alternating 8 DB swings (odd minutes) and 8 goblet squats at current step (even minutes); step 8 runs 8x10 EMOM; steps 9-11 run the density clock (100 swings for time, app stopwatch, 30 s bells).",
+   "progression": "Per swing ladder; every set carries the 5-item checklist; 3 consecutive broken reps end the set. Thresholds 8:00 -> 6:00 -> 5:00; one-hand swings only after 100 in 5:00 twice and no low-back flag in 14 days.",
+   "heart_health_rationale": "Hard-style swings hit 85-90% HRmax with zero impact, adding 8-15 vigorous minutes weekly while training the hinge, grip and posterior chain."
+  }
+ ],
+ "benchmarks": [
+  {
+   "id": "bb_pushups_2min",
+   "name": "Boss Battle 1: Max push-ups in 2 minutes",
+   "protocol": "Full push-ups (chest to fist height, lockout); rest only in top plank. Users on push_up.step <= 3 test knee push-ups scored 0.5 each. First test of the Saturday script after warm-up. Co-op: duo score = sum of both users' tier points (recruit 1 ... champion 4).",
+   "tiers": {
+    "recruit": "0-14 points",
+    "soldier": "15-29",
+    "warrior": "30-44",
+    "champion": "45+"
+   },
+   "retest_every_weeks": 4
+  },
+  {
+   "id": "bb_swings_5min",
+   "name": "Boss Battle 2: Swings in 5 minutes with your earned implement",
+   "protocol": "Two-hand swings to chest height, any rest scheme, 5-min cap, checklist enforced (3 broken reps end the test). Implement = the user's current swing ladder implement: 20 lb DB (tier capped at recruit), 35 lb DB (capped at soldier), 53 lb bell (uncapped). Never a deadlift fallback. Fourth test, 3 min rest before.",
+   "tiers": {
+    "recruit": "0-49 swings",
+    "soldier": "50-79",
+    "warrior": "80-109 with 53 lb",
+    "champion": "110+ with 53 lb"
+   },
+   "retest_every_weeks": 4
+  },
+  {
+   "id": "bb_mile_time",
+   "name": "Boss Battle 3: 1-mile treadmill time",
+   "protocol": "1% incline, 3 min walk warm-up, then 1.00 mile as fast as possible, walk/run mix allowed, no rails. Replaces the Saturday interval block on test weeks (done first, then 8 min rest).",
+   "tiers": {
+    "recruit": "slower than 12:00",
+    "soldier": "9:30-12:00",
+    "warrior": "8:00-9:29",
+    "champion": "under 8:00"
+   },
+   "retest_every_weeks": 4
+  },
+  {
+   "id": "bb_hollow_hold",
+   "name": "Boss Battle 4: Max hollow hold",
+   "protocol": "Full hollow (legs straight, arms overhead, back flat); timer stops when the low back lifts or legs drop below 6 in. Users on hollow_hold.step <= 3 test the tuck hollow at 0.5x seconds. Second test, 3 min rest.",
+   "tiers": {
+    "recruit": "under 30 s",
+    "soldier": "30-59 s",
+    "warrior": "60-89 s",
+    "champion": "90 s+"
+   },
+   "retest_every_weeks": 4
+  },
+  {
+   "id": "bb_goblet_bw",
+   "name": "Boss Battle 5: Max unbroken goblet squats at ~30% bodyweight",
+   "protocol": "Load = the heaviest of 12/20/35/53 lb that is <= 35% of bodyweight AND already reached in the user's goblet ladder (e.g. 120 lb user -> 35 lb; 200 lb user -> 53 lb). Thighs below parallel, no rest > 3 s at the top. If the ladder has not reached the target load, test one implement lighter and cap the tier at soldier. Third test, 3 min rest.",
+   "tiers": {
+    "recruit": "0-9 reps",
+    "soldier": "10-19",
+    "warrior": "20-29",
+    "champion": "30+"
+   },
+   "retest_every_weeks": 4
+  },
+  {
+   "id": "bb_vest_stepups_3min",
+   "name": "Boss Battle 6: Vest step-ups in 3 minutes",
+   "protocol": "Chair step-ups, alternating legs, full hip extension, vest at 10% BW once step_up.step >= 4; before that unweighted with tier capped at soldier. Fifth and last test, 3 min rest, then cooldown.",
+   "tiers": {
+    "recruit": "0-39",
+    "soldier": "40-59",
+    "warrior": "60-79 with vest",
+    "champion": "80+ with vest"
+   },
+   "retest_every_weeks": 4
+  }
+ ],
+ "progression_rules": "DATA MODEL: each user has current_step per exercise (seeded by the placement quiz). Target grammar: 'SxR' sets x reps; 'SxA-B' rep range (prescribe A on the first session at a step, advance threshold B); 'SxR each side'; 'SxNs' seconds; 'SxA-Bs' seconds range; 'NxR EMOM'; 'N min RPE <= k'; 'N rounds'; '100 in <= m:ss'; 'checklist n/N'; compound targets joined by ' + ' are evaluated per part. Shorthand 'x2' / 'x3' in advance_when = the condition met on 2 (3) consecutive logged sessions of that exercise. Gate expressions reference other ladders as exercise_id.step >= n and are booleans the app evaluates at advance time. The template's set count always wins; the ladder step supplies reps/time/load; the advance threshold applies to every prescribed set. LOGGING per set: reps or seconds (or rounds/time for EMOM/clock), RIR 0-4, pain 0-10, checklist ticks where required. SESSION SUCCESS: every prescribed set >= the step's advance threshold, RIR >= phase minimum minus 1, no pain >= 3, checklist full. SESSION FAIL: any set < 60% of the prescribed (low-end) reps/time, or pain >= 3 on any set. ADVANCE: when advance_when is satisfied (default x2 + gates), current_step += 1, counter resets, max one advance per exercise per session, none during deload/test weeks or the first session after a > 7-day gap. WITHIN-STEP (double progression): if not all sets hit the threshold, next session's target is 'beat last time by >= 1 total rep' and the app shows last numbers per set; effort is capped by phase RIR (3/2/1). HOLD: a session that misses by a lot (any set < 60%) is a FAIL: hold the step, repeat the same prescription. STEP BACK: 2 consecutive FAILs, or pain >= 3 twice on the same exercise in 7 days -> current_step -= 1 (min 1), requires x2 to return. VEST: loads are % bodyweight rounded to the vest increment, first vest session at min(10% BW, 10 lb), +1 increment when the step target is met x2, hard cap min(20% BW, 30 lb). EQUIPMENT: if a dumbbell size is marked unavailable, its step is skipped and the previous step gains a '+1.5-rep' variant; single-dumbbell households get the single-arm/alternating 'how' automatically. MISSED TRAINING: 8-14 days away -> every non-warm-up exercise regresses 1 step and the last completed week repeats; > 14 days -> regress 2 steps and restart the current phase at week 1. XP: 10 per completed set, +25 per ladder step gained, +50 per benchmark tier gained, +5 per Zone-2 minute /10; level = floor(sqrt(XP/100)). PLACEMENT QUIZ (per user, ~60 s, seeds starting steps): Q1 max clean full push-ups: 0 -> push_up 1 (2 if 10+ wall push-ups feel easy), 1-4 -> 3, 5-9 -> 4, 10+ -> 5; diamond_push_up = push_up step - 2 (min 1); pike_push_up 1 (2 if push_up >= 4). Q2 squat test: 10 pain-free chair sit-to-stands? no -> goblet 1; yes -> 2; yes and 15 full-depth BW squats -> 3 (12 lb), or 4 (20 lb) if also bodyweight >= 160 lb; split_squat = 1, step_up = 1 (2 if goblet >= 3). Q3 plank hold: < 20 s -> plank_side_plank 1, hollow 1; 20-45 s -> 2/2; > 45 s -> 3/3; leg_raise 1. Q4 hinge: 10 wall hinges with checklist 5/5 -> hinge_deadlift 2 (12 lb RDL), else 1; swing always 1; single_leg_rdl 1; hip_thrust 1 (2 if plank > 45 s). Q5 overhead: 10 pain-free wall slides AND 10 easy overhead presses with 8 lb? fail slides -> press and pike locked at step 1 with clinician note; pass -> db_overhead_press 1 (8 lb), or 2 (10 lb) if the 8 lb x10 was 'easy', or 3 (12 lb) if male >= 160 lb and 'easy'; db_lateral_raise, db_rear_delt_fly, db_curl, db_hammer_curl, db_triceps_extension, db_floor_press: 1 (2 if 'easy'). Q6 carry: hold 20 lb in one hand 30 s without leaning? no -> db_row 1, suitcase 1, farmer 1, db_shrug 1; yes -> db_row 2 (20 lb), suitcase 2, farmer 2, db_shrug 2. Q7 cardio: 20 min walk at 3.0 mph comfortable? no -> treadmill_zone2 1 at 20 min building to 30; yes -> 1; yes and can jog 5 min -> 2; intervals always 1; vest_walk locked. Q8 kettlebell swing or get-up experience? 'no' forces swing 1 and turkish_get_up 1 regardless; 'yes' still starts swing at 1 (hike-and-park) but allows the BELL GATE checklist sessions to count from day 1. DUO MODE: shared program, per-user state files. Duo streak increments only on days both users log a session (Sunday walk counts). Weekly head-to-head compares RELATIVE progress only: XP earned this week, % of prescribed sets that hit target, ladder steps gained, Zone-2 minutes, benchmark tier deltas; absolute weight/reps never appear on the scoreboard. Co-op boss battles: combined tier points of both users vs a shared target (week 4: 8, week 8: 12, week 12: 16 of 24 max); duo badges for first duo streak of 7/30/60 days, both passing the hinge gate, both earning the bell, combined 200 swings in a test week. Partner card shows 'trained today: yes/no' from the partner's latest log file.",
+ "deload_rules": "SCHEDULED: weeks 4, 8, 12 are deload + Boss Battle weeks. Mon-Fri: strength sets x0.6 (round down, min 2), RIR 4, same ladder step and load, no ladder advances or regressions evaluated, Wednesday Zone 2 at 70% duration one incline step lower, Thursday swing sets cut to 3, Monday/Thursday finisher walks kept. Saturday = fixed Boss Battle script (about 48 min): 5 min warm-up, 1-mile test, 8 min easy walk, push-ups 2 min, 3 min rest, hollow hold max, 3 min rest, goblet max, 3 min rest, swings 5 min, 3 min rest, step-ups 3 min, 4 min cooldown; if it runs long the app moves the mile to Sunday. Week 12 taper: Mon-Wed 50% sets, Thu 25-min unloaded walk, Fri off, Sat final Boss Battle. AUTO-DELOAD (app-computed, per user): (a) 2 or more exercises at FAIL across 3 consecutive sessions, (b) readiness check-in (sleep, soreness, motivation 1-5) averaging <= 2 for 3 consecutive days, (c) sleep < 6 h two nights running, (d) any pain flag >= 5, (e) 3+ pain flags in a rolling 7 days -> the next 3 sessions run at 0.6 sets, RIR 4, Zone 2 only (no intervals, no density clock), then the template resumes without advancing. Missed sessions are skipped, not stacked; 3+ missed days in a week -> next week repeats the same steps at RIR 3 for one session before advances resume.",
+ "warmup_and_mobility": "Every session opens with warmup_flow: 2-3 min easy treadmill walk, dynamic mobility (leg swings/hip circles or arm circles/wall slides), 10 wall hinges EVERY day so the hinge is grooved 6x/week before the bell ever swings, then 1-2 rehearsal sets of the day's first patterns one ladder step easier (chair squats or glute bridges on lower days, easier push-ups and prone Y-T-W on upper days, 15 s hollow hold on Thursday for bracing, hike-and-park with the current swing implement on Saturday). Intervals carry 2 min easy in/out inside the block. Every session closes with cooldown_flow: 2 min easy walk where the budget allows, then static holds of 30-45 s with slow nasal breathing: couch stretch (hip flexors), hamstring, calf on lower days; chest, lat, overhead triceps, neck side-bend on upper days. Onboarding screens: shoulder (10 pain-free wall slides) gates overhead work; hip/knee (10 pain-free chair sit-to-stands) holds goblet at step 1 for 2 extra sessions if failed. First-time cards: the first session of swing, turkish_get_up, db_floor_press, hinge_deadlift step 5 and vest work shows a one-screen cue card with 'stop the set the moment form breaks' and requires the checklist before logging.",
+ "safety_and_form_gates": "1) HINGE GATE: hinge_deadlift.step >= 5 requires 12 -> 20 -> 35 lb dumbbell RDLs with the 5-item checklist x2 each; the 53 lb deadlift itself is the gate (3x10 checklist 5/5 x2). Swings start at hike-and-park with a 20 lb DUMBBELL once hinge_deadlift.step >= 3. 2) BELL GATE (53 lb swing): swing.step 5 met (35 lb DB swings 5x15 x2) AND hinge_deadlift.step >= 6 AND hollow_hold.step >= 4 (30 s full hollow). Then dead-stop 53 lb before continuous. Every swing set carries the checklist; 3 consecutive broken reps end the set; a checklist miss drops next session's reps by 2 per set; two misses regress one step. One-hand swings: 100 in 5:00 x2 and no low-back flag in 14 days. 3) HEAVY-BELL GATES: any 53 lb step in rows, shrugs, carries, SL RDL, calf, hip thrust requires hinge_deadlift.step >= 5; KB floor press and the 53 lb press require swing.step >= 7 and, for the press, 35 lb strict 3x8/side x2; the bell is racked with two hands, never cleaned. Get-up: naked and shoe steps must pass before any weight; 53 lb get-up requires swing.step >= 9. 4) VEST GATE (per exercise, evaluated as booleans): push_up.step >= 5, goblet_squat.step >= 8, split_squat.step >= 2, step_up.step >= 3, plank_side_plank.step >= 4, pike_push_up.step >= 4, diamond_push_up requires push_up.step >= 6, hinge_deadlift vest step requires vest_walk.step >= 1, vest_walk requires treadmill_zone2.step >= 4. Global: first vest session min(10% BW, 10 lb); cap min(20% BW, 30 lb); never on the treadmill above 3.5 mph. 5) RUN GATE: intervals locked at brisk-walk step 1 until treadmill_zone2.step >= 2 and 2 weeks elapsed; jogging only at step 3 with no shin/knee pain flag; running minutes rise <= 10%/week. Health-screen 'yes' (chest pain, dizziness, heart condition, uncontrolled BP) locks intervals until clearance is confirmed. 6) OVERHEAD GATE: db_overhead_press and pike_push_up require the shoulder screen; pressing starts half-kneeling with 8 lb. 7) PUSH-UP FAMILY: diamond knee step requires push_up.step >= 4. 8) PAIN RULE: pain >= 3 ends that exercise for the day; twice in 7 days regresses one step and shows a form card; >= 5 triggers the mini-deload and a 'see a clinician if it persists 7 days' notice. Chest pain, dizziness, unusual breathlessness = stop the session, medical check before resuming. 9) BENCHMARKS: no max test before week 4; the swing test uses only the implement already earned (never a deadlift fallback); goblet and step-up tests substitute lighter/unweighted with capped tiers. 10) APP ENFORCEMENT: locked exercise_ids map to fallbacks in the template (swing steps 1-5 use the dumbbell; Saturday swing block -> DB swing/goblet EMOM; vest steps -> last unweighted step; vest_walk -> treadmill_zone2); gates show as a lock icon with the exact remaining condition.",
+ "settings_needed_at_onboarding": [
+  "Profile (per user): display name, which user slot (sean / cat), avatar, preferred units (lb/kg, mph/kph)",
+  "Body metrics (per user, stored LOCAL-ONLY by default): bodyweight lb, height, age (drives vest % BW, goblet test load, HR zone 220-age); optional resting HR baseline",
+  "Health screen (PAR-Q style, per user): chest pain, dizziness, diagnosed heart condition, high blood pressure, doctor-advised limits -> locks intervals until cleared; injury history flags (low back, shoulder, knee, wrist, neck) that cap starting steps and add checklist prompts",
+  "Shoulder screen result (10 pain-free wall slides yes/no) and hip/knee screen (10 pain-free chair sit-to-stands yes/no)",
+  "Placement quiz answers Q1-Q8 (max push-ups, squat test, plank hold, hinge checklist, overhead 8 lb x10 easy?, 20 lb one-hand hold 30 s?, cardio comfort, kettlebell experience) -> starting step per exercise family",
+  "Weighted vest: max weight, smallest increment, lightest setting (shared equipment, entered once, editable by either user)",
+  "Dumbbells: for each of 8/10/12/20/35 lb, PAIR or SINGLE (shared); 53 lb kettlebell confirmed",
+  "Treadmill: max incline % and max speed mph (shared); whether a HR monitor/watch is worn (per user)",
+  "Chair/step: seat height in inches and confirmation it is braced against a wall; couch edge available for hip thrusts; carry space (hallway steps or march in place)",
+  "Schedule (per user): rest day (default Sunday), preferred training time for reminders, preferred session length 40/45/50 (app trims Zone-2 finisher minutes to fit), start date (default 2026-09-08)",
+  "Readiness check-in on/off (daily sleep/soreness/motivation 1-5) and sleep-hours entry for auto-deload",
+  "Duo settings: partner slot, duo streak on/off, weekly head-to-head visibility, co-op boss battle opt-in, notification when partner trains",
+  "Sync (set up once on each phone by Sean): repo owner/name, this phone's user slot, fine-grained PAT scoped to that repo (contents read/write), commit author name for this user; app writes only users/<slot>/*.json and reads users/<other-slot>/*.json; tokens stored in device storage only",
+  "Nutrition preference (per user, optional): recomp/maintenance vs modest deficit, used only for the notes shown"
+ ],
+ "risks_and_mitigations": "Low-back injury from hinging/swinging: dumbbell RDL chain before the bell, dumbbell swings before the bell, hollow-hold bracing prerequisite, dead-stop before continuous, checklists every set, pain rule, no max deadlift test ever. Shoulder irritation: onboarding screen, half-kneeling 8 lb pressing, wall slides daily, rear delt/Y-T-W balance, two-hand rack (no clean), diamond gated on push-up step. Knee/shin overuse: low step-up start, 3 s eccentrics, chair braced, brisk-walk intervals for 2+ weeks, running minutes +10%/week max, vest never above 3.5 mph. Overreaching on 6 days: RIR 3 start, upper/lower alternation with Zone 2 between lower days, one vigorous day, 0.6-set deloads every 4th week, readiness/sleep auto-deload, real Sunday rest, time guard (at 50 min the app drops the last strength-B set and trims cooldown). Cardiac risk in an inactive adult: health screen, moderate-only start, stop-and-consult rules. Smaller beginner overloaded by fixed weights: every ladder starts at 8/12 lb or bodyweight, benchmarks are reps/time or % bodyweight, vest is % BW. Load gaps: tempo, pause, 1.5-rep, high-rep, unilateral and vest rungs between every jump; unavailable sizes auto-skipped. Single dumbbell: single-arm/alternating 'how' on every dumbbell lift. Shared equipment at the same time: the app offers a 'swap order' toggle that runs strength A and B blocks in reverse for one user so the bell/vest is free; both users log independently. Sync conflicts: each phone writes only its own user's files, so no file is ever edited by two devices; scoreboard reads are eventually consistent (retry on 409). Privacy: bodyweight/height/age stay in device storage unless the user opts to sync them; only steps, XP, streaks and benchmark results are pushed. Rivalry souring adherence: scoreboard shows relative metrics only, co-op targets outweigh head-to-head, duo streak rewards both showing up. Anyone with a diagnosed heart, back or joint condition should clear this plan with a clinician first.",
+ "nutrition_and_recovery_notes": "Protein 0.7-1.0 g per lb of bodyweight per day over 3-4 meals (30-50 g each); this is the biggest lever for looking lean and strong on a beginner program. Calories: modest 300-500 kcal/day deficit if fat loss is the priority (expect 0.5-1 lb/week), maintenance if already lean; never a crash diet on 6 days/week. Carbs around Wednesday/Saturday and the lower days; vegetables at every meal; 2-3 L water, extra on swing days. Sleep 7-9 h with a consistent wake time; the readiness check-in and sleep entry feed the auto-deload. Creatine monohydrate 3-5 g/day is the one evidence-backed optional supplement; caffeine before Saturday is optional. Alcohol blunts recovery; keep it to the rest day if at all. Expect DOMS in weeks 1-2 (hamstrings, glutes, chest); sharp joint pain is not DOMS and should be logged. Weigh weekly and take photos every 4 weeks on benchmark day (local-only by default). Sunday is a real rest day: optional easy walk only. This is general guidance, not medical advice."
+}

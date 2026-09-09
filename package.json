@@ -1,0 +1,11 @@
+{
+  "name": "warriorlog",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Warriorlog: two-player gamified workout log (static PWA on GitHub Pages)",
+  "scripts": {
+    "test": "node --test 'test/**/*.test.js'",
+    "serve": "python3 -m http.server 8098"
+  }
+}

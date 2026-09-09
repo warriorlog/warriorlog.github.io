@@ -1,0 +1,426 @@
+[
+ {
+  "scores": [
+   {
+    "design_index": 0,
+    "criteria": [
+     {
+      "criterion": "Safety for a true beginner",
+      "score_0_to_10": 8,
+      "note": "Best gate chain of the three (wall hinge -> hand-slide -> hinge test -> KB DL 3x5 -> 3x8 -> dead-stop swing -> continuous), and the only design that does NOT run a max-effort test battery in week 1 (baselines come from onboarding, first Boss Battle is week 4 when the 53 lb deadlift has already been trained for ~2 weeks). Nothing to failure, RPE<=8, vest capped at 30 lb and never above 3.5 mph on the treadmill, get-up staged naked -> shoe -> DB, 53 lb press entered with a two-hand assist (no untaught clean). Deductions: Fri 100-swing density day followed immediately by Sat 50 swings + get-ups is a back-to-back hinge load for a beginner; 53 lb halo by the horns as a warm-up step; the Friday template hard-codes 10x10 swings while the ladder may still be at dead-stop 5x5 (ambiguity the app must resolve in favour of the ladder)."
+     },
+     {
+      "criterion": "Speed of visible results",
+      "score_0_to_10": 7,
+      "note": "Swings 3x/week with a 53 lb bell plus goblet/press/row double progression will move strength fast and reshape glutes/back; treadmill cooldowns add cheap fat-loss volume. But per-muscle volume is on the thin side (chest ~7 sets, back ~7, arms only Saturday 3+3, calves 2 sets, lateral raise 3 sets), so upper-body and calf aesthetics lag the other two designs."
+     },
+     {
+      "criterion": "Head-to-toe completeness",
+      "score_0_to_10": 6,
+      "note": "Patterns are all present, but coverage is uneven: calves 2 sets/week; hip thrust ladder (to 53 lb) exists yet the template only ever uses glute_bridge as a 1x12 warm-up so that ladder is dead data; arms/side delts once per week; no direct traps/neck beyond carries; rear delts 3 sets/week. Core and posterior chain are excellent."
+     },
+     {
+      "criterion": "Cardio / stamina / heart health",
+      "score_0_to_10": 7,
+      "note": "Tue 30-min Zone 2, Thu 20-min intervals (walk-based first, jogging only at step 3, gated on Zone 2 step >= 2), 5-min cooldown walks x4, Sat loaded step-ups/carries, plus vigorous swing blocks. Honest accounting: ~110 moderate-equivalent min, needs the optional Sunday walk to reach 150. Meets guidance, but only just, and the design admits it."
+     },
+     {
+      "criterion": "Equipment fit",
+      "score_0_to_10": 9,
+      "note": "Uses only listed gear (shoe for get-ups is household). Every dumbbell lift is written single-arm/alternating capable; gaps bridged with tempo, 1.5 reps, pauses, unilateral, vest (min(10 lb, 10% BW), +5 lb increments), and density clocks. Onboarding captures vest max/increment and pair-vs-single."
+     },
+     {
+      "criterion": "Time honesty",
+      "score_0_to_10": 8,
+      "note": "Block arithmetic checks out: Mon 5x10 swings @60s + 4 push-up sets @90s fits the 20-min block; Fri 10x10 @30s + 4 press sets fits; Sat 50 min is tight (swings + 6 get-ups + 9 arm sets + 6-min step-ups + 6 carries) but feasible. App trims cooldown walk to the user's chosen 40/45/50."
+     },
+     {
+      "criterion": "Progression clarity",
+      "score_0_to_10": 6,
+      "note": "Ladders and advance_when strings are mostly checkable ('3x12 in 2 sessions'), but several template/ladder conflicts need human judgement: Fri prescribes 10 sets of swings regardless of ladder step; Sat step-ups are '6 min continuous' from day 1 while ladder steps 1-4 are 3x8/3x12; hip_hinge_drill warm-up is 1-2x8 while the ladder target is 3x10; push_up template says 4 sets while ladder targets are 3xN; Zone 2 step 1 is 'build from 20 to 30 min' (vague); 'in 2 sessions' does not say consecutive. No formal data model or target grammar."
+     },
+     {
+      "criterion": "Adherence / warrior feel",
+      "score_0_to_10": 8,
+      "note": "Simple & Sinister framing, Turkish get-up as a skill to master, swing density clock racing last week's time, Recruit/Soldier/Warrior/Champion tiers, and each day feels distinct. Sessions are short and completable. Slightly less 'combat' flavour than Design 1."
+     },
+     {
+      "criterion": "Recovery sanity",
+      "score_0_to_10": 7,
+      "note": "Nothing to failure, RPE<=8, scheduled deloads every 4th week, reactive deload on readiness/sleep, true Sunday rest. Main risk is the Fri/Sat consecutive hinge/swing days (100 + 50 swings plus get-ups) and swings 3x/week for a beginner's low back and grip; otherwise the two treadmill days break up the strength days well."
+     }
+    ],
+    "total": 66,
+    "fatal_flaws": []
+   },
+   {
+    "design_index": 1,
+    "criteria": [
+     {
+      "criterion": "Safety for a true beginner",
+      "score_0_to_10": 6,
+      "note": "Strong hinge chain (wall hinge -> 53 lb DL -> hike-and-park -> dead-stop -> continuous), daily hinge rehearsal, phase RPE caps (7/8/9), PAR-Q, pain rules, run gate, vest only after unloaded 5% ruck competence. But week 1 contains a full Boss Battle battery on day 6 (max push-ups, max plank, max goblet squats, 3-MINUTE MAX-REP 53 LB DEADLIFTS for a user who is still on the wall-hinge step, 3-min step-ups) and a 1-mile time trial on day 2. Add chair dips (a known anterior-shoulder irritant, gated only on pain), burpees + bear crawls in a 16-min AMRAP from week 2, and a 24-min EMOM: this is the most aggressive of the three for a deconditioned adult."
+     },
+     {
+      "criterion": "Speed of visible results",
+      "score_0_to_10": 8,
+      "note": "Highest total weekly work (~4.5 h), every pattern 2-3x/week, density EMOM and AMRAP drive fat loss and work capacity quickly, 10-12 rising to 14-18 sets/muscle. Visible change in 4-8 weeks is very likely if the user survives the load."
+     },
+     {
+      "criterion": "Head-to-toe completeness",
+      "score_0_to_10": 8,
+      "note": "Push/pull/squat/hinge/lunge/carry/core all covered with rear delts, YTW, lateral raises, curls, diamond/dips, thrusts, calves. Gaps: calves 3 sets once per week, no traps/neck beyond carries, lateral raises once per week; bulgarian_split_squat and pike_push_up ladders are defined but never appear in the template (dead data)."
+     },
+     {
+      "criterion": "Cardio / stamina / heart health",
+      "score_0_to_10": 9,
+      "note": "Thu 32-40 min Zone 2 ruck, Sat 18-min Zone 2 flush, Tue 20-min intervals (walk-based start, running minutes <= +10%/week), 3-min walk warm-ups daily, 24-min EMOM and 16-min AMRAP in the moderate zone. Comfortably exceeds 150 moderate-equivalent minutes from week 1 and approaches the 300-min upper band by Phase 3. Weekly tally rule is explicit."
+     },
+     {
+      "criterion": "Equipment fit",
+      "score_0_to_10": 9,
+      "note": "Only listed gear (second chair / wall for dips is assumable). Excellent gap bridging: base reps -> tempo 3-1-1 -> pause/1.5 reps -> next load at bottom of a wider range -> unilateral/vest, vest as % BW rounded to the vest increment and capped at 20% BW, and an automatic rule that skips any dumbbell size marked unavailable and adds a 1.5-rep variant to the prior step."
+     },
+     {
+      "criterion": "Time honesty",
+      "score_0_to_10": 7,
+      "note": "Phase 1 blocks fit (Mon supersets ~27-30 min). Phase 2-3 with 4 working sets push Monday to ~50-52 min; Thursday Phase 3 is 4 + 40 + 8 = 52 min (the text admits 48-50); interval step 6 makes Tuesday 50 min. Slightly over budget at the top end, but disclosed."
+     },
+     {
+      "criterion": "Progression clarity",
+      "score_0_to_10": 9,
+      "note": "Best spec of the three: explicit DATA MODEL (target grammar 'SxR', 'SxR each side', 'SxNs', 'N rounds', 'N swings in <= mm:ss', 'checklist n/N'), SUCCESS/FAIL definitions with a 60% floor, gate expressions referencing other exercises ('push_up.step >= 4', 'treadmill_ruck.step >= 3'), frozen advancement in deload/test weeks and after gaps, missed-day regress rules (8-14 d: -1 step; >14 d: -2), density progression by rest-remaining, and per-phase set counts. Minor ambiguities: AMRAP 'step-ups OR goblet squats' choice, EMOM push-ups at '60% of ladder target' needs rounding rule."
+     },
+     {
+      "criterion": "Adherence / warrior feel",
+      "score_0_to_10": 8,
+      "note": "Tactical framing (Basic Training -> AIT -> Selection), ruck, EMOM, AMRAP, Boss Battles with fixed order and rests, scoreboard every 4 weeks. Very motivating, but for a sub-10-push-up beginner the Friday EMOM + Saturday AMRAP pair is the kind of week that makes people quit in week 3."
+     },
+     {
+      "criterion": "Recovery sanity",
+      "score_0_to_10": 6,
+      "note": "Fri 24-min full-body density EMOM immediately followed by Sat 16-min AMRAP (burpees, step-ups, push-ups, swings) = back-to-back full-body high-intensity days; push-ups on Mon/Fri/Sat, squats Wed/Fri/Sat, hinge Wed/Fri/Sat. Intervals + ruck + step-ups + burpees stack impact on shins/knees/Achilles (the design names this as risk #1). RPE caps, deloads and auto-deload triggers help, but this is the burnout/overuse risk of the three."
+     }
+    ],
+    "total": 70,
+    "fatal_flaws": [
+     "Week 1 Saturday Boss Battle runs the swing-test fallback 'max 53 lb KB deadlifts in 3 minutes' for a user who has not passed the hinge gate (typically still on the wall-hinge or first 3x5 deadlift step). Max-rep deadlifting under fatigue with an unverified hinge is exactly how beginners hurt their low back. Fix is trivial: defer baseline benchmarks to week 4 (as Design 0 does) or lock the deadlift fallback until kb_deadlift step 2 is passed."
+    ]
+   },
+   {
+    "design_index": 2,
+    "criteria": [
+     {
+      "criterion": "Safety for a true beginner",
+      "score_0_to_10": 7,
+      "note": "Most conservative in-training gating of the three: hinge chain goes bodyweight -> 12 lb RDL -> 20 lb RDL -> 53 lb DL, swings also require a 30 s full hollow hold, hike-and-park and dead-stop before continuous, 5-item checklists every set until gated; shoulder and hip screens at onboarding; pressing starts half-kneeling with 12 lb; nordics gated and eccentric-only first; neck isometrics only at 50-70%; RIR 3 in Phase 1; intervals start with moderate incline walking for 2 weeks and are locked behind a health screen; vest never above 10 lb on its first session. Deductions: week 1 Saturday runs six max tests including the 3-min max 53 lb deadlift fallback for a user who has never touched the bell in training (hinge gate is at step 4); Phase 3 Saturday stacks 20 min intervals then a 10-min 150-swing EMOM; step 8 of the press requires a kettlebell clean that is never taught; 53 lb kettlebell overhead extension behind the head and 30 s near-max efforts at 12% incline at the top of ladders."
+     },
+     {
+      "criterion": "Speed of visible results",
+      "score_0_to_10": 8,
+      "note": "Hypertrophy-first: every muscle twice a week with isolation for side/rear delts, biceps, triceps, traps, neck, calves, lower abs; RIR-based effort so the last reps are effective; double progression 'beat last time by 1 rep'; Zone 2 kept low-fatigue so it does not steal recovery. Best 'hot body' engine; strength still arrives via 35 -> 53 lb steps on squat/row/RDL/thrust/press."
+     },
+     {
+      "criterion": "Head-to-toe completeness",
+      "score_0_to_10": 10,
+      "note": "Nothing neglected: chest (push-up, floor press, fly, diamond), front/side/rear delts, upper back, traps (shrugs, carries), neck, biceps, brachialis, triceps, forearms/grip, quads (goblet, Bulgarian, step-up), glutes (thrust ladder actually programmed to 53 lb single-leg), hamstrings (RDL, slider/nordic curls, deadlift), calves 5 sets/week, upper/lower/lateral core, obliques via suitcase carries. Only design with a hamstring-curl pattern."
+     },
+     {
+      "criterion": "Cardio / stamina / heart health",
+      "score_0_to_10": 7,
+      "note": "Wed 30-35 min Zone 2, 7-8 min finisher walks Mon/Thu, 2-3 min walk warm-ups daily, Sat 20-min intervals (16 vigorous) plus 8-10 min swing EMOM. Roughly 60 Zone 2 min + ~24 vigorous min = ~110-125 moderate-equivalent; the claim of 150-190 relies on counting strength sessions. Ladder to 40 min and vest ruck exists but the Wednesday block only allots 35 min, so steps 5-7 (40 min) cannot be 'completed' inside the session. Home-screen cardio guard is a good touch."
+     },
+     {
+      "criterion": "Equipment fit",
+      "score_0_to_10": 8,
+      "note": "Every dumbbell lift has a single-implement variant; gaps bridged by tempo, pause, 1.5 reps, high-rep, unilateral, vest steps. Minor violations of 'only listed gear': slider curls need a towel/socks on a smooth floor or paper plates on carpet, calf raises reference a step edge 'if available'. Vest ladder goes to 40 lb (or max) which is fine given onboarding captures the range."
+     },
+     {
+      "criterion": "Time honesty",
+      "score_0_to_10": 7,
+      "note": "Mon/Tue/Thu arithmetic fits 47-48 min. Friday packs 9 exercises + 4 warm-up items into 48 min and Saturday is 50-52 min (intervals 20 + EMOM 8-10 + chest 4 sets + core 6 sets); Phase 1 3-second eccentrics lengthen every set beyond my estimates. The TIME GUARD rule (drop last set / shorten cooldown at 50 min) is an honest, machine-enforced backstop that the other designs lack."
+     },
+     {
+      "criterion": "Progression clarity",
+      "score_0_to_10": 8,
+      "note": "Explicit data model (target grammar incl. 'SxR-R' range = min/advance, 'NxR EMOM', 'NN min'), RIR logging, advance/regress rules, one-advance-per-session cap, substitution list, time/volume/cardio guards, onboarding-set starting steps. Ambiguities: Thursday prescribes '5 sets per ladder step' while kb_swing steps 4-9 are EMOM formats (protocol text resolves it as Thu = sets, Sat = EMOM but the mapping is not in the ladder); compound targets like '3x30s plank + 3x15s each side' and neck 'one round' need custom parsing; Zone 2 steps 5-7 are unreachable within the Wednesday block length."
+     },
+     {
+      "criterion": "Adherence / warrior feel",
+      "score_0_to_10": 7,
+      "note": "Warrior Day, Boss Battles, swing EMOMs, vest rucks and neck work give a fighter flavour, and day-1 prescriptions are deliberately completable. But 8-9 exercises per session with per-set RIR logging on a phone is a chore for a beginner, and the upper/lower bodybuilding split feels more 'gym' than 'warrior' on four of six days."
+     },
+     {
+      "criterion": "Recovery sanity",
+      "score_0_to_10": 8,
+      "note": "Upper/lower alternation with a pure cardio day in the middle means no muscle is hit on consecutive days; RIR 3 start, failure only on isolation last sets in Phase 3, 0.6-set deloads every 4th week, readiness-based 3-day mini-deload, missed-session rule that skips rather than stacks, one vigorous day. Watch-outs: core is trained 5 days/week, and the Phase 3 Saturday (intervals + 150 swings + chest + core) followed by Monday lower after only Sunday off."
+     }
+    ],
+    "total": 70,
+    "fatal_flaws": [
+     "Week 1 Saturday baseline benchmarks run the locked-swing fallback 'kettlebell deadlifts in 3 minutes (53 lb, floor to lockout)' at max effort for a user whose hinge gate is at kb_deadlift step 4 - meaning on day 6 they are asked for max-rep 53 lb deadlifts before the program has ever let them lift the bell. Same trivial fix as Design 1: defer baselines to week 4 or replace the fallback with an already-earned test (max bodyweight box squats or hinge-drill checklist) until kb_deadlift step 4 is passed."
+    ]
+   }
+  ],
+  "winner_index": 2,
+  "rationale": "Designs 1 and 2 tie on points (70) with Design 0 at 66, so the lens decides it. As a conservative coach the tie-break is safety and recovery, and Design 2 wins both: its hinge chain (bodyweight -> 12 lb -> 20 lb RDL -> 53 lb deadlift, plus a hollow-hold prerequisite), shoulder/hip screens, half-kneeling 12 lb pressing, RIR 3 start, upper/lower alternation with a cardio day between lower sessions, one vigorous day, and the machine-enforced time/volume guards are the things that keep a sub-10-push-up beginner uninjured for 12 weeks. It is also the only design that truly delivers 'hot body head to toe' (neck, traps, calves, hamstring curls, lower abs, glute thrust ladder actually programmed) which is half of the user's stated goal. Design 1 has the best data model, the best cardio volume and the most 'warrior' flavour, but it stacks a 24-min density EMOM, a 16-min burpee AMRAP, intervals, a ruck and step-ups on a deconditioned adult in week 2; that is the program most likely to produce shin splints, a cranky shoulder from dips, or week-3 burnout. Design 0 is the safest and simplest and has no fatal flaw, but its aesthetics coverage is thin (calves 2 sets, arms once a week, hip-thrust ladder never used) and its template/ladder mismatches (Friday 10x10 swings, 6-min step-ups from day 1) would need a human to arbitrate, which fails the machine-checkable requirement. Both Design 1 and Design 2 share one must-fix flaw: a week-1 maximal 3-minute 53 lb deadlift test on an ungated hinge. The fix is a data change (defer baseline benchmarks to week 4 as Design 0 does, and lock the deadlift fallback until the 53 lb deadlift step is passed), after which Design 2 is the program I would hand a beginner. Cardio for Design 2 should be topped up (see grafts) because its claimed 150-190 minutes counts strength sessions; on dedicated cardio alone it lands around 110-125 moderate-equivalent minutes.",
+  "best_ideas_to_graft_from_others": [
+   {
+    "from_design_index": 0,
+    "idea": "Defer the first Boss Battle to the week-4 deload Saturday and seed starting ladder steps from self-reported onboarding baselines (max push-ups, plank, mile if known). This removes the week-1 ungated max-rep 53 lb deadlift test and the day-2 mile time trial for a deconditioned adult."
+   },
+   {
+    "from_design_index": 0,
+    "idea": "Enter the 53 lb kettlebell press by lifting the bell into the rack with both hands ('no clean needed') instead of requiring an untaught clean; keep the press gated on 35 lb strict 4x8 per side."
+   },
+   {
+    "from_design_index": 0,
+    "idea": "Treadmill interval ladder that starts at brisk-walk intervals, allows jogging only at step 3, and is locked until the Zone 2 ladder reaches step 2 (about two weeks of base); plus the global rule 'vest never above 30 lb in this program and never on the treadmill above 3.5 mph'."
+   },
+   {
+    "from_design_index": 0,
+    "idea": "Add the Turkish get-up ladder (naked -> shoe-on-fist -> 8 -> 12 -> 20 -> 35 -> 53 lb, 5x1/side, never to fatigue) to Saturday as the 'warrior skill' block; it covers shoulder stability, mobility and the S&S 10-in-10 benchmark with zero extra equipment."
+   },
+   {
+    "from_design_index": 0,
+    "idea": "Swing density clock as a benchmark: 10x10 two-hand swings with the app stopwatch, thresholds 8:00 -> 6:00 -> 5:00 (StrongFirst Simple pace) as machine-checkable gates, and 100-in-5:00 twice as the unlock for one-hand swings."
+   },
+   {
+    "from_design_index": 0,
+    "idea": "Reactive deload triggers on sleep < 6 h two nights in a row and readiness <= 2/5 on 3 consecutive days, converting the next strength session to 60% sets, plus 'first-time cards' shown before the first swing, get-up and floor press with the rule 'stop the set the moment form breaks'."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Adopt Design 1's DATA MODEL verbatim: target-string grammar ('SxR', 'SxR each side', 'SxNs', 'N rounds', 'N swings in <= mm:ss', 'checklist n/N', 'working range a-b' = prescribe low / advance at high), SUCCESS/FAIL definitions (FAIL = any set below 60% or a pain flag), and gate expressions that reference other exercises' current_step ('push_up.step >= 4', 'treadmill_ruck.step >= 3') so every lock is a boolean the app can evaluate."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Missed-training rules: 8-14 days away regress every non-warm-up exercise one step and repeat the last completed week; >14 days regress two steps and restart the current phase; freeze advancement on the first session back after any >7-day gap."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Add a dedicated 32-40 min Thursday-style Zone 2 ruck block (unloaded until the 30-min 5% incline gate passes) and an 18-min post-circuit Zone 2 flush so dedicated cardio clears 150 moderate-equivalent minutes without counting strength sessions; keep the 'change one ruck variable per week (time -> incline -> vest)' and 'running minutes never rise more than 10%/week' rules."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Express vest loads as 10/15/20% bodyweight rounded to the vest's increment (captured at onboarding), cap at 10% BW for the first two weeks after unlocking and 20% BW for the program, and auto-skip any ladder step whose dumbbell size is marked unavailable, adding a '+1.5 reps' variant to the previous step instead."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Benchmark session as a fixed script (warm-up, then push-ups 2 min, 3 min rest, plank max, 3 min rest, goblet max, 3 min rest, swings/fallback, 3 min rest, step-ups 3 min, cooldown; mile on a separate day) with the week-12 taper (Mon-Wed 50% sets, Thu light walk, Fri off) so final tests are fresh."
+   }
+  ]
+ },
+ {
+  "scores": [
+   {
+    "design_index": 0,
+    "criteria": [
+     {
+      "criterion": "Safety for a true beginner",
+      "score_0_to_10": 8,
+      "note": "Best-in-class swing gating (wall hinge -> KB deadlift 3x8 checklist -> dead-stop -> continuous -> one-hand only after 100-in-5:00) and get-up gating (naked -> shoe -> 8 -> 12 -> 20 -> 35 -> 53). RPE<=8, nothing to failure, pain-flag regression. Deductions: the 53 lb bell is the FIRST loaded hinge (no 12/20 lb DB RDL step before it, unlike Design 2), and 53 lb get-ups/one-hand swings are ambitious for week 9-12 even if gated."
+     },
+     {
+      "criterion": "Speed of visible results",
+      "score_0_to_10": 6,
+      "note": "The 'lifts appear 2-3x/week' claim is not true for the upper body: push_up is Monday only, db_row is Wednesday only, arms/lateral raises are Saturday only (3 sets each). Chest ~7 direct sets/wk, back ~7, biceps 3. Posterior chain and conditioning develop fast (swings 3x/wk), but the mirror-muscle 'hot body' outcome lags the other two designs in weeks 4-8."
+     },
+     {
+      "criterion": "Head-to-toe completeness",
+      "score_0_to_10": 6,
+      "note": "Every region is touched, but chest/biceps/triceps/rear-delt volume is thin, calves get 2 sets on Tuesday only, and there is no direct neck/trap work beyond carries. Core and hinge coverage is excellent."
+     },
+     {
+      "criterion": "Cardio / stamina / heart health",
+      "score_0_to_10": 7,
+      "note": "By its own arithmetic ~110 min moderate-equivalent and it needs the optional Sunday walk plus swing minutes to reach the AHA 150. Two-week Zone-2 base before intervals, talk-test/RPE gating, chest-pain stop rule are all good. Only one true interval day and one 30-min Zone-2 day."
+     },
+     {
+      "criterion": "Equipment fit",
+      "score_0_to_10": 9,
+      "note": "Uses only listed gear (shoe for the get-up is a nice touch). Bridges 12->20->35->53 with tempo, 1.5 reps, pauses, single-arm, and the vest; vest capped at 30 lb and locked per exercise. Single-dumbbell fallback written into every DB lift."
+     },
+     {
+      "criterion": "Time honesty",
+      "score_0_to_10": 9,
+      "note": "Block math checks out on every day (e.g. Fri: 10x10 swings @30 s = ~8.5 min + 4 press sets @90 s = ~8 min inside a 20-min block). Deload-week 6-benchmark Saturday is tight but has an explicit 'split across Sat/Sun' escape."
+     },
+     {
+      "criterion": "Progression clarity",
+      "score_0_to_10": 8,
+      "note": "Every step has a target and a 2-session advance rule; gates are explicit booleans derived from other ladders + checklist logs; density steps use logged time. Deduction: template set counts (e.g. push_up '4 sets') disagree with ladder targets ('3x12'), and Phase 1 says 3 working sets while the template shows 4 \u2014 the app needs a documented override rule."
+     },
+     {
+      "criterion": "Adherence / warrior feel",
+      "score_0_to_10": 7,
+      "note": "S&S, get-ups, density clocks, Boss Battles and tiers give a real 'practice' identity. But Tuesday is a 30-min walk + core, and arms/shoulders once a week means the beginner sees fewer mirror wins early \u2014 a known dropout driver."
+     },
+     {
+      "criterion": "Recovery sanity",
+      "score_0_to_10": 8,
+      "note": "Nothing to failure, RPE<=8, deload weeks 4/8/12, readiness-driven reactive deloads. ~200 swings/week at 53 lb across Mon/Fri/Sat is a lot of posterior-chain frequency for a novice, though intensity per set is low."
+     }
+    ],
+    "total": 68,
+    "fatal_flaws": []
+   },
+   {
+    "design_index": 1,
+    "criteria": [
+     {
+      "criterion": "Safety for a true beginner",
+      "score_0_to_10": 7,
+      "note": "Strong hinge chain (wall hinge -> 53 lb DL checklist -> hike-and-park -> dead-stop -> continuous), program-wide vest lock until 2 weeks of unloaded incline walking, RPE caps 7/8/9 by phase, PAR-Q screen, 10%/wk running rule. Deductions: Week 1 stacks a max-effort Tuesday mile AND five Saturday max tests on a sedentary person before any base; push-up volume lands on Mon + Fri EMOM + Sat AMRAP + diamond/dips (elbow/anterior-shoulder overuse risk for someone under 10 push-ups); burpees, mountain climbers and bear crawls load untrained wrists; 53 lb swings inside a fatigued AMRAP is where novice swing form breaks."
+     },
+     {
+      "criterion": "Speed of visible results",
+      "score_0_to_10": 8,
+      "note": "Highest weekly energy expenditure of the three (intervals + 32-40 min ruck + 24-min EMOM + 16-min AMRAP + 18-min flush), so fat loss is fastest. Push/pull/squat patterns hit 2-3x/wk. Strength expression is density-biased (EMOM/AMRAP) rather than heavy, and heavy lower-body work is Wednesday only."
+     },
+     {
+      "criterion": "Head-to-toe completeness",
+      "score_0_to_10": 8,
+      "note": "Push, pull, hinge, squat, lunge, carry, core, front/side/rear delts, biceps, triceps all present. Gaps: calves 3 sets/wk (Wed only), hamstrings direct once/wk, no neck. pike_push_up and bulgarian_split_squat are defined but never scheduled (dead data)."
+     },
+     {
+      "criterion": "Cardio / stamina / heart health",
+      "score_0_to_10": 10,
+      "note": "Clearly exceeds AHA 150 moderate / 75 vigorous from week 1: HIC Tuesday, LSS ruck Thursday, density EMOM, Saturday AMRAP + Zone-2 flush, daily 3-min walks. Change-one-variable ruck rule, 10% running-minute cap, walk-based Phase 1 intervals."
+     },
+     {
+      "criterion": "Equipment fit",
+      "score_0_to_10": 9,
+      "note": "Only listed gear. Vest loads expressed as %BW rounded to the vest's increment (handles unknown vest weight elegantly), capped 20% BW/40 lb. Explicit rule: if a dumbbell size is unavailable the step is skipped and the prior step gains a +1.5-rep variant. Chair dips assume a second chair/couch, acceptable."
+     },
+     {
+      "criterion": "Time honesty",
+      "score_0_to_10": 7,
+      "note": "Monday packs 18-24 working sets into a 30-min block with 45-60 s rests; on paper it fits, in practice a beginner fumbling dumbbells and logging on a phone will land at 50-55 min. Wednesday is similarly dense. Other days are honest; Phase 3 Thursday is openly 48-50."
+     },
+     {
+      "criterion": "Progression clarity",
+      "score_0_to_10": 9,
+      "note": "Best-specified data model: target-string grammar, SUCCESS/FAIL definitions (60% floor), regress rules, missed-day rules (8-14 d, >14 d), intensity caps with automatic rep drops, density progression thresholds (>=20 s rest remaining), gate expressions like push_up.step >= 4. Fully machine-drivable."
+     },
+     {
+      "criterion": "Adherence / warrior feel",
+      "score_0_to_10": 9,
+      "note": "Tactical Barbell framing, Boss Battles, AMRAP scores, EMOMs, rucking, bear crawls, tiered warm-ups (Recruit/Ranger/Operator). Most varied and gamified week; strongest 'warrior' identity."
+     },
+     {
+      "criterion": "Recovery sanity",
+      "score_0_to_10": 6,
+      "note": "Legs are loaded five days (Tue intervals, Wed heavy lower, Thu incline ruck, Fri squat EMOM, Sat step-ups/burpees) and pressing three days (Mon, Fri, Sat) for a true beginner. Deloads, RPE caps and auto-deload triggers exist, but this is the design most likely to produce week-3 burnout or shin/elbow overuse on a 6-day schedule."
+     }
+    ],
+    "total": 73,
+    "fatal_flaws": []
+   },
+   {
+    "design_index": 2,
+    "criteria": [
+     {
+      "criterion": "Safety for a true beginner",
+      "score_0_to_10": 9,
+      "note": "Only design that inserts 12 lb and 20 lb dumbbell RDL steps BEFORE the 53 lb bell touches the floor; 5-item hinge checklist plus a hollow-hold bracing prerequisite before swings; hike-and-park -> dead-stop -> continuous; onboarding shoulder and hip screens; pressing starts half-kneeling single-arm; nordics gated and never to failure; neck isometrics only; RIR 3 start. Deductions: overhead_press step 8 says 'clean bell to rack' but no clean is ever taught (should be two-hand assist as in Designs 0/1); vest swings at kb_swing step 9 are an odd terminal rung."
+     },
+     {
+      "criterion": "Speed of visible results",
+      "score_0_to_10": 9,
+      "note": "Every muscle 2x/week via upper/lower, 10-12 effective sets per region, RIR-prescribed effort so the last reps count, double progression with 'beat last time by 1 rep', one advance per exercise per session, isolation last sets to failure in Phase 3. This is the fastest route to visible chest/shoulder/arm/glute change in weeks 4-8 while keeping strength ladders to 53 lb. Fat loss slightly slower than Design 1 because total conditioning minutes are lower."
+     },
+     {
+      "criterion": "Head-to-toe completeness",
+      "score_0_to_10": 10,
+      "note": "Literally head to toe: neck 4-way, shrugs, front/side/rear delts, chest press + fly + push-up + diamond, rows + YTW, biceps + hammer, triceps, quads, glutes (thrust, swing, step-up), hamstrings (deadlift, SL RDL, slider/nordic curl), calves 2x/wk, lower abs, obliques, anti-lateral carries, grip."
+     },
+     {
+      "criterion": "Cardio / stamina / heart health",
+      "score_0_to_10": 7,
+      "note": "Wed 30-35 min Zone 2, Mon/Thu 7-8 min finishers, 2-3 min warm-up walks, Sat 18-20 min intervals + 8-10 min swing EMOM: roughly 115-135 moderate-equivalent minutes, reaching 150 only when the Phase-2 35-min Wednesday and swing minutes are counted. Two-week moderate-interval on-ramp, health screen locks intervals, cardio guard on the home screen. Adequate, not generous."
+     },
+     {
+      "criterion": "Equipment fit",
+      "score_0_to_10": 8,
+      "note": "Bridges every load gap with tempo/pause/1.5-rep/high-rep/unilateral/vest rungs and writes single-dumbbell variants into most steps. Deductions: hamstring_curl needs a towel/socks or paper plates (household but not listed gear); farmer_carry step 1 '2 x 20 lb' has no single-dumbbell variant written (suitcase fallback exists but is not linked); mobility step 3 uses 53 lb halos in a warm-up."
+     },
+     {
+      "criterion": "Time honesty",
+      "score_0_to_10": 9,
+      "note": "Block-by-block rest math fits on all six days (e.g. Tue strength A: 4 push-up sets @75 s + 3 single-arm press sets @75 s = ~14 of 15 min). Saturday's 13-min block (8-min EMOM + 2 fly + 2 diamond @30 s) is tight, but the explicit TIME GUARD (drop last set / trim cooldown at 50 min) makes overruns impossible."
+     },
+     {
+      "criterion": "Progression clarity",
+      "score_0_to_10": 9,
+      "note": "Target-string grammar, RIR logging, 'meets target' definition, regress rule (60% floor or 2 pain flags), one-advance-per-session cap, auto-substitution table for locked exercises, time/volume/cardio guards. Compound targets like '3x45s + 3x30s each side' and neck 'pain-free' holds need a slightly richer parser but are deterministic."
+     },
+     {
+      "criterion": "Adherence / warrior feel",
+      "score_0_to_10": 8,
+      "note": "Boss Battles with tiers, streaks, 'Warrior Day' Saturday with swings + intervals, and, crucially for a beginner chasing a 'hot body', arms/shoulders/chest trained twice a week so mirror wins arrive early. Less gamified variety than Design 1 (no AMRAP/burpees/bear crawls), and Wednesday is a walk + core circuit."
+     },
+     {
+      "criterion": "Recovery sanity",
+      "score_0_to_10": 9,
+      "note": "Upper/lower alternation with a Zone-2 day in the middle, one vigorous day, RIR 3->2->1, 0.6-set deloads every 4th week, readiness-driven 3-day mini-deloads, missed-day rules. Only wrinkle: Fri upper B (floor press, pike, triceps) is followed by Sat chest/triceps work (fly, diamond) \u2014 consider moving Sat chest work to a non-adjacent day."
+     }
+    ],
+    "total": 78,
+    "fatal_flaws": []
+   }
+  ],
+  "winner_index": 2,
+  "rationale": "From a results-obsessed physique + conditioning lens, Design 2 wins because it is the only one that trains every visible muscle twice a week at a prescribed effort (RIR) with enough direct volume (10-12 effective sets per region, including neck, traps, rear delts, hamstring curls, calves 2x) to produce noticeable change in the mirror by weeks 4-8, while its upper/lower/Zone-2 layout is the most recoverable of the three for a true beginner on 6 days \u2014 so the transformation holds through week 12 instead of stalling in a week-3 fatigue hole. It is also the safest on the single most dangerous element of this equipment set: it is the only design that puts 12 lb and 20 lb dumbbell RDLs before the 53 lb bell, adds a bracing (hollow) prerequisite, and screens shoulders before overhead pressing. Its app rules (target grammar, time guard, volume guard, one-advance cap, auto-substitution) are fully machine-drivable. Its weakness is cardio quantity (borderline 150 moderate-equivalent minutes) and a couple of equipment nits (towel sliders, untaught KB clean at a terminal press rung), all of which are cheap to patch with grafts. Design 1 is the most fun and has the best heart-health coverage, but it loads legs five days and pressing three days a week, stacks five max tests plus a mile in week 1, and packs 20+ sets into 30-minute blocks \u2014 great for a conditioned person, high burnout/overuse risk for someone with under 10 push-ups. Design 0 is a beautiful S&S-style practice with the best kettlebell/get-up gating, but chest, rows and arms are each trained once a week, which is simply too slow for the 'hot body' goal and the least motivating early on.",
+  "best_ideas_to_graft_from_others": [
+   {
+    "from_design_index": 1,
+    "idea": "Raise weekly cardio to safely clear AHA 150 by adopting Design 1's Thursday-style LSS block: lengthen Design 2's Wednesday Zone-2 to 32/36/40 min across phases (with the 8-min extended stretch cooldown) and add its 'change ONE ruck variable per week: time -> incline -> vest' rule to the vest_incline_walk ladder."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Express all vest loads as % bodyweight rounded to the vest's increment (10% / 15% / 20% BW, capped at 20% BW and the vest max) instead of fixed 10/20/30 lb, so a 120 lb and a 220 lb user get sane loads from the same JSON."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Copy the explicit missed-session rules (8-14 days: regress every non-warm-up exercise 1 step and repeat last week; >14 days: regress 2 steps and restart the phase) and the 'first session back after >7-day gap freezes advancement' rule into Design 2's progression_rules."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Copy the 'if a dumbbell size is marked unavailable at onboarding, skip that step and give the previous step a +1.5-rep variant' rule, and write an explicit single-dumbbell fallback for farmer_carry step 1 (suitcase 20 lb) so every ladder survives a single-dumbbell household."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Add the 'running minutes never rise more than 10% week to week' constraint and the interval step-1 'hard reps at RPE >= 7' advance check to Design 2's treadmill_intervals ladder; move the 1-mile benchmark to the Saturday interval slot only (already done) but adopt Design 1's rule that a mile test replaces, never adds to, that week's interval session."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Optional 'Warrior Circuit' variant for Saturday in Phase 3 only: a 12-16 min scaled AMRAP (step-back burpees, step-ups, ladder-step push-ups, swings once unlocked) scored by total reps, as a gated replacement for the swing EMOM on alternate weeks \u2014 this is the adherence spice Design 2 lacks, but keep it out of Phases 1-2 for recovery."
+   },
+   {
+    "from_design_index": 1,
+    "idea": "Adopt the 'tactical warm-up' idea of rehearsing 10 wall hip hinges in EVERY warm-up (6 days/week), not just lower days, so the hinge gate is passed faster and the swing unlocks earlier."
+   },
+   {
+    "from_design_index": 0,
+    "idea": "Replace Design 2's overhead_press step 8 'clean bell to rack' with Design 0's 'lift the bell into the rack with both hands (no clean needed), then strict press' so no untaught ballistic clean is ever prescribed."
+   },
+   {
+    "from_design_index": 0,
+    "idea": "Add Design 0's Turkish get-up ladder (naked -> shoe-balance -> 8 -> 12 -> 20 -> 35 lb, 5x1/side, never to fatigue) as a 6-8 min skill block on Design 2's Wednesday heart/core day; it adds shoulder stability, full-body 'warrior' skill and a benchmark-worthy movement with zero extra equipment."
+   },
+   {
+    "from_design_index": 0,
+    "idea": "Adopt the S&S density clock for swings once kb_swing step 5 (10x10 EMOM) is reached: log 100 swings for time with thresholds 8:00 -> 6:00 -> 5:00, and gate one-hand swings behind 100-in-5:00 twice plus no low-back flag in 14 days \u2014 a cleaner, more motivating terminal ladder than Design 2's 10x15 EMOM and vest swings."
+   },
+   {
+    "from_design_index": 0,
+    "idea": "Borrow the 'first-time card' concept: the first session of kb swing, get-up, floor press and nordic negatives shows a one-screen cue card with the rule 'stop the set the moment form breaks' and requires the checklist to be ticked before logging."
+   },
+   {
+    "from_design_index": 0,
+    "idea": "Adopt the explicit global vest ceiling for this program (never above 30 lb / 20% BW, and never on the treadmill above 3.5 mph) and the per-exercise vest unlock table written as one boolean list in safety_and_form_gates, which is simpler for the app than Design 2's per-ladder prose."
+   }
+  ]
+ }
+]

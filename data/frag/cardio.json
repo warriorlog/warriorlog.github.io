@@ -1,0 +1,659 @@
+{
+  "exercises": [
+    {
+      "id": "treadmill_zone2",
+      "name": "Zone-2 incline walk",
+      "region": "heart",
+      "pattern": "locomotion",
+      "equipment": "treadmill",
+      "cues": [
+        "Talk test rules everything: full sentences, cannot sing. If you cannot finish a sentence, drop the incline 1% before you drop the speed.",
+        "No handrails. Hands free and swinging; holding on removes most of the work and wrecks your posture.",
+        "Incline first, then speed, then duration - change ONE of the three at a time.",
+        "Land midfoot and stand tall; do not lean into the console."
+      ],
+      "stop_if": "Chest pain, dizziness, unusual breathlessness, calf cramp or shin/knee pain above 3/10 - stop the belt, walk it off, and log a pain flag. Chest pain or dizziness means the session ends and you get medically cleared before the next one.",
+      "region_weights": { "heart": 0.7, "calves": 0.15, "thighs": 0.15 },
+      "ladder": [
+        {
+          "id": "treadmill_zone2.flat_20",
+          "ord": 1,
+          "name": "3.0 mph, 0%, 20 min",
+          "how": "Flat, easy, unhurried walk at 3.0 mph for 20 minutes. This rung exists so someone who cannot yet walk 20 minutes comfortably has a real place to start - finish it feeling like you could have done 5 more minutes. Hands off the rails. If 3.0 mph is too quick, walk at 2.7-2.8 mph and still call it done. If a step ever asks for more incline than your treadmill has, the app substitutes your treadmill's max incline and adds 0.3 mph; if it asks for more speed than your treadmill has, it holds max speed and adds 1% incline.",
+          "unit": "min",
+          "sides": "both",
+          "A": 20,
+          "B": 20,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.0, "incline": 0, "minutes": 20, "rpe_max": 4 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 20,
+            "rpe_max": 4,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_zone2.easy_25",
+          "ord": 2,
+          "name": "3.0 mph, 1%, 25 min",
+          "how": "3.0 mph at 1% incline for 25 minutes. The 1% is the smallest bump most treadmills offer and it is only there to teach you that incline, not speed, is how this ladder grows. Talk test the whole way. The app substitutes your treadmill's max incline plus 0.3 mph if a step exceeds the machine's limits.",
+          "unit": "min",
+          "sides": "both",
+          "A": 25,
+          "B": 25,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.0, "incline": 1, "minutes": 25, "rpe_max": 4 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 25,
+            "rpe_max": 4,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_zone2.w30_2",
+          "ord": 3,
+          "name": "3.0 mph, 2%, 30 min",
+          "how": "3.0 mph at 2% for 30 minutes - the first full Zone-2 block. Steady the whole way, no surges, no rails. If you drift out of the talk test, hold the speed and take the incline to 1%. The app substitutes your treadmill's max incline plus 0.3 mph if a step exceeds the machine's limits.",
+          "unit": "min",
+          "sides": "both",
+          "A": 30,
+          "B": 30,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.0, "incline": 2, "minutes": 30, "rpe_max": 4 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 30,
+            "rpe_max": 4,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_zone2.w30_4",
+          "ord": 4,
+          "name": "3.2 mph, 4%, 30 min",
+          "how": "3.2 mph at 4% for 30 minutes. Clearing this rung twice is also what lets the interval ladder move past its first rung (together with 3 weeks on the program). Hands off the rails; shorten your stride rather than reaching as the hill steepens. The app substitutes your treadmill's max incline plus 0.3 mph if a step exceeds the machine's limits.",
+          "unit": "min",
+          "sides": "both",
+          "A": 30,
+          "B": 30,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.2, "incline": 4, "minutes": 30, "rpe_max": 4 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 30,
+            "rpe_max": 4,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_zone2.w33_6",
+          "ord": 5,
+          "name": "3.4 mph, 6%, 33 min",
+          "how": "3.4 mph at 6% for 33 minutes. Three extra minutes and two extra percent - if both feel like a lot in the same week, keep the incline at 4% for one session and build the minutes first. Talk test still rules. The app substitutes your treadmill's max incline plus 0.3 mph if a step exceeds the machine's limits.",
+          "unit": "min",
+          "sides": "both",
+          "A": 33,
+          "B": 33,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.4, "incline": 6, "minutes": 33, "rpe_max": 4 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 33,
+            "rpe_max": 4,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_zone2.w33_8",
+          "ord": 6,
+          "name": "3.5 mph, 8%, 33 min - VEST WALK GATE",
+          "how": "3.5 mph at 8% for 33 minutes. This is the VEST WALK GATE: two clean sessions here at talk-test pace with no knee or shin pain flag in the last 14 days unlocks the weighted-vest walk. 3.5 mph is the ceiling for every walking step in this app - past here the hill gets steeper, never the belt faster. The app substitutes your treadmill's max incline plus 0.3 mph if a step exceeds the machine's limits.",
+          "unit": "min",
+          "sides": "both",
+          "A": 33,
+          "B": 33,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.5, "incline": 8, "minutes": 33, "rpe_max": 4 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 33,
+            "rpe_max": 4,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 },
+              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 }
+            ],
+            "unlocks": ["vest_walk"]
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_zone2.w36_10",
+          "ord": 7,
+          "name": "3.5 mph, 10%, 36 min",
+          "how": "3.5 mph at 10% for 36 minutes. Drop to 3.3 mph if the talk test fails - the hill, not the belt, is the point. Do not shorten your stride into a shuffle or start pushing off the console. The app substitutes your treadmill's max incline plus 0.3 mph if a step exceeds the machine's limits.",
+          "unit": "min",
+          "sides": "both",
+          "A": 36,
+          "B": 36,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.5, "incline": 10, "minutes": 36, "rpe_max": 4 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 36,
+            "rpe_max": 4,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 },
+              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 }
+            ]
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_zone2.w36_12",
+          "ord": 8,
+          "name": "3.5 mph, 12%, 36 min",
+          "how": "3.5 mph at 12% for 36 minutes - the top of the walking ladder. From here the vest, not the treadmill, supplies the next hill. Many treadmills stop at 10 or 12%; if yours tops out lower, the app holds your max incline and adds 0.3 mph and this is still the terminal rung. Hands stay off the rails.",
+          "unit": "min",
+          "sides": "both",
+          "A": 36,
+          "B": 36,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.5, "incline": 12, "minutes": 36, "rpe_max": 4 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 36,
+            "rpe_max": 4,
+            "consecutive": 2
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "zone2_finisher",
+      "name": "Zone-2 finisher walk",
+      "region": "heart",
+      "pattern": "locomotion",
+      "equipment": "treadmill",
+      "cues": [
+        "This is a short easy walk bolted onto a strength day, not a test - talk-test pace only.",
+        "It never moves the Zone-2 ladder up or down; it only adds Zone-2 minutes to the week.",
+        "If the session is running long this is the first thing the time guard trims, down to 4 minutes."
+      ],
+      "stop_if": "Chest pain, dizziness or any pain above 3/10 - stop the belt and finish the session with the cooldown flow instead.",
+      "region_weights": { "heart": 0.7, "calves": 0.15, "thighs": 0.15 },
+      "ladder": [
+        {
+          "id": "zone2_finisher.finisher",
+          "ord": 1,
+          "name": "Finisher walk (minutes from the day's plan)",
+          "how": "Walk at talk-test pace for the minutes the day's plan gives you (Monday ~7, Thursday ~8, Saturday ~4, Wednesday Skirmish ~6-12; the plan's time_override_min is the real target, and the time guard may trim it to 4). Speed and incline are read from whatever rung you currently occupy on the Zone-2 incline walk ladder, so this finisher gets harder automatically as that ladder climbs - never set it yourself. This exercise has ONE rung and never advances or regresses: your Zone-2 ladder is moved only by the full Wednesday block. If the required incline exceeds your treadmill, the app substitutes your max incline and adds 0.3 mph.",
+          "unit": "min",
+          "sides": "both",
+          "A": 4,
+          "B": 4,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.0, "incline": 2, "minutes": 6, "rpe_max": 4 },
+          "advance": {
+            "rule": "sessions_gte",
+            "value": 99999,
+            "consecutive": 1
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "march_step_zone2",
+      "name": "March / step Zone-2 (no treadmill)",
+      "region": "heart",
+      "pattern": "locomotion",
+      "equipment": "bodyweight, couch cushion, floor",
+      "cues": [
+        "Use this whenever your partner is on the treadmill - the Zone-2 minutes count exactly the same.",
+        "Talk-test pace: knees to hip height, arms driving, full sentences the whole time.",
+        "Step-march option: step up and down onto the bottom couch cushion (8-12 in) at a steady rhythm, leading leg swapping every minute.",
+        "Stay tall and quiet on the feet; if the cushion slides, march in place instead."
+      ],
+      "stop_if": "Chest pain, dizziness, or knee/shin/ankle pain above 3/10. Swap step-marching for flat marching in place at the first hint of knee complaint.",
+      "region_weights": { "heart": 0.7, "calves": 0.15, "thighs": 0.15 },
+      "ladder": [
+        {
+          "id": "march_step_zone2.march",
+          "ord": 1,
+          "name": "Brisk march / step-march (minutes from the day's plan)",
+          "how": "Brisk march in place, or step-march onto the bottom couch cushion, for the minutes the day's plan gives you - swap the lead leg every minute so both sides share the work. Pace by the talk test, not by speed: you should be breathing hard enough to notice and still able to answer a question in a full sentence. This is the machine-selectable Zone-2 substitute when the treadmill is occupied; the minutes count toward your weekly Zone-2 tally identically. ONE rung, never advances or regresses - your treadmill Zone-2 ladder is untouched by it.",
+          "unit": "min",
+          "sides": "both",
+          "A": 6,
+          "B": 6,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "cardio": { "minutes": 6, "rpe_max": 4 },
+          "advance": {
+            "rule": "sessions_gte",
+            "value": 99999,
+            "consecutive": 1
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "treadmill_intervals",
+      "name": "Treadmill intervals (walk to jog to run)",
+      "region": "heart",
+      "pattern": "locomotion",
+      "equipment": "treadmill",
+      "cues": [
+        "2 min easy walk in and 2 min easy walk out of every interval block - they are part of the block, not optional.",
+        "Hard = RPE 8-9, a few words at a time. Easy = walking, and it is supposed to feel easy.",
+        "Slow the belt, never grab the rails, to survive an interval. A rung you had to hold on for does not count.",
+        "Straddle the belt during the easy leg only if you must step off; hit the speed change before the interval starts, not during it.",
+        "Hard minutes climb slowly on purpose: 6, 8, 8, 9, 10, 10, and each rung takes two clean sessions."
+      ],
+      "stop_if": "Chest pain, dizziness, unusual breathlessness, or any shin, knee or Achilles pain - end the block, walk 2 min easy, and log a pain flag. If you answered yes to anything on the health screen, intervals stay locked until you confirm medical clearance.",
+      "region_weights": { "heart": 0.75, "thighs": 0.15, "calves": 0.1 },
+      "ladder": [
+        {
+          "id": "treadmill_intervals.walk_6",
+          "ord": 1,
+          "name": "Brisk-walk intervals 6 x (1 min / 1.5 min) - 6 hard min",
+          "how": "2 min easy walk in. Then 6 rounds of 1 min brisk (4.0 mph flat, or 3.5 mph at 8% incline if 4.0 feels like a jog) followed by 1.5 min easy walk at 2.8 mph. 2 min easy walk out. Hard efforts should sit at RPE 6-7 - working, not gasping. You stay on this rung for at least the first 3 weeks of the program: the ladder only opens up once you have 3 weeks in and the Zone-2 ladder has reached 3.2 mph / 4%. If the incline exceeds your treadmill's max, the app uses your max incline and adds 0.3 mph.",
+          "unit": "rounds",
+          "sides": "both",
+          "A": 6,
+          "B": 6,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 2.8, "incline": 2, "minutes": 19, "rounds": 6, "work_sec": 60, "rest_sec": 90, "mph_work": 4.0, "hard_min": 6 },
+          "advance": {
+            "rule": "rounds_gte",
+            "value": 6,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "weeks_elapsed_gte", "value": 3 },
+              { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w30_4" }
+            ]
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_intervals.walk_8",
+          "ord": 2,
+          "name": "Brisk-walk intervals 8 x (1 min / 1.5 min) - 8 hard min",
+          "how": "2 min easy walk in. Then 8 rounds of 1 min brisk (4.0 mph flat, or 3.5 mph at 8%) followed by 1.5 min easy walk. 2 min easy walk out. Same intensity as the last rung, two more rounds - your hard minutes go 6 to 8 here and then hold at 8 while the effort changes from walking to jogging. Two clean sessions plus 14 days with no shin or knee pain flag is what opens the jog rung. If the incline exceeds your treadmill's max, the app uses your max incline and adds 0.3 mph.",
+          "unit": "rounds",
+          "sides": "both",
+          "A": 8,
+          "B": 8,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 2.8, "incline": 2, "minutes": 24, "rounds": 8, "work_sec": 60, "rest_sec": 90, "mph_work": 4.0, "hard_min": 8 },
+          "advance": {
+            "rule": "rounds_gte",
+            "value": 8,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 },
+              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+            ]
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_intervals.jog_8",
+          "ord": 3,
+          "name": "Walk/jog intervals 8 x (1 min / 1 min) - 8 hard min - RUN GATE",
+          "how": "2 min easy walk in. Then 8 rounds of 1 min jog at 5.0-5.5 mph, 1% incline, followed by 1 min walk at 3.0 mph. 2 min easy walk out. This is the RUN GATE - the first rung where your feet leave the ground, and the rung every other running reference in the app checks for. Same 8 hard minutes as the last rung: nothing got longer, only faster. Land under your hips, quick quiet steps, no reaching. If your treadmill tops out below 5.0 mph, hold max speed and add 1% incline.",
+          "unit": "rounds",
+          "sides": "both",
+          "A": 8,
+          "B": 8,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.0, "incline": 1, "minutes": 20, "rounds": 8, "work_sec": 60, "rest_sec": 60, "mph_work": 5.0, "hard_min": 8 },
+          "advance": {
+            "rule": "rounds_gte",
+            "value": 8,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 },
+              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+            ]
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_intervals.run_9",
+          "ord": 4,
+          "name": "Run/walk 9 x (1 min / 1 min) - 9 hard min",
+          "how": "2 min easy walk in. Then 9 rounds of 1 min run at 5.5-6.0 mph, 1% incline, followed by 1 min walk. 2 min easy walk out. One extra round, nothing else - and because a rung takes two sessions, your running load is climbing at roughly half a round per week. Two clean sessions plus 14 clear days for shins and knees to move on. If your treadmill tops out below the target speed, hold max speed and add 1% incline.",
+          "unit": "rounds",
+          "sides": "both",
+          "A": 9,
+          "B": 9,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.0, "incline": 1, "minutes": 22, "rounds": 9, "work_sec": 60, "rest_sec": 60, "mph_work": 5.5, "hard_min": 9 },
+          "advance": {
+            "rule": "rounds_gte",
+            "value": 9,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 },
+              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+            ]
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_intervals.run_10",
+          "ord": 5,
+          "name": "Run/walk 10 x (1 min / 1 min) at RPE 9 - 10 hard min",
+          "how": "2 min easy walk in. Then 10 rounds of 1 min hard run (5.5-6.5 mph, 1%) and 1 min walk. 2 min easy walk out. The rung is not the speed, it is the effort: this only counts when the block RPE comes in at 9 or above - genuinely hard, a couple of words at a time, and you are glad when the last round ends. Pick the belt speed that makes that true for you, and keep all 10 rounds honest rather than blowing up on round 4. If your treadmill tops out below the target speed, hold max speed and add 1% incline.",
+          "unit": "rounds",
+          "sides": "both",
+          "A": 10,
+          "B": 10,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.0, "incline": 1, "minutes": 24, "rounds": 10, "work_sec": 60, "rest_sec": 60, "mph_work": 6.0, "hard_min": 10 },
+          "advance": {
+            "rule": "rpe_min",
+            "value": 9,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "rounds_gte", "value": 10 },
+              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 },
+              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+            ]
+          },
+          "terminal": false
+        },
+        {
+          "id": "treadmill_intervals.run_5x2",
+          "ord": 6,
+          "name": "5 x (2 min hard / 2 min easy) - 10 hard min",
+          "how": "2 min easy walk in. Then 5 rounds of 2 min hard running (5.5-6.5 mph, 1%) and 2 min easy walk. 2 min easy walk out. Same 10 hard minutes as the last rung, repackaged into longer efforts - this is the VO2max shape, and it is the top of the ladder. Pace round 1 so that round 5 looks like round 1. If your treadmill tops out below the target speed, hold max speed and add 1% incline.",
+          "unit": "rounds",
+          "sides": "both",
+          "A": 5,
+          "B": 5,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["treadmill"],
+          "cardio": { "mph": 3.0, "incline": 1, "minutes": 24, "rounds": 5, "work_sec": 120, "rest_sec": 120, "mph_work": 6.0, "hard_min": 10 },
+          "advance": {
+            "rule": "rounds_gte",
+            "value": 5,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "shin", "days": 14 },
+              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+            ]
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "vest_walk",
+      "name": "Weighted-vest incline walk (ruck)",
+      "region": "heart",
+      "pattern": "locomotion",
+      "equipment": "treadmill, vest",
+      "cues": [
+        "Vest snug and worn high on the ribs - a vest that swings turns into a low-back problem.",
+        "Zone 2 by talk test, exactly like the unweighted walk. The vest is the new hill; nothing else changes.",
+        "Change ONE variable per week: minutes, then incline, then vest weight.",
+        "First vest session ever is the lighter of 10% bodyweight and 10 lb, no exceptions.",
+        "Stand tall. The moment you start leaning forward from the waist, take weight out of the vest."
+      ],
+      "stop_if": "Never above 3.5 mph in the vest - if the plan and the belt disagree, the belt loses. Stop for low-back, hip, knee or shoulder pain above 3/10, for any numbness or tingling in the arms, or if the vest starts riding up on every step. Take the vest off before you step off the belt.",
+      "region_weights": { "heart": 0.6, "calves": 0.15, "thighs": 0.15, "core": 0.1 },
+      "ladder": [
+        {
+          "id": "vest_walk.v10_6",
+          "ord": 1,
+          "name": "Vest 10% BW, 3.3 mph, 6%, 30 min",
+          "how": "Vest loaded to 10% of bodyweight (cap 30 lb; your first ever vest session is the lighter of 10% BW and 10 lb). 3.3 mph at 6% for 30 minutes, talk test throughout. Expect this to feel harder than the same walk unweighted even though the numbers are smaller - that is the vest doing its job. Hands off the rails. If the incline exceeds your treadmill's max, the app uses your max incline and adds 0.3 mph, never taking you above 3.5 mph.",
+          "unit": "min",
+          "sides": "both",
+          "A": 30,
+          "B": 30,
+          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 10, "cap_lb": 30 },
+          "implement_id": "vest",
+          "requires": ["treadmill", "vest"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w33_8" }
+          ],
+          "cardio": { "mph": 3.3, "incline": 6, "minutes": 30, "rpe_max": 5 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 30,
+            "rpe_max": 5,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }
+            ]
+          },
+          "terminal": false
+        },
+        {
+          "id": "vest_walk.v10_8",
+          "ord": 2,
+          "name": "Vest 10% BW, 3.3 mph, 8%, 33 min",
+          "how": "Same vest weight, steeper hill, three more minutes: 3.3 mph at 8% for 33 minutes. Only the incline and the clock changed this rung - the vest stays where it was. Talk test the whole way; if it fails, hold 3.3 mph and drop to 6% rather than shortening the walk. If the incline exceeds your treadmill's max, the app uses your max incline and adds 0.3 mph, capped at 3.5 mph.",
+          "unit": "min",
+          "sides": "both",
+          "A": 33,
+          "B": 33,
+          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 10, "cap_lb": 30 },
+          "implement_id": "vest",
+          "requires": ["treadmill", "vest"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w33_8" }
+          ],
+          "cardio": { "mph": 3.3, "incline": 8, "minutes": 33, "rpe_max": 5 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 33,
+            "rpe_max": 5,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }
+            ]
+          },
+          "terminal": false
+        },
+        {
+          "id": "vest_walk.v15_8",
+          "ord": 3,
+          "name": "Vest 15% BW, 3.3 mph, 8%, 33 min",
+          "how": "The vest goes up to 15% of bodyweight (still capped at 30 lb) and everything else holds still: 3.3 mph at 8% for 33 minutes. Add the plates in the smallest increment your vest offers and check the straps before the belt starts. If your shoulders or low back complain in the first 10 minutes, go back to 10% for a week - the rung will still be here.",
+          "unit": "min",
+          "sides": "both",
+          "A": 33,
+          "B": 33,
+          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 15, "cap_lb": 30 },
+          "implement_id": "vest",
+          "requires": ["treadmill", "vest"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w33_8" }
+          ],
+          "cardio": { "mph": 3.3, "incline": 8, "minutes": 33, "rpe_max": 5 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 33,
+            "rpe_max": 5,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }
+            ]
+          },
+          "terminal": false
+        },
+        {
+          "id": "vest_walk.v15_10",
+          "ord": 4,
+          "name": "Vest 15% BW, 3.4 mph, 10%, 36 min",
+          "how": "15% bodyweight at 3.4 mph, 10% incline, 36 minutes. Two variables moved here (hill and clock), so give it a full two sessions before judging it, and split the difference at 8% for one session if the talk test breaks. 3.4 mph is deliberately below the 3.5 mph vest ceiling. If the incline exceeds your treadmill's max, the app uses your max incline and adds 0.3 mph, capped at 3.5 mph.",
+          "unit": "min",
+          "sides": "both",
+          "A": 36,
+          "B": 36,
+          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 15, "cap_lb": 30 },
+          "implement_id": "vest",
+          "requires": ["treadmill", "vest"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w33_8" }
+          ],
+          "cardio": { "mph": 3.4, "incline": 10, "minutes": 36, "rpe_max": 5 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 36,
+            "rpe_max": 5,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 },
+              { "rule": "no_pain_flag_days", "region": "knee", "days": 14 }
+            ]
+          },
+          "terminal": false
+        },
+        {
+          "id": "vest_walk.v20_12",
+          "ord": 5,
+          "name": "Vest 20% BW (cap 30 lb), 3.4 mph, 12%, 36 min",
+          "how": "The top rung: vest at 20% of bodyweight or 30 lb, whichever is lighter, 3.4 mph at 12% for 36 minutes. This is a genuinely hard hour-adjacent piece of work at an easy heart rate - keep the talk test, keep your hands off the rails, keep the belt at or below 3.5 mph forever. If your treadmill stops short of 12%, the app holds your max incline and adds 0.3 mph up to the 3.5 mph ceiling, and this is still the terminal rung.",
+          "unit": "min",
+          "sides": "both",
+          "A": 36,
+          "B": 36,
+          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 20, "cap_lb": 30 },
+          "implement_id": "vest",
+          "requires": ["treadmill", "vest"],
+          "entry_requires": [
+            { "rule": "ladder_at_or_past", "exercise": "treadmill_zone2", "step_id": "treadmill_zone2.w33_8" }
+          ],
+          "cardio": { "mph": 3.4, "incline": 12, "minutes": 36, "rpe_max": 5 },
+          "advance": {
+            "rule": "cardio_done",
+            "value": 36,
+            "rpe_max": 5,
+            "consecutive": 2,
+            "requires": [
+              { "rule": "no_pain_flag_days", "region": "low_back", "days": 14 }
+            ]
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "warmup_flow",
+      "name": "Warm-up Flow (walk, hinge rehearsal, pattern rehearsal)",
+      "region": "full_body",
+      "pattern": "locomotion",
+      "equipment": "treadmill, wall, chair, bodyweight",
+      "cues": [
+        "Walk first, then move every joint through its range, then rehearse the day's first pattern.",
+        "10 wall hinges every single day - the hinge gets grooved six times a week long before the bell ever swings.",
+        "Finish warm, never tired. If the warm-up is the hardest part of your session, it is too long.",
+        "Wall tibialis raises on lower days protect the shins as the incline walking and running ramp up."
+      ],
+      "stop_if": "Any sharp pain during a rehearsal set - skip that pattern for the day and tell the app, rather than warming up harder to push through it.",
+      "region_weights": { "heart": 0.2, "shoulders": 0.15, "back": 0.15, "core": 0.15, "glutes": 0.15, "thighs": 0.15, "calves": 0.05 },
+      "ladder": [
+        {
+          "id": "warmup_flow.standard",
+          "ord": 1,
+          "name": "Standard warm-up flow",
+          "how": "2-3 min easy walk at 3.0 mph (march in place if the treadmill is busy), then the variant for the day. LOWER DAYS: 10 leg swings per leg, 10 hip circles per side, 10 wall hinges, 10 glute bridges, 5 chair sit-to-stands, and 2 x 20 wall tibialis raises (heels about 12 in from the wall, back against it, lift the toes slowly). UPPER DAYS: 10 arm circles each way, 10 wall slides, 10 wall hinges, 8 push-ups one ladder step easier than your working step - and if you are on the first push-up rung, 8 wall push-ups with a closer stance instead - then 6 prone Y-T-W. Thursday adds a 15 s hollow hold for bracing; Saturday adds hike-and-park with whatever swing implement you have earned. This flow has ONE rung and never advances: it is preparation, not training, and the time guard is forbidden from cutting it.",
+          "unit": "min",
+          "sides": "both",
+          "A": 6,
+          "B": 6,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": {
+            "rule": "sessions_gte",
+            "value": 99999,
+            "consecutive": 1
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "cooldown_flow",
+      "name": "Cooldown Flow (static stretch and breathing)",
+      "region": "full_body",
+      "pattern": "locomotion",
+      "equipment": "floor, wall, couch",
+      "cues": [
+        "Hold each stretch 30-45 s, no bouncing, long slow nasal exhales.",
+        "Stretch what you trained: hips and calves after squatting and walking, chest and lats after pressing.",
+        "Stretch to a 4/10 tension, never into pain - this is the part of the session that tells your nervous system the work is over."
+      ],
+      "stop_if": "Sharp, pinching or nervy pain, or numbness anywhere - come out of the stretch immediately. Never stretch a joint you flagged pain on today.",
+      "region_weights": { "heart": 0.25, "neck_traps": 0.05, "chest": 0.1, "back": 0.15, "core": 0.05, "glutes": 0.2, "thighs": 0.15, "calves": 0.05 },
+      "ladder": [
+        {
+          "id": "cooldown_flow.standard",
+          "ord": 1,
+          "name": "Standard cooldown flow",
+          "how": "Up to 2 min easy walk where the clock allows, then the variant for the day. LOWER DAYS: couch stretch 45 s per side, standing hamstring 45 s, wall calf stretch 30 s per side. UPPER DAYS: doorway or wall chest stretch 45 s, lat stretch over the chair 45 s per side, overhead triceps 30 s per side, neck side-bend 30 s per side. Finish every session with 1 min of slow breathing, exhale twice as long as the inhale. ONE rung, never advances. The time guard may trim this block down to 2 minutes but never to zero.",
+          "unit": "min",
+          "sides": "both",
+          "A": 3,
+          "B": 3,
+          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "implement_id": "bw",
+          "requires": ["bw"],
+          "advance": {
+            "rule": "sessions_gte",
+            "value": 99999,
+            "consecutive": 1
+          },
+          "terminal": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+ "scores": [
+  {
+   "design_index": 0,
+   "criteria": [
+    {
+     "criterion": "GitHub Contents API correctness",
+     "score_0_to_10": 8,
+     "note": "Handles 404 probe, 201/200, 409, 422-mentioning-sha, 401/403 stop, 429/retry-after + x-ratelimit-reset, base64 newline stripping, UTF-8 encode via TextEncoder, 1 MB GET limit with a 900 KB guard, ETag/304 on listings, pushedCount captured before serialization. Gaps: no cross-tab serialization (docs require serial Contents writes; module-level inFlight only covers one tab), writes land on the Pages branch `main` so every phone commit triggers a Pages build and forces laptop `pull --rebase`, and the commit carries no author (two-user requirement needs author.name per user)."
+    },
+    {
+     "criterion": "Offline robustness",
+     "score_0_to_10": 7,
+     "note": "Synchronous localStorage append before render is durable and simple; queue = count delta so it cannot drift. Weakness: network-first SW with a 3 s race on every shell request means a lie-fi gym connection can cost ~3 s per launch before falling back to cache; a captive-portal 200 could be cache.put as a module. No Background Sync on Android, no cross-tab coordination."
+    },
+    {
+     "criterion": "Data-loss safety (2 devices, 2 users)",
+     "score_0_to_10": 7,
+     "note": "Single-writer-per-device files + void events + union-by-id merge is sound; empty-local pull seeds sha so a reinstall does not 422. But logs live on `main` next to code: a laptop force-push or a botched rebase can delete logs, and localStorage (5 MB, string-only, evictable in Safari-tab mode) is the only local copy. Extension to per-user paths is straightforward (log/<user>/<dev>/)."
+    },
+    {
+     "criterion": "Maintenance simplicity for Claude Code sessions",
+     "score_0_to_10": 9,
+     "note": "~20 files, one store module, no CI, no build, no branch juggling, everything relative; CLAUDE.md rules are short. A future session can hold the whole app in context."
+    },
+    {
+     "criterion": "Mobile UX feasibility",
+     "score_0_to_10": 7,
+     "note": "One-tap Done with min-rep prefill, RPE chips, rest timer, wake lock, undo-as-void, safe-area/dvh, hash routes, relative manifest all correct. Freshness is guaranteed when online (no version to bump) but launch latency depends on the network every time; Pages CDN max-age 600 still applies to fetch(req) without cache:'reload'."
+    },
+    {
+     "criterion": "Testability",
+     "score_0_to_10": 8,
+     "note": "derive/engine pure with injected `now`, sync takes injected fetch with scripted 404/201/200/409/401/429 sequences, program.test.js lints the data, commutativity test (same events split across files derive identical state). Lacks schema migrations/fixtures and golden-plan tests."
+    },
+    {
+     "criterion": "Deploy simplicity",
+     "score_0_to_10": 9,
+     "note": "gh repo create + POST /pages legacy branch build from main root; identical to the existing site's convention; every later deploy is `npm test && git pull --rebase && git push`. The rebase is the one recurring tax of keeping logs on main."
+    },
+    {
+     "criterion": "Gamification fit",
+     "score_0_to_10": 7,
+     "note": "Fully derived state, badges.json predicates, XP rules in program.json, benchmark PRs, deload/hold rules replayed per session. Prescription is frozen only in ui.session, not in an event, so '% of prescribed targets hit' for the fair scoreboard cannot be recomputed from logs after a rule change; no partner/duo derivation designed."
+    }
+   ],
+   "total": 62,
+   "fatal_flaws": [
+    "None strictly fatal. Serious: logs committed to the Pages branch `main` \u2014 each of two users' phones commits to main (Pages rebuild per commit, laptop must rebase before every push, a force-push can destroy logs).",
+    "Network-first SW with 3 s timeout per request makes every launch network-bound; on flaky gym Wi-Fi the app feels slow, contradicting the 'feels like an app' goal.",
+    "Session prescription is not recorded in the event log (only ui.session), so the fair two-player scoreboard metric 'percentage of prescribed targets hit' is not reproducible from logs after a program tweak."
+   ]
+  },
+  {
+   "design_index": 1,
+   "criteria": [
+    {
+     "criterion": "GitHub Contents API correctness",
+     "score_0_to_10": 9,
+     "note": "Correct headers and version pin, 201/200, 409 and 422-missing-sha both merge-and-retry, 404 diagnosis (repo vs branch), 401 stop, 403/429 sleep to max(retry-after, reset), lost-response PUT recovered via 409, raw media type for pulls (no base64 decode, valid to 100 MB), single tree call with If-None-Match (304 free), serial writes enforced via navigator.locks. Nits: committer 'Warrior app' must become author = logging user; self-created `data` branch via git/refs is non-orphan (harmless)."
+    },
+    {
+     "criterion": "Offline robustness",
+     "score_0_to_10": 9,
+     "note": "IDB append awaited before UI marks the set done; queue is the synced=0 index so it cannot drift; cache-first shell gives instant offline launch; onLine plus real fetch failure; Background Sync on Chromium; flush on visibility for iOS; Web Locks + BroadcastChannel for two tabs; in-memory+localStorage fallback when IDB is blocked."
+    },
+    {
+     "criterion": "Data-loss safety (2 devices, 2 users)",
+     "score_0_to_10": 8,
+     "note": "Per-device sole-writer files on an orphan `data` branch isolate logs from code pushes/force-pushes; ULID ids dedupe; edits are new events (LWW by (ts,id) per set) and deletes are done:false, so merges never resurrect or lose; private events filtered at the sync boundary with a test. Residual: LWW of the same set across devices depends on clocks (rare), and body metrics remain local-only by design on both."
+    },
+    {
+     "criterion": "Maintenance simplicity for Claude Code sessions",
+     "score_0_to_10": 6,
+     "note": "~45 files across core/store/sync/ui, migrations registry, IDB wrapper, Web Locks, BroadcastChannel, Background Sync, two workflows, orphan branch, CI sed stamping. Each piece is justified but the surface area is 2\u20133x Design 0 and a future session must understand the Actions deploy to ship a change."
+    },
+    {
+     "criterion": "Mobile UX feasibility",
+     "score_0_to_10": 9,
+     "note": "Instant cache-first launch, version.json + registration.update + SKIP_WAITING + controllerchange reload/banner gives at most one stale launch with a visible fix; one-exercise-at-a-time giant Done, steppers in a sheet, rest ring, vibrate, wake lock, undo toast, iOS install tip. Relative manifest/SW/hash routes correct."
+    },
+    {
+     "criterion": "Testability",
+     "score_0_to_10": 9,
+     "note": "core imports nothing from the browser; injectable clock; fixtures per schema version; golden Plans; reduce(events) == fold(apply) property test; fake-fetch sync suite covering 201/200/409/422/401/403/network/serial ordering/private-never-leaves; validate-program runs locally and in CI."
+    },
+    {
+     "criterion": "Deploy simplicity",
+     "score_0_to_10": 7,
+     "note": "Scripted but more steps: orphan data branch, Pages build_type=workflow, pages.yml with sed stamp, ci.yml. Departs from the existing site's legacy-branch convention. Upside: no rebase ever needed and log commits never trigger a build."
+    },
+    {
+     "criterion": "Gamification fit",
+     "score_0_to_10": 8,
+     "note": "Frozen plan inside session.started makes 'targets hit %' reproducible; ladder.override, program.pinned, rest.taken, phase gating by completed work, XP with ladder-advance and streak bonus, badges keyed id+version with earnedAt. Still no duo/partner derivation designed, but the per-user reduce + frozen plans are exactly what the fair scoreboard needs."
+    }
+   ],
+   "total": 65,
+   "fatal_flaws": [
+    "None fatal. Main risk is complexity: the Actions deploy + sed stamp is a mini build step that a future Claude Code session could break or forget; navigator.locks/Background Sync are progressive enhancements that must degrade cleanly (they do in the design, but each is one more code path).",
+    "Commit identity: PUT uses committer 'Warrior app'; the two-player requirement says each commit must carry the logging user's name \u2014 must switch to author:{name,email} per user.",
+    "Neither design handles two users; Design 1's log/<dev>/ path and 'events synced from other devices are merged into one state' must become per-user partitions or Cat's sets would be folded into Sean's ladders."
+   ]
+  }
+ ],
+ "winner_index": 1,
+ "rationale": "Design 1 wins 65\u201362. Its sync layer is the more faithful implementation of the real Contents API (raw media type on reads, tree+ETag pull, serial writes via Web Locks, 422-missing-sha and lost-response recovery, correct rate-limit sleeps), its local store is durable (IDB, awaited before the UI advances) and its cache-first shell with explicit update detection is the only one of the two that delivers instant launches in a gym with bad Wi-Fi while still never leaving the user on a stale build for more than one launch. Putting logs on an orphan `data` branch is the decisive structural win for two phones and two users: no Pages rebuild per log commit, no laptop rebase, and no way for a code push to destroy logs. Design 1 also already freezes the prescribed plan into the session.started event, which is precisely what a fair partner scoreboard ('% of prescribed targets hit') needs. Design 0 is the better-engineered *small* app \u2014 ~20 files, legacy Pages from main exactly like the existing site, no CI \u2014 and it loses only because keeping logs on `main` with a network-first SW is the wrong trade for this user (two committers, phone-first, flaky network). The synthesis should therefore keep Design 1's storage/sync/plan-freezing substance but adopt Design 0's footprint: drop pages.yml and the sed stamp in favour of legacy branch publishing from main root (the orphan `data` branch works fine with legacy publishing since builds only fire on pushes to main), replace CI stamping with a stale-while-revalidate shell that posts an 'update ready' toast when a revalidated response's ETag differs from the cached one, collapse the ~45 files toward ~20, and keep `node --test` local (ci.yml optional). Two-player extension on top: event envelope gains `user` ('sean'|'cat'); remote path becomes log/<user>/<dev>/<yyyy-mm>.jsonl so single-writer-per-file survives a shared phone; PUT body sets author:{name:<user display name>, email:<user>@users.noreply.github.com}; reduce() partitions by user, then a pure duo.js derives duoStreak (both users have a finished session on the same local day), the weekly relative scoreboard (XP gained this ISO week, % of frozen-plan targets hit, ladder steps gained, Zone-2/steady-cardio minutes \u2014 never absolute reps/weight), boss battles as gamification.json entries with combined-score predicates, duo badges, and 'partner trained today'; placement quiz emits assessment.recorded per user feeding each ladder's startFrom map; ladders extended downward (goblet from db:12/db:20, two-hand DB swing 20 then 35 before kb:53, presses from db:8/10, push-ups from wall/incline) with the 53 lb bell gated by ladder_at_or_past(hinge) AND a benchmark 'swing-form-check' recorded at pass \u2014 both machine-checkable predicates already in Design 1's registry.",
+ "best_ideas_to_graft_from_others": [
+  {
+   "from_design_index": 0,
+   "idea": "Flat ~20-file footprint: index.html, style.css, manifest, sw.js, config.js, src/{app,views,store,derive,engine,sync,util}.js, data/{program,exercises,badges}.json, test/*.test.js, package.json with zero deps. Collapse Design 1's core/engine/gamify/ui trees into this shape so a future session can load the whole app."
+  },
+  {
+   "from_design_index": 0,
+   "idea": "Legacy branch publishing from `main` root via POST /repos/SJJ363/warrior/pages source[branch]=main source[path]=/ \u2014 identical to the existing site, no Actions deploy workflow. Combine with Design 1's orphan `data` branch: legacy builds fire only on pushes to main, so log commits still never rebuild and the laptop never rebases."
+  },
+  {
+   "from_design_index": 0,
+   "idea": "No build/stamp step for the service worker: use stale-while-revalidate for the shell (instant launch) and detect a deploy by comparing the ETag of the revalidated response with the cached one; when any shell file changed, postMessage 'update ready' \u2192 toast to reload (deferred if a session is active). Register with updateViaCache:'none'. This keeps Design 1's 'at most one stale launch' guarantee without CI."
+  },
+  {
+   "from_design_index": 0,
+   "idea": "program.test.js as a data linter run by node --test: every ladder level's exercise resolves, every advance rule kind is in the closed registry, every load resolves against BOTH users' declared inventories, each rotation session's estMin sums to 40\u201350, placement tables ordered, no duplicate ids."
+  },
+  {
+   "from_design_index": 0,
+   "idea": "Commutativity test: the same events shuffled and split across two 'device files' (and two users) must derive identical per-user and duo state \u2014 the property that makes union-merge sync safe."
+  },
+  {
+   "from_design_index": 0,
+   "idea": "Explicit `load` object on every set event ({kind:'bw'|'vest'|'db'|'kb'|'bw+db', lb, n}) and declared substitution rules in program.json (loadPickers: heaviest_le, vest\u2192tempo+reps) so the app never prescribes gear that does not exist and every substitution is data, not a hidden default."
+  },
+  {
+   "from_design_index": 0,
+   "idea": "Regress-then-hold rule (2 failed sessions \u2192 level\u22121, hold 1 session), rpeCap so RPE>8 sets never count toward 'top', 1 level/session cap, and time-gated technique levels (sessions {count}) for the hinge drill and dead-stop swings \u2014 beginner-safety valves expressed as global rules."
+  },
+  {
+   "from_design_index": 0,
+   "idea": "CLAUDE.md in the repo with the five invariants: event-sourced (never store totals), single-writer-per-file, everything relative, program changes go in data/program.json + tests, logs live on the data branch. Plus README PAT steps and the token-expiry nag field."
+  },
+  {
+   "from_design_index": 0,
+   "idea": "Sync-status dot in the nav (grey synced / amber N pending / red needs attention) and 'Sync now', 'Export JSON', 'Import' in Settings as the disaster-recovery path for local-only body metrics."
+  }
+ ]
+}
