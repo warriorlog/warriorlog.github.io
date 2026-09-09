@@ -113,22 +113,115 @@ function xpAvailableWeek(user, spec, gam, weekId) {
   return Math.max(1, total);
 }
 
+/**
+ * Resolve a finished week into a result. Statuses matter as much as the score:
+ * a week where one of them was ill is a no-contest, not a loss, and a week where
+ * someone simply did not appear is worded neutrally rather than as a defeat.
+ */
+export function resolveWeek(mine, theirs, spec, gam, weekId, progressMine, progressTheirs) {
+  const cfg = gam.duel ?? {};
+  const a = duelScore(mine, progressMine, spec, gam, weekId);
+  const b = theirs ? duelScore(theirs, progressTheirs, spec, gam, weekId) : null;
+  if (!b) return { week_id: weekId, status: 'solo', mine: a, theirs: null, winner: null };
+
+  const pausedA = pausedDays(mine, weekId), pausedB = pausedDays(theirs, weekId);
+  const minSessions = cfg.min_sessions_contested ?? 2;
+  const maxPaused = cfg.max_paused_contested ?? 3;
+
+  let status = 'contested';
+  if (pausedA >= maxPaused || pausedB >= maxPaused) status = 'no_contest';
+  else if (a.counted === 0 && b.counted >= minSessions && pausedA === 0) status = 'unexplained';
+  else if (b.counted === 0 && a.counted >= minSessions && pausedB === 0) status = 'unexplained';
+  else if (a.counted < minSessions || b.counted < minSessions) status = 'no_contest';
+  else if (Math.abs(a.S - b.S) < (cfg.dead_heat_margin ?? 2)) status = 'dead_heat';
+
+  const winner = status === 'contested' ? (a.S > b.S ? mine.id : theirs.id) : null;
+  return {
+    week_id: weekId, status, mine: a, theirs: b, winner,
+    pb_star_mine: isPersonalBest(mine, a.S, weekId, gam),
+    margin: Math.abs(a.S - b.S),
+  };
+}
+
+const PAUSED = new Set(['recovery', 'away', 'shield']);
+
+function pausedDays(user, weekId) {
+  const start = weekStart(dayOfWeekId(weekId));
+  let n = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(start, i);
+    if ((user.modes ?? []).some(m => d >= m.from && (!m.to || d <= m.to))) n++;
+  }
+  return n;
+}
+
+/** ISO week ids are opaque; keep one place that turns one back into a date. */
+function dayOfWeekId(weekId) {
+  const [y, w] = weekId.split('-W').map(Number);
+  const jan4 = new Date(Date.UTC(y, 0, 4));
+  const mondayOfWeek1 = new Date(jan4);
+  mondayOfWeek1.setUTCDate(jan4.getUTCDate() - ((jan4.getUTCDay() + 6) % 7));
+  const d = new Date(mondayOfWeek1);
+  d.setUTCDate(mondayOfWeek1.getUTCDate() + (w - 1) * 7);
+  return d.toISOString().slice(0, 10);
+}
+
+function isPersonalBest(user, S, weekId, gam) {
+  const past = Object.values(user.weekLocks ?? {})
+    .filter(l => l.week_id !== weekId && l.status === 'contested')
+    .slice(-4).map(l => l.S_me ?? 0);
+  if (past.length < 2) return false;
+  return S >= Math.max(...past) + (gam.duel?.pb_star_margin ?? 5);
+}
+
+/**
+ * The belt, the crowns and the alliance rule, replayed from locked weeks only.
+ * Nothing here is stored: change a rule and the whole history re-derives.
+ */
+export function beltState(mine, theirs, gam) {
+  const locks = Object.values(mine.weekLocks ?? {}).sort((x, y) => (x.week_id < y.week_id ? -1 : 1));
+  let holder = null, crowns = { [mine.id]: 0, [theirs?.id ?? 'partner']: 0 };
+  let deadHeats = 0, changes = 0, lossRun = { [mine.id]: 0, [theirs?.id ?? 'partner']: 0 };
+
+  for (const l of locks) {
+    if (l.status === 'dead_heat') { deadHeats++; lossRun[mine.id] = 0; if (theirs) lossRun[theirs.id] = 0; continue; }
+    if (l.status !== 'contested' || !l.winner) continue;
+    if (holder && holder !== l.winner) changes++;
+    holder = l.winner;
+    crowns[l.winner] = (crowns[l.winner] ?? 0) + 1;
+    lossRun[l.winner] = 0;
+    const loser = l.winner === mine.id ? theirs?.id : mine.id;
+    if (loser) lossRun[loser] = (lossRun[loser] ?? 0) + 1;
+  }
+
+  // After three losses in a row the next week is co-operative, so a bad month
+  // cannot become a losing streak that nobody wants to open the app for.
+  const allianceNext = Object.values(lossRun).some(n => n >= (gam.duel?.alliance_after_losses ?? 3));
+  return { holder, crowns, dead_heats: deadHeats, title_changes: changes, loss_run: lossRun, alliance_next: allianceNext };
+}
+
 /** Everything the duo screen shows, for one pair, on one day. */
-export function duoState(mine, theirs, spec, gam, today) {
+export function duoState(mine, theirs, spec, gam, today, progressMine = null, progressTheirs = null) {
   const weekId = isoWeekKey(today);
   const gA = flame(mine, gam, today).statuses;
   const gB = theirs ? flame(theirs, gam, today).statuses : new Map();
-  const myScore = duelScore(mine, mine.progressCache, spec, gam, weekId);
-  const theirScore = theirs ? duelScore(theirs, theirs.progressCache, spec, gam, weekId) : { S: 0, parts: { sessions: 0, fidelity: 0, zone2: 0, progress: 0, xp: 0 } };
+  const week = resolveWeek(mine, theirs, spec, gam, weekId, progressMine, progressTheirs);
+  const belt = beltState(mine, theirs, gam);
+  const alliance = belt.alliance_next;
 
-  const margin = gam.duel?.dead_heat_margin ?? 2;
-  const status = Math.abs(myScore.S - theirScore.S) < margin ? 'dead heat'
-    : myScore.S > theirScore.S ? 'you lead' : 'they lead';
+  const status = week.status === 'solo' ? 'solo'
+    : alliance ? 'alliance'
+    : week.status === 'dead_heat' ? 'dead heat'
+    : week.status !== 'contested' ? week.status.replace('_', ' ')
+    : week.mine.S > (week.theirs?.S ?? 0) ? 'you lead' : 'they lead';
 
   return {
-    weekId,
+    weekId, status, alliance,
+    alliance_target: gam.duel?.alliance_target ?? 150,
+    combined: week.mine.S + (week.theirs?.S ?? 0),
     partnerTrainedToday: trainedOn(theirs, today),
     duoFlame: theirs ? duoFlame(mine, theirs, gA, gB, today) : 0,
-    week: { status, mine: myScore, theirs: theirScore },
+    belt,
+    week: { status, mine: week.mine, theirs: week.theirs ?? { S: 0, parts: { sessions: 0, fidelity: 0, zone2: 0, progress: 0, xp: 0 } }, pb: week.pb_star_mine },
   };
 }

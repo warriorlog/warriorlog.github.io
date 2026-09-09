@@ -245,3 +245,35 @@ button { border: 0; background: none; cursor: pointer; touch-action: manipulatio
 .week span[data-status="pending"] { border-style: dashed; }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ------------------------------------------------------- body map (silhouette)
+   Token colours and the one animation live here; every geometric attribute is
+   an SVG presentation attribute set in src/views/silhouette.js. */
+.wl-fig {
+  display: block; width: 100%; max-width: 264px; height: auto; margin: 2px auto 0;
+  background: var(--bg); border-radius: var(--radius);
+}
+.wl-body { fill: var(--bg-raised); }
+.wl-filler { stroke: var(--iron); stroke-width: 1.2px; }
+.wl-ground { fill: var(--ember); opacity: .07; }
+.wl-track { stroke: var(--line); }
+.wl-ring { stroke: var(--ember); }
+.wl-tick { stroke: var(--ink-dim); opacity: .7; }
+.wl-n { fill: var(--ink); stroke: var(--bg); font-family: var(--font); }
+.wl-n0 { fill: var(--ink-faint); }
+.wl-rg { cursor: default; }
+
+.wl-pulse { fill: var(--ember); opacity: .92; transform-origin: 133px 120px; animation: wl-beat 1.9s ease-in-out infinite; }
+@keyframes wl-beat {
+  0%, 62%, 100% { transform: scale(1); opacity: .82; }
+  10% { transform: scale(1.13); opacity: 1; }
+  22% { transform: scale(1); opacity: .86; }
+  32% { transform: scale(1.08); opacity: .96; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wl-pulse { animation: none; transform: none; opacity: .9; }
+}
+
+.wl-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; }
+.wl-legend span { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--ink-faint); }
+.wl-legend i { width: 11px; height: 11px; border-radius: 50%; border: 2px solid currentColor; display: inline-block; }

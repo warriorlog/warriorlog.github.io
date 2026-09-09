@@ -1,9 +1,11 @@
 // Body and armoury: how full each region is, and what the ten slots still need.
-import { html, raw } from '../util.js';
+import { html, raw, dayKey, isoWeekKey } from '../util.js';
 import { topbar, tabbar, page } from './chrome.js';
+import { silhouette } from './silhouette.js';
 import { me, go } from '../app.js';
 
 const MATERIAL = ['Iron', 'Bronze', 'Silver', 'Gold'];
+const ZONE2_WEEK_TARGET = 150;      // the AHA line; the head ring closes here
 
 export function render(state) {
   const u = me(state);
@@ -38,8 +40,21 @@ export function render(state) {
       <span class="small muted">${l.qualifying} of ${need}</span></div>`;
   }).join('');
 
+  const zone2 = Math.round(p.zone2_by_week?.[isoWeekKey(dayKey())] ?? 0);
+  const figure = silhouette({
+    regions: p.regions,
+    gear: p.gear,
+    heart: { minutes: zone2, target: ZONE2_WEEK_TARGET, tick: 150 },
+    divisor: g.region_level?.divisor ?? 40,
+  });
+
   return page(topbar(state), html`<div class="stack">
-    <div class="card stack"><h3>Head to toe</h3><div class="regions">${raw(regions)}</div></div>
+    <div class="card stack"><h3>Head to toe</h3>
+      ${figure}
+      <p class="tiny center">Fill is level · outline is armour · ring is Zone-2 ${zone2} of ${ZONE2_WEEK_TARGET} min</p>
+      <div class="wl-legend">${raw(MATERIAL.map((m, i) =>
+        `<span><i style="color:${['#6b7280', '#cd7f32', '#c0c0c0', '#ffd700'][i]}"></i>${m}</span>`).join(''))}</div>
+      <div class="regions">${raw(regions)}</div></div>
     <div class="card stack"><h3>Armoury</h3>
       <p class="faint small">Armour comes only from benchmark tiers and named rungs. XP alone never buys it.</p>
       ${raw(slots)}</div>
