@@ -75,6 +75,29 @@ export function resolvePlacement(answers, program) {
   };
 }
 
+/**
+ * Record one answer. Multi-select questions need care: "None" and a real injury
+ * flag cannot both be true, and tapping the same flag twice clears it.
+ */
+export function applyAnswer(answers, q, type, rawValue) {
+  const next = { ...answers };
+  if (type === 'multi') {
+    const set = new Set(Array.isArray(next[q]) ? next[q] : []);
+    if (rawValue === 'none') { set.clear(); set.add('none'); }
+    else {
+      set.delete('none');
+      set.has(rawValue) ? set.delete(rawValue) : set.add(rawValue);
+    }
+    next[q] = [...set];
+    if (!next[q].length) delete next[q];
+    return next;
+  }
+  next[q] = type === 'bool' ? rawValue === 'true' || rawValue === true
+    : type === 'int' ? Number(rawValue)
+    : rawValue;
+  return next;
+}
+
 /** The questions the setup screen should ask, in order, by group. */
 export function questionsFor(program, group) {
   const spec = program.byExercise ? program : indexSpec(program);

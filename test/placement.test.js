@@ -87,3 +87,44 @@ test('the setup screen can find its questions by group', () => {
   assert.ok(questionsFor(spec, 'placement').length >= 7);
   assert.ok(questionsFor(spec, 'equipment').length >= 5);
 });
+
+test('answers record correctly, including the awkward multi-select cases', async () => {
+  const { applyAnswer } = await import('../src/placement.js');
+  let a = {};
+  a = applyAnswer(a, 'q_parq', 'bool', 'false');
+  assert.equal(a.q_parq, false, 'a bool answer is a boolean, not the string "false"');
+  a = applyAnswer(a, 'q1_pushups', 'int', '12');
+  assert.equal(a.q1_pushups, 12);
+
+  a = applyAnswer(a, 'q_injuries', 'multi', 'knee');
+  assert.deepEqual(a.q_injuries, ['knee']);
+  a = applyAnswer(a, 'q_injuries', 'multi', 'wrist');
+  assert.deepEqual(a.q_injuries, ['knee', 'wrist'], 'two flags can be true at once');
+  a = applyAnswer(a, 'q_injuries', 'multi', 'knee');
+  assert.deepEqual(a.q_injuries, ['wrist'], 'tapping again clears that one');
+  a = applyAnswer(a, 'q_injuries', 'multi', 'none');
+  assert.deepEqual(a.q_injuries, ['none'], '"none" clears every flag');
+  a = applyAnswer(a, 'q_injuries', 'multi', 'knee');
+  assert.deepEqual(a.q_injuries, ['knee'], 'and a flag clears "none"');
+});
+
+test('the answers a setup run produces really do cap an injured ladder', async () => {
+  const { applyAnswer } = await import('../src/placement.js');
+  // Exactly the taps a user makes: screens, then the ability questions.
+  let a = {};
+  for (const [q, t, v] of [
+    ['q_parq', 'bool', 'false'], ['q_injuries', 'multi', 'knee'],
+    ['q_shoulder_slides', 'bool', 'true'], ['q_hip_sit_stand', 'bool', 'true'],
+    ['q1_pushups', 'int', '12'], ['q2_squat', 'choice', 'bw_squat_15'],
+    ['q3_plank', 'choice', '20_45'], ['q4_hinge', 'bool', 'true'],
+    ['q5_overhead', 'choice', 'easy'], ['q6_carry', 'bool', 'true'],
+    ['q7_cardio', 'choice', 'comfortable'],
+  ]) a = applyAnswer(a, q, t, v);
+
+  const { start_steps, caps } = resolvePlacement(a, spec);
+  assert.ok(caps.goblet_squat, 'a knee flag must produce a goblet ceiling');
+  assert.equal(start_steps.goblet_squat, 'goblet_squat.chair',
+    'the knee flag beats the strong squat answer');
+  assert.equal(start_steps.step_up, 'step_up.low');
+  assert.equal(start_steps.push_up, 'push_up.full', 'unrelated ladders are untouched');
+});

@@ -51,7 +51,7 @@ export function render(state) {
   return page(topbar(state), html`<div class="stack">
     <div class="card stack"><h3>Head to toe</h3>
       ${figure}
-      <p class="tiny center">Fill is level · outline is armour · ring is Zone-2 ${zone2} of ${ZONE2_WEEK_TARGET} min</p>
+      <p class="small faint center">Fill is level, outline is armour. Ring: ${zone2} of ${ZONE2_WEEK_TARGET} Zone-2 min this week.</p>
       <div class="wl-legend">${raw(MATERIAL.map((m, i) =>
         `<span><i style="color:${['#6b7280', '#cd7f32', '#c0c0c0', '#ffd700'][i]}"></i>${m}</span>`).join(''))}</div>
       <div class="regions">${raw(regions)}</div></div>

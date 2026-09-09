@@ -4,7 +4,7 @@
 import { html, raw } from '../util.js';
 import { dispatch, go, recompute } from '../app.js';
 import { TYPES } from '../events.js';
-import { resolvePlacement, questionsFor } from '../placement.js';
+import { resolvePlacement, questionsFor, applyAnswer } from '../placement.js';
 
 const draft = { user: null, answers: {}, equipment: {}, bodyweight: null, step: 0 };
 const STEPS = ['who', 'equipment', 'screen', 'placement'];
@@ -131,19 +131,18 @@ export async function act(action, data, state) {
       return;
     }
     case 'pick': draft.user = data.user; state.me = data.user; draft.step = 1; return rerender();
-    case 'db': (draft.equipment.dumbbells ??= {})[data.lb] = data.v; return rerender();
+    case 'db':
+      (draft.equipment.dumbbells ??= {})[data.lb] = data.v;
+      return repaintGroup(`[data-action="db"][data-lb="${data.lb}"]`, b => b.dataset.v === data.v);
     case 'answer': {
-      const v = data.t === 'bool' ? data.v === 'true' : data.v;
-      if (data.t === 'multi') {
-        const list = new Set(Array.isArray(draft.answers[data.q]) ? draft.answers[data.q] : []);
-        // "None" and a real flag cannot both be true.
-        if (v === 'none') { list.clear(); list.add('none'); }
-        else { list.delete('none'); list.has(v) ? list.delete(v) : list.add(v); }
-        draft.answers[data.q] = [...list];
-      } else {
-        draft.answers[data.q] = v;
-      }
-      return rerender();
+      draft.answers = applyAnswer(draft.answers, data.q, data.t, data.v);
+      // Repaint just this question's chips. A full re-render on every tap would
+      // blur whatever number field the user is part-way through typing into.
+      return repaintGroup(`[data-action="answer"][data-q="${data.q}"]`, (b) => {
+        const val = b.dataset.t === 'bool' ? b.dataset.v === 'true' : b.dataset.v;
+        const cur = draft.answers[data.q];
+        return Array.isArray(cur) ? cur.includes(val) : cur === val;
+      });
     }
     case 'next': draft.step++; return rerender();
     case 'finish': return finish(state);
@@ -164,6 +163,11 @@ export function changed(field, el) {
 }
 
 const rerender = () => import('../app.js').then(m => m.render());
+
+/** Flip aria-pressed within one group of chips, without touching the rest of the page. */
+function repaintGroup(selector, isOn) {
+  for (const b of document.querySelectorAll(selector)) b.setAttribute('aria-pressed', String(!!isOn(b)));
+}
 
 async function finish(state) {
   const { settings } = await import('../store.js');

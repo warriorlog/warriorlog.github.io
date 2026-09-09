@@ -14,6 +14,7 @@ import * as completeView from './views/complete.js';
 import * as journalView from './views/journal.js';
 import * as bodyView from './views/body.js';
 import * as duoView from './views/duo.js';
+import * as bossView from './views/boss.js';
 import * as settingsView from './views/settings.js';
 
 const CONFIG = window.WARRIORLOG_CONFIG ?? {};
@@ -39,7 +40,7 @@ export const state = {
 
 const VIEWS = {
   setup: setupView, home: homeView, session: sessionView, complete: completeView,
-  journal: journalView, body: bodyView, duo: duoView, settings: settingsView,
+  journal: journalView, body: bodyView, duo: duoView, boss: bossView, settings: settingsView,
 };
 
 // ---------------------------------------------------------------- boot
