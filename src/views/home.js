@@ -84,17 +84,29 @@ function stakes(state, plan, p) {
 
 function partnerCard(state) {
   const other = partner(state);
-  if (!other?.sessions.length && !other?.quizDone) return raw('');
+  const name = other?.profile?.name ?? (state.me === 'sean' ? 'Cat' : 'Sean');
+  if (!other?.sessions.length && !other?.quizDone) {
+    return html`<div class="card card-tight row">
+      <div class="avatar partner">${name[0]}</div>
+      <div class="grow"><div>${name} has not joined yet</div>
+        <div class="tiny">everything you log still counts</div></div>
+    </div>`;
+  }
   const today = dayKey();
   const todays = other.sessions.filter(s => s.day === today);
-  const name = other.profile?.name ?? (state.me === 'sean' ? 'Cat' : 'Sean');
+  // Only ever claim what the synced data can actually support.
+  const presence = state.presence?.[state.me === 'sean' ? 'cat' : 'sean'];
+  const hours = presence?.lastOpen ? (Date.now() - Date.parse(presence.lastOpen)) / 3600000 : null;
+  const stale = hours != null && hours > 6;
   const line = todays.length
     ? `${name} trained today · ${todays[0].duration_min ?? '—'} min`
+    : stale ? `No session from ${name} yet`
     : `${name} has not trained yet today`;
+  const sub = stale ? `as of ${Math.round(hours)} hours ago` : 'Duo';
   return html`<div class="card card-tight row">
     <div class="avatar partner">${name[0]}</div>
     <div class="grow"><div>${line}</div>
-      <div class="tiny">Duo</div></div>
+      <div class="tiny">${sub}</div></div>
     <button class="btn ghost" style="width:auto;padding:0 14px" data-action="nav" data-href="#/duo">Open</button>
   </div>`;
 }
@@ -138,7 +150,17 @@ export async function act(action, data, state) {
   }
   if (action === 'kindle') {
     const id = newId();
-    await dispatch(TYPES.SESSION_START, { session_id: id, template_id: 'sun_rest', type: 'kindle', date: dayKey(), plan: { rows: [] } }, { render: false });
+    const kindle = state.spec.byTemplate?.sun_rest?.kindle ?? {};
+    const exId = kindle.exercise_id ?? 'zone2_finisher';
+    const minutes = kindle.minutes_min ?? kindle.minutes ?? 20;
+    await dispatch(TYPES.SESSION_START, {
+      session_id: id, template_id: 'sun_rest', type: 'kindle', date: dayKey(),
+      plan: { rows: [{
+        exercise_id: exId, step_id: state.spec.byExercise[exId]?.ladder?.[0]?.id,
+        set_index: 1, side: null, part: null, unit: 'min',
+        A: minutes, B: minutes, minutes, prescribed: true, counts_for_progression: false,
+      }] },
+    }, { render: false });
     go(`#/session/${id}`);
   }
 }
