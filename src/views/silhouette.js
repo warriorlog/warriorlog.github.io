@@ -57,57 +57,59 @@ export function mirrorPath(d) {
 const HEAD = 'M120,25C132,25 141,37 141,52C141,68 132,79 120,79C108,79 99,68 99,52C99,37 108,25 120,25Z';
 
 const REGIONS = [
-  {
-    id: 'neck_traps', label: 'Neck & traps', slot: 'gorget',
-    d: 'M108,72L132,72L132,90C144,94 154,101 161,110L153,120C143,112 132,108 120,107C108,108 97,112 87,120L79,110C86,101 96,94 108,90Z',
-    y0: 72, y1: 120, nx: 120, ny: 87,
-  },
-  {
-    id: 'shoulders', label: 'Shoulders', slot: 'pauldrons', half: true,
-    d: 'M150,108C164,111 175,120 178,134C180,145 178,155 175,162C167,157 158,152 150,147Z',
-    y0: 108, y1: 162, nx: 165, ny: 138,
-  },
+  // Drawn in this order, so the layering reads like a body: the back sits behind
+  // everything, arms behind the pecs, deltoids capping both, the yoke on top.
   {
     id: 'back', label: 'Back', slot: 'backplate', half: true,
-    d: 'M146,148C157,152 163,163 163,178C163,196 158,214 151,228L140,222C145,206 149,188 149,170Z',
-    y0: 148, y1: 228, nx: 155, ny: 190,
+    d: 'M144,138C156,143 164,156 164,174C164,196 159,216 152,234L140,228C146,212 151,192 151,172C151,158 148,146 144,138Z',
+    y0: 138, y1: 234, nx: 158, ny: 197,
+  },
+  {
+    id: 'arms', label: 'Arms', slot: 'gauntlets', half: true,
+    d: 'M158,150C169,153 178,159 182,167C188,184 190,204 188,222C186,246 183,270 182,292L167,292C168,268 170,244 170,222C170,200 164,170 158,150Z',
+    y0: 150, y1: 292, nx: 180, ny: 238,
   },
   {
     id: 'chest', label: 'Chest', slot: 'breastplate',
     d: 'M89,114C102,106 138,106 151,114L153,142C148,158 135,166 120,166C105,166 92,158 87,142Z',
-    y0: 106, y1: 166, nx: 102, ny: 140,
+    y0: 106, y1: 166, nx: 105, ny: 148,
   },
   {
-    id: 'arms', label: 'Arms', slot: 'gauntlets', half: true,
-    d: 'M149,150C160,153 168,159 172,167C178,184 180,204 178,222C176,246 173,270 172,292L157,292C158,268 160,244 160,222C160,200 155,170 149,150Z',
-    y0: 150, y1: 292, nx: 168, ny: 200,
+    id: 'shoulders', label: 'Shoulders', slot: 'pauldrons', half: true,
+    d: 'M150,108C166,111 180,120 184,134C186,146 184,157 181,164C171,159 160,153 150,147Z',
+    y0: 108, y1: 164, nx: 172, ny: 139,
+  },
+  {
+    id: 'neck_traps', label: 'Neck & traps', slot: 'gorget',
+    d: 'M108,72L132,72L132,90C144,94 154,101 161,110L153,120C143,112 132,108 120,107C108,108 97,112 87,120L79,110C86,101 96,94 108,90Z',
+    y0: 72, y1: 120, nx: 98, ny: 113,
   },
   {
     id: 'core', label: 'Core', slot: 'belt',
     d: 'M91,164C104,171 136,171 149,164C147,182 144,198 142,212C141,222 141,232 142,242L98,242C99,232 99,222 98,212C96,198 93,182 91,164Z',
-    y0: 164, y1: 242, nx: 120, ny: 208,
+    y0: 164, y1: 242, nx: 120, ny: 206,
   },
   {
     id: 'glutes', label: 'Glutes & hips', slot: 'hip_guard',
     d: 'M98,234L142,234C152,241 157,254 156,268C155,282 147,292 136,293C129,293 124,289 120,282C116,289 111,293 104,293C93,292 85,282 84,268C83,254 88,241 98,234Z',
-    y0: 234, y1: 293, nx: 120, ny: 266,
+    y0: 234, y1: 293, nx: 120, ny: 268,
   },
   {
     id: 'thighs', label: 'Thighs', slot: 'greaves', half: true,
     d: 'M121,286L139,288C150,295 154,318 152,342C150,366 145,386 142,400L124,400C124,366 122,326 121,286Z',
-    y0: 286, y1: 400, nx: 138, ny: 344,
+    y0: 286, y1: 400, nx: 138, ny: 346,
   },
   {
     id: 'calves', label: 'Calves', slot: 'sabatons', half: true,
-    d: 'M124,408L142,408C149,422 151,440 147,456C145,466 141,472 140,478L128,478C129,464 128,448 127,434C126,424 124,416 124,408Z',
-    y0: 408, y1: 478, nx: 136, ny: 442,
+    d: 'M124,408L142,408C149,422 151,442 147,460C145,470 141,476 140,482L128,482C129,468 128,450 127,434C126,424 124,416 124,408Z',
+    y0: 408, y1: 482, nx: 136, ny: 448,
   },
 ];
 
 // Joints, hands and feet: never a region, only the statue holding itself together.
 const FILLER = [
-  'M127,476L141,476C143,484 149,488 152,490C154,492 153,495 150,495L126,495C124,495 124,492 125,489Z', // foot
-  'M164,290C170,290 174,295 174,301C174,309 170,314 164,314C158,314 154,309 154,301C154,295 158,290 164,290Z', // hand
+  'M127,480L141,480C143,488 149,492 152,494C154,496 153,499 150,499L126,499C124,499 124,496 125,493Z', // foot
+  'M174,290C180,290 184,295 184,301C184,309 180,314 174,314C168,314 164,309 164,301C164,295 168,290 174,290Z', // hand
   'M133,396C141,396 148,401 148,407C148,413 141,417 133,417C126,417 120,413 120,407C120,401 126,396 133,396Z', // knee
 ];
 
@@ -170,8 +172,8 @@ export function silhouette({ regions = {}, gear = {}, heart = {}, divisor = 40, 
       + `</g>`);
 
     numbers.push(`<text x="${r.nx}" y="${r.ny}" class="wl-n${level ? '' : ' wl-n0'}" text-anchor="middle"`
-      + ` font-size="13" font-weight="700" paint-order="stroke" stroke-width="3.4" stroke-linejoin="round">${level}</text>`);
-  }
+      + ` font-size="12" font-weight="700" paint-order="stroke" stroke-width="3.4" stroke-linejoin="round">${level}</text>`);
+  });
 
   // ---- heart: head fills with heart level, ring around it with Zone-2 minutes
   const hReg = regions.heart ?? { xp: 0, level: 0 };
@@ -202,7 +204,7 @@ export function silhouette({ regions = {}, gear = {}, heart = {}, divisor = 40, 
     + (hFrac > 0.02 ? `<use href="#${uid}h" fill="#eaf2ff" opacity=".55" clip-path="url(#${uid}hs)"/>` : '')
     + (hTier === 3 ? `<use href="#${uid}h" fill="none" stroke="${TIER_STROKE[3]}" stroke-width="5" opacity=".3"/>` : '')
     + `<use href="#${uid}h" fill="none" stroke="${TIER_STROKE[hTier]}" stroke-width="${hTier ? 1.9 : 1.4}"/>`
-    + `<path class="wl-pulse" d="M133,133C126,127 120,121 120,114C120,109 124,106 128,107C130,108 132,110 133,112C134,110 136,108 138,107C142,106 146,109 146,114C146,121 140,127 133,133Z"/>`
+    + `<path class="wl-pulse" d="M134,130C128,125 124,120 124,114C124,110 127,108 130,109C132,110 133,111 134,113C135,111 136,110 138,109C141,108 144,110 144,114C144,120 140,125 134,130Z"/>`
     + `<text x="120" y="57" class="wl-n${hLvl ? '' : ' wl-n0'}" text-anchor="middle" font-size="15" font-weight="700"`
     + ` paint-order="stroke" stroke-width="3.6" stroke-linejoin="round">${hLvl}</text>`
     + `</g>`;
@@ -218,7 +220,7 @@ export function silhouette({ regions = {}, gear = {}, heart = {}, divisor = 40, 
   return raw(`<svg class="wl-fig" viewBox="0 0 240 520" role="img" preserveAspectRatio="xMidYMid meet"`
     + ` aria-label="Body map: ten regions, filled by level and outlined by armour tier">`
     + defs
-    + `<ellipse class="wl-ground" cx="120" cy="500" rx="62" ry="7"/>`
+    + `<ellipse class="wl-ground" cx="120" cy="504" rx="64" ry="7"/>`
     + filler
     + shapes.join('')
     + heartGroup

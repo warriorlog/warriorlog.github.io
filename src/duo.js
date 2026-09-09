@@ -225,3 +225,46 @@ export function duoState(mine, theirs, spec, gam, today, progressMine = null, pr
     week: { status, mine: week.mine, theirs: week.theirs ?? { S: 0, parts: { sessions: 0, fidelity: 0, zone2: 0, progress: 0, xp: 0 } }, pb: week.pb_star_mine },
   };
 }
+
+// ---------------------------------------------------------------- locking
+/**
+ * A week becomes a permanent fact on Tuesday night, once both phones have had a
+ * day to sync the weekend. Before that the result is provisional and may still
+ * move; after it, the belt and the crowns replay from these records for ever.
+ */
+export function weeksDueForLock(mine, theirs, spec, gam, today, progressMine, progressTheirs) {
+  const cfg = gam.duel ?? {};
+  const lockDow = cfg.lock_dow ?? 2;            // Tuesday
+  const due = [];
+  const first = mine.sessions[0]?.day;
+  if (!first) return due;
+
+  const seen = new Set(Object.keys(mine.weekLocks ?? {}));
+  let cursor = weekStart(first);
+  const guard = 200;
+  for (let i = 0; i < guard; i++) {
+    const weekId = isoWeekKey(cursor);
+    const lockDay = addDays(cursor, 7 + (lockDow - 1));      // the Tuesday after that week
+    if (daysBetween(lockDay, today) < 0) break;              // not resolvable yet
+    if (!seen.has(weekId)) {
+      const result = resolveWeek(mine, theirs, spec, gam, weekId, progressMine, progressTheirs);
+      if (result.status !== 'solo') due.push(result);
+    }
+    cursor = addDays(cursor, 7);
+  }
+  return due;
+}
+
+/** The shape written into a `week.locked` event. */
+export function lockRecord(result, mine, theirs) {
+  return {
+    week_id: result.week_id,
+    status: result.status,
+    winner: result.winner,
+    S_me: result.mine?.S ?? 0,
+    S_partner: result.theirs?.S ?? 0,
+    pb_star_me: !!result.pb_star_mine,
+    partner_updated_at: theirs?.sessions?.[theirs.sessions.length - 1]?.ended_at ?? null,
+    locked_at: new Date().toISOString(),
+  };
+}

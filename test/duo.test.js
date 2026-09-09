@@ -154,3 +154,36 @@ test('a solo user sees no duel at all rather than a walkover', () => {
   assert.equal(r.status, 'solo');
   assert.equal(r.winner, null);
 });
+
+test('a week is only locked once both phones have had time to sync the weekend', () => {
+  const cat = build('cat', CAT, WEEK);
+  const sean = build('sean', SEAN, WEEK);
+  // Sunday: the week just ended, nothing is final yet.
+  const sunday = D.weeksDueForLock(cat.state, sean.state, spec, gam, '2026-09-20', cat.prog, sean.prog);
+  assert.equal(sunday.length, 0, 'the result is still provisional on Sunday');
+  // The following Tuesday: it becomes a permanent fact.
+  const tuesday = D.weeksDueForLock(cat.state, sean.state, spec, gam, '2026-09-22', cat.prog, sean.prog);
+  assert.ok(tuesday.length >= 1, 'by Tuesday the week can be locked');
+  assert.equal(tuesday[0].week_id, '2026-W38');
+});
+
+test('a week already locked is never locked twice', () => {
+  const cat = build('cat', CAT, WEEK);
+  const sean = build('sean', SEAN, WEEK);
+  cat.state.weekLocks = { '2026-W38': { week_id: '2026-W38', status: 'dead_heat' } };
+  const due = D.weeksDueForLock(cat.state, sean.state, spec, gam, '2026-09-22', cat.prog, sean.prog);
+  assert.ok(!due.some(d => d.week_id === '2026-W38'));
+});
+
+test('the locked record carries the result and nothing private', () => {
+  const cat = build('cat', CAT, WEEK);
+  const sean = build('sean', SEAN, WEEK);
+  const result = D.resolveWeek(cat.state, sean.state, spec, gam, '2026-W38', cat.prog, sean.prog);
+  const rec = D.lockRecord(result, cat.state, sean.state);
+  assert.equal(rec.week_id, '2026-W38');
+  assert.ok(['contested', 'dead_heat', 'no_contest', 'unexplained'].includes(rec.status));
+  const text = JSON.stringify(rec);
+  for (const field of ['bodyweight', 'rir', 'pain', 'note', 'rpe']) {
+    assert.ok(!text.includes(field), `${field} must not ride along in a public week record`);
+  }
+});

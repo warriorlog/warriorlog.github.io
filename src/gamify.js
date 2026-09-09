@@ -199,7 +199,7 @@ export function dayStatuses(user, g, today) {
   const statuses = new Map();
   let shields = f.shields_start ?? 1;
   let lastRest = null;
-  const inMode = (day) => user.modes.find(m => day >= m.from && (!m.to || day <= m.to));
+  const inMode = (day) => user.modes.find(m => day >= m.from && (m.to ? day <= m.to : !m.closed));
 
   for (let d = epoch; daysBetween(d, today) >= 0; d = addDays(d, 1)) {
     if (trained.has(d)) { statuses.set(d, 'trained'); continue; }

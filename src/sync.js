@@ -15,6 +15,7 @@ const pathFor = (e) => `log/${e.user}/${e.dev}/${e.day.slice(0, 7)}.jsonl`;
 const partOf = (e) => `${e.user}/${e.dev}/${e.day.slice(0, 7)}`;
 
 let running = false;
+const PRESENCE_EVERY_MS = 6 * 60 * 60 * 1000;
 
 async function api(state, path, init = {}) {
   const c = state.config;
@@ -58,6 +59,7 @@ export async function flush(state) {
     state.sync.pending = 0;
     state.sync.status = 'synced';
     state.sync.error = null;
+    await writePresence(state);
   } catch (err) {
     state.sync.status = 'error';
     state.sync.error = String(err?.message ?? err);
@@ -109,6 +111,49 @@ async function putFile(state, path, events, sample, attempt = 0) {
   return false;
 }
 
+/**
+ * A tiny per-device heartbeat. Events alone cannot tell "Cat has not trained"
+ * apart from "Cat's phone has not synced", so the partner card would have to
+ * assert an absence it cannot actually see. Written at most every six hours.
+ */
+export async function writePresence(state, { force = false } = {}) {
+  if (!state.settings.token) return;
+  const last = Number(state.settings.presenceAt ?? 0);
+  if (!force && Date.now() - last < PRESENCE_EVERY_MS) return;
+  const path = `log/${state.me}/${state.settings.dev}/presence.json`;
+  const body = {
+    lastOpen: new Date().toISOString(),
+    appVersion: state.spec?.rulesVersion ?? 1,
+    schemaVersion: state.spec?.schemaVersion ?? 1,
+  };
+  const rec = await state.store.getFile(path);
+  const res = await api(state, `/contents/${path}`, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: `presence: ${state.me}`,
+      content: b64encode(JSON.stringify(body, null, 1)),
+      branch: state.config.dataBranch,
+      ...(rec?.sha ? { sha: rec.sha } : {}),
+      author: { name: state.me === 'sean' ? 'Sean' : 'Cat', email: `${state.me}@warriorlog.github.io` },
+    }),
+  });
+  if (res.ok) {
+    const json = await res.json();
+    await state.store.putFile(path, { sha: json.content.sha, fetchedAt: Date.now() });
+    const { settings } = await import('./store.js');
+    state.settings = settings.write({ presenceAt: Date.now() });
+  } else if (res.status === 409 || res.status === 422) {
+    await state.store.putFile(path, { sha: null });         // refetch the sha next time
+  }
+}
+
+/** How stale the partner's view is, in hours, or null if they have never synced. */
+export function partnerStaleness(state) {
+  const p = state.presence?.[state.me === 'sean' ? 'cat' : 'sean'];
+  if (!p?.lastOpen) return null;
+  return (Date.now() - Date.parse(p.lastOpen)) / 3600000;
+}
+
 async function getFile(state, path) {
   const res = await api(state, `/contents/${path}?ref=${state.config.dataBranch}`);
   if (!res.ok) return null;
@@ -120,19 +165,33 @@ async function getFile(state, path) {
 /**
  * Pull every log file. Runs WITHOUT a token when none is set or the token was
  * rejected: the repository is public, so partner status must not go stale just
- * because this phone's token expired.
+ * because this phone's token expired. `full` ignores the cached shas, which is
+ * the recovery path after a phone is wiped.
  */
-export async function pull(state) {
+export async function pull(state, { full = false } = {}) {
   try {
     const res = await api(state, `/git/trees/${state.config.dataBranch}?recursive=1`);
     if (!res.ok) return;
     const tree = await res.json();
-    const files = (tree.tree ?? []).filter(f => f.type === 'blob' && f.path.startsWith('log/') && f.path.endsWith('.jsonl'));
+    const all = (tree.tree ?? []).filter(f => f.type === 'blob' && f.path.startsWith('log/'));
+    const files = all.filter(f => f.path.endsWith('.jsonl'));
+
+    // Presence is a plain JSON file, not an event log.
+    state.presence ??= {};
+    for (const f of all.filter(x => x.path.endsWith('presence.json'))) {
+      const [, user] = f.path.split('/');
+      const res2 = await api(state, `/contents/${f.path}?ref=${state.config.dataBranch}`);
+      if (!res2.ok) continue;
+      try {
+        const json2 = await res2.json();
+        state.presence[user] = JSON.parse(b64decode(json2.content ?? ''));
+      } catch { /* a torn heartbeat is not worth failing a pull over */ }
+    }
 
     let added = 0;
     for (const f of files) {
       const known = await state.store.getFile(f.path);
-      if (known?.sha === f.sha) continue;                 // unchanged since last pull
+      if (!full && known?.sha === f.sha) continue;                 // unchanged since last pull
       const remote = await getFile(state, f.path);
       if (!remote) continue;
 
@@ -163,4 +222,9 @@ export async function pull(state) {
       if (!inSession) app.render(); else state.dirty = true;
     }
   } catch { /* offline: try again on the next foreground */ }
+}
+
+/** Settings → Pull everything: rebuild this phone from the public branch. */
+export async function pullAll(state) {
+  await pull(state, { full: true });
 }
