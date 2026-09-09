@@ -62,6 +62,7 @@ async function boot() {
   state.me = state.settings.user ?? 'sean';
 
   state.events = await store.allEvents();
+  state.presence = {};
   recompute();
 
   window.addEventListener('hashchange', onRoute);
@@ -80,16 +81,22 @@ async function boot() {
   navigator.storage?.persist?.().catch(() => {});
 
   onRoute();
+  // Catch up on anything that happened while the app was closed.
+  import('./sync.js').then(m => m.pull(state)).then(lockFinishedWeeks).catch(() => {});
 }
 
 /** Re-derive everything from the event log. The only path to new numbers. */
 export function recompute() {
-  const eq = {};
-  const out = reduce(state.events, state.spec, { equipment: eq });
+  const out = reduce(state.events, state.spec, {});
   state.users = out.users;
-  const me = state.users[state.me];
-  state.progress = progress(me, state.spec, state.gam, dayKey());
-  state.plan = me.quizDone ? prescribe(state.spec, me, dayKey(), {}) : null;
+  for (const [id, u] of Object.entries(state.users)) u.id = id;
+  const mine = state.users[state.me];
+  state.progress = progress(mine, state.spec, state.gam, dayKey());
+  // The partner's numbers come from the same reducer run over their events, so
+  // both phones compute the duel identically.
+  const other = state.users[partnerId()];
+  state.partnerProgress = other?.sessions.length ? progress(other, state.spec, state.gam, dayKey()) : null;
+  state.plan = mine.quizDone ? prescribe(state.spec, mine, dayKey(), {}) : null;
 }
 
 export const me = () => state.users[state.me];
@@ -201,10 +208,30 @@ function onChange(e) {
   VIEWS[state.route.name]?.changed?.(el.dataset.change, el, state);
 }
 
+/**
+ * Turn any finished week into a permanent record. Runs on open rather than on a
+ * timer, because a phone that was shut all weekend still has to resolve it.
+ */
+export async function lockFinishedWeeks() {
+  const mine = me();
+  const other = partner();
+  if (!mine?.quizDone) return;
+  try {
+    const { weeksDueForLock, lockRecord } = await import('./duo.js');
+    const due = weeksDueForLock(mine, other, state.spec, state.gam, dayKey(), state.progress, state.partnerProgress);
+    for (const result of due) {
+      await dispatch(TYPES.WEEK_LOCK, lockRecord(result, mine, other), { render: false });
+    }
+    if (due.length) render();
+  } catch (err) {
+    console.warn('could not settle the week yet:', err);
+  }
+}
+
 function onVisible() {
   if (document.visibilityState !== 'visible') return;
   navigator.serviceWorker?.controller?.postMessage({ type: 'check-update' });
-  import('./sync.js').then(m => m.pull(state)).catch(() => {});
+  import('./sync.js').then(m => m.pull(state)).then(lockFinishedWeeks).catch(() => {});
 }
 
 // ---------------------------------------------------------------- toasts

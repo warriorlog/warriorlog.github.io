@@ -350,3 +350,139 @@ button { border: 0; background: none; cursor: pointer; touch-action: manipulatio
 .drow .dval { font-weight: 700; font-variant-numeric: tabular-nums; }
 .drow .dstrike { width: 42px; text-align: right; color: var(--ember); font-weight: 800; font-size: 14px; }
 .drow .pill { font-size: 11px; }
+
+/* ==========================================================================
+   Journal — the weekly report, the calendar, sessions, records and badges.
+   Appended as one block by src/views/journal.js. Everything is namespaced
+   `jr-` except the two places that extend an existing primitive (`.week`
+   cells that are buttons, and `.chip` used as a logged-set token).
+   ========================================================================== */
+
+.jr summary { list-style: none; cursor: pointer; }
+.jr summary::-webkit-details-marker { display: none; }
+.jr details > summary {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 48px; padding: 4px 0;
+}
+.jr details > summary::after {
+  content: "›"; flex: none; color: var(--ink-faint); font-size: 20px; line-height: 1;
+  transform: rotate(90deg); transition: transform .15s ease;
+}
+.jr details[open] > summary::after { transform: rotate(-90deg); }
+.jr details > summary > h3 { flex: 1; }
+
+/* --------------------------------------------------------- weekly report */
+.jr-report .kicker { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.jr-block + .jr-block { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.jr-block .levelbar { margin-top: 7px; }
+.jr-block .xpline:last-child { border-bottom: 0; }
+.jr-row { padding: 5px 0; gap: 10px; }
+.jr-next .small { color: var(--ink-dim); }
+
+/* The Perfect Week halo: a warm ring, not a colour change, so the card still
+   reads as the same card at a glance. */
+.jr-perfect {
+  border-color: rgba(255, 215, 0, .45);
+  box-shadow: 0 0 0 1px rgba(255, 215, 0, .18), 0 8px 34px -14px rgba(255, 215, 0, .5);
+  background: linear-gradient(168deg, rgba(255, 215, 0, .07), var(--bg-card) 62%);
+}
+.pill.jr-halo-pill {
+  background: rgba(255, 215, 0, .16); border-color: rgba(255, 215, 0, .5); color: var(--gold);
+  font-weight: 700;
+}
+.jr-halo {
+  border-radius: 12px; padding: 12px 14px; text-align: center;
+  background: radial-gradient(120% 140% at 50% 0%, rgba(255, 215, 0, .16), transparent 70%);
+  border: 1px solid rgba(255, 215, 0, .3);
+}
+.jr-halo-title { font-weight: 800; letter-spacing: .12em; font-size: 13px; color: var(--gold); }
+
+/* ------------------------------------------------------------- archive */
+.jr-past-list { display: grid; gap: 2px; }
+.jr-past { border-top: 1px solid var(--line); }
+.jr-past > summary { justify-content: space-between; }
+.jr-past-label { display: flex; flex-direction: column; min-width: 0; font-size: 15px; font-weight: 600; }
+.jr-past-meta { display: flex; align-items: center; gap: 8px; flex: none; }
+.jr-past-body { padding: 4px 0 14px; }
+
+/* ------------------------------------------------------------ calendar */
+.jr-cal { max-height: 47vh; overflow-y: auto; display: grid; gap: 6px; padding-right: 2px; }
+.jr-wk { display: grid; grid-template-columns: 30px 1fr; align-items: center; gap: 8px; padding: 2px 3px; border-radius: 10px; }
+.jr-wk-label { font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.jr-wk .week { flex: 1; }
+.jr-halo-row { box-shadow: inset 0 0 0 1px rgba(255, 215, 0, .35); background: rgba(255, 215, 0, .05); }
+
+/* A day with a session is a real button; every other day stays a span. Both
+   have to look identical, so the span rules above are mirrored here. */
+.week button {
+  flex: 1; aspect-ratio: 1; padding: 0; border-radius: 8px;
+  background: var(--bg-raised); border: 1px solid var(--line);
+  display: grid; place-items: center; font-size: 11px; color: var(--ink-faint);
+}
+.week button[data-status="trained"] { background: rgba(240,128,60,.22); border-color: var(--ember); color: var(--ember); }
+.week button[data-status="rest"] { background: rgba(74,143,214,.14); border-color: rgba(74,143,214,.35); color: var(--cool); }
+.week button[data-status="shield"] { background: rgba(53,192,122,.12); border-color: rgba(53,192,122,.3); color: var(--go); }
+.week button[data-status="pending"], .week span[data-status="pending"] { border-style: dashed; }
+.week button:active { transform: scale(.94); }
+.week [data-status="future"], .week [data-status="before"] { background: none; border-style: dotted; opacity: .45; }
+.week [data-status="recovery"], .week [data-status="away"] { background: rgba(107,114,128,.18); border-color: var(--iron); color: var(--ink-dim); }
+
+.jr-key { display: flex; flex-wrap: wrap; gap: 6px 12px; }
+.jr-key span { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink-faint); }
+.jr-key i { width: 10px; height: 10px; border-radius: 3px; border: 1px solid var(--line); background: var(--bg-raised); }
+.jr-key i[data-status="trained"] { background: rgba(240,128,60,.35); border-color: var(--ember); }
+.jr-key i[data-status="rest"] { background: rgba(74,143,214,.3); border-color: rgba(74,143,214,.5); }
+.jr-key i[data-status="shield"] { background: rgba(53,192,122,.28); border-color: rgba(53,192,122,.5); }
+.jr-key i[data-status="pending"] { border-style: dashed; }
+
+/* ------------------------------------------------------------- sessions */
+.jr-sess { border-top: 1px solid var(--line); }
+.jr-sess:first-child { border-top: 0; }
+.jr-sess > summary { align-items: flex-start; padding: 10px 0; }
+.jr-sess > summary .grow { min-width: 0; }
+.jr-sess-day { font-weight: 700; }
+.jr-sess > summary .xpfloat { flex: none; align-self: center; }
+.jr-sess.jr-flash { background: rgba(240,128,60,.1); border-radius: 10px; }
+.jr-sets { display: grid; gap: 12px; padding: 2px 0 14px; }
+.jr-group { display: grid; gap: 6px; }
+.chip.jr-set { min-height: 34px; padding: 5px 10px; font-size: 13px; font-weight: 700; color: var(--ink); }
+
+/* ----------------------------------------------------------- PR board */
+.jr-pr { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.jr-pr:last-child { border-bottom: 0; }
+.jr-pr-val { text-align: right; flex: none; }
+
+/* ------------------------------------------------------------- badges */
+.jr-rgroup { border-top: 1px solid var(--line); }
+.jr-rgroup > summary { justify-content: space-between; }
+.jr-rarity { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; flex: 1; }
+.jr-rarity[data-rarity="common"] { color: var(--ink-dim); }
+.jr-rarity[data-rarity="uncommon"] { color: var(--go); }
+.jr-rarity[data-rarity="rare"] { color: var(--cool); }
+.jr-rarity[data-rarity="epic"] { color: #b07de0; }
+.jr-rarity[data-rarity="legendary"] { color: var(--gold); }
+
+.jr-badges { display: grid; gap: 8px; padding: 2px 0 14px; }
+.jr-badge {
+  border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px;
+  background: var(--bg-raised); display: grid; gap: 5px;
+}
+.jr-badge-top { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.jr-badge .jr-crit { text-transform: none; letter-spacing: 0; line-height: 1.35; color: var(--ink-faint); }
+.jr-badge.lit { border-color: rgba(240,128,60,.4); background: linear-gradient(160deg, rgba(240,128,60,.1), var(--bg-raised) 70%); }
+.jr-badge.lit .jr-crit { color: var(--ink-dim); }
+.jr-badge.lit strong { color: var(--ink); }
+.jr-badge:not(.lit) strong { color: var(--ink-dim); }
+.jr-bar { height: 5px; margin-top: 2px; }
+
+.jr-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--iron); }
+.jr-dot[data-rarity="uncommon"] { background: var(--go); }
+.jr-dot[data-rarity="rare"] { background: var(--cool); }
+.jr-dot[data-rarity="epic"] { background: #b07de0; }
+.jr-dot[data-rarity="legendary"] { background: var(--gold); }
+.jr-badge.lit .jr-dot { box-shadow: 0 0 0 3px rgba(240,128,60,.18); }
+
+@media (max-width: 359px) {
+  .jr-wk { grid-template-columns: 24px 1fr; gap: 6px; }
+  .jr-past-meta .tiny { display: none; }
+}

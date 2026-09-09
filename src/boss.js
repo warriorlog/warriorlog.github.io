@@ -189,7 +189,11 @@ export function battleState(mine, theirs, spec, gam, day) {
 
   const bothBell = !!(atOrPast(mine.ladders, 'swing', 'swing.deadstop_53', spec)
     && theirs && atOrPast(theirs.ladders, 'swing', 'swing.deadstop_53', spec));
-  const solo = !theirs || !theirs.sessions?.length;
+  // Solo means there is genuinely nobody else, not that the partner has yet to
+  // take the tests. A partner who is set up keeps the boss at full strength and
+  // contributes zero until they test; halving it here would quietly rewrite the
+  // battle the moment they logged their first result.
+  const solo = !theirs || (!theirs.quizDone && !theirs.sessions?.length);
   const hp = Math.round(hpFor(boss, gam, { bothBellGate: bothBell }) * (solo ? (gam.boss_damage?.solo_hp_multiplier ?? 0.5) : 1));
   const damage = solo ? a.damage : coopDamage(a.damage, b?.damage ?? 0);
 

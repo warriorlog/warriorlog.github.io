@@ -115,6 +115,16 @@ test('training alone halves the boss rather than making it unwinnable', () => {
   assert.equal(solo.hp, Math.round(boss.hp * gam.boss_damage.solo_hp_multiplier));
 });
 
+test('a partner who has set up but not yet tested keeps the boss at full strength', () => {
+  // Halving it here and doubling it back the moment they log would rewrite the
+  // battle underneath both of them.
+  const partner = userAt({}, { quizDone: true, sessions: [] });
+  const s = B.battleState(userAt({}), partner, spec, gam, '2026-10-10');
+  assert.equal(s.solo, false);
+  assert.equal(s.hp, B.bossFor(gam, 1).hp);
+  assert.equal(s.theirs.damage, 0, 'they simply contribute nothing until they test');
+});
+
 test('the battle lands on the right week, with a two-week window', () => {
   const u = userAt({});
   const s = B.battleState(u, null, spec, gam, '2026-10-10');

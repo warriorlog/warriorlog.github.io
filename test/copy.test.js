@@ -35,7 +35,7 @@ test('the views do not smuggle banned language past the copy file', () => {
       const src = readFileSync(join(root, rel), 'utf8');
       src.split('\n').forEach((line, i) => {
         const code = line.replace(/\/\/.*$/, '');            // comments may say anything
-        for (const m of code.matchAll(/[`'"]([^`'"]{8,})[`'"]/g)) {
+        for (const m of code.matchAll(/[`'"]([^`'"\n]{8,})[`'"]/g)) {
           const text = m[1];
           if (!/[a-z]\s[a-z]/i.test(text)) continue;          // identifiers and ids, not prose
           if (/^[\w.\-/#?=&${}]+$/.test(text)) continue;
