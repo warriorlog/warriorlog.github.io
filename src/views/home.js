@@ -2,6 +2,7 @@
 import { html, raw, dayKey } from '../util.js';
 import { topbar, tabbar, page } from './chrome.js';
 import { dispatch, go, me, partner, t, newId } from '../app.js';
+import { skirmishPlan } from '../engine.js';
 import { TYPES } from '../events.js';
 import { regionLevel } from '../gamify.js';
 
@@ -52,7 +53,7 @@ function questCard(state, plan, p) {
     <h1>${plan.name}</h1>
     <p class="muted small">${plan.est_minutes} min · ${plan.rows.filter(r => r.prescribed !== false).length} sets · leave ${plan.rir} in reserve${phase ? ` · ${phase.name}` : ''}</p>
     <button class="btn" data-action="start" data-key="start">Start quest</button>
-    <button class="btn ghost" data-action="skirmish" data-key="skirmish">Only 15 minutes? Skirmish</button>
+    <button class="btn ghost" data-action="skirmish" data-key="skirmish">Short on time? Skirmish</button>
   </div>`;
 }
 
@@ -123,7 +124,8 @@ export async function act(action, data, state) {
   const u = me(state);
   if (action === 'resume') { go(`#/session/${u.openSession.session_id}`); return; }
   if (action === 'start' || action === 'skirmish') {
-    const plan = state.plan;
+    const short = action === 'skirmish';
+    const plan = short ? skirmishPlan(state.spec, u, state.plan?.day ?? dayKey(), {}) : state.plan;
     if (!plan || plan.rest) return;
     const id = newId();
     await dispatch(TYPES.SESSION_START, {

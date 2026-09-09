@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import * as E from '../src/engine.js';
 import { reduce } from '../src/reduce.js';
 import { makeEvent, TYPES } from '../src/events.js';
+import { addDays } from '../src/util.js';
 import { miniProgram, equipment as miniEq } from './fixtures/mini-program.js';
 
 const program = JSON.parse(readFileSync(new URL('../data/program.json', import.meta.url), 'utf8'));
@@ -262,4 +263,63 @@ test('a session logged exactly as prescribed hits every target', async () => {
   };
   const { fidelity } = await import('../src/gamify.js');
   assert.equal(fidelity(session, spec).pct, 1);
+});
+
+test('a skirmish is genuinely short, and can never advance a ladder', async () => {
+  const cat = userWith(CAT);
+  for (const day of ['2026-09-14', '2026-09-16', '2026-09-19']) {
+    const full = E.prescribe(spec, cat, day, { equipment: EQ });
+    const short = E.skirmishPlan(spec, cat, day, { equipment: EQ });
+    // Wednesday's short day is mostly a walk, so it is longer than the others by
+    // design; what matters is that every short day is roughly half a session.
+    assert.ok(short.est_minutes <= 25, `${day}: skirmish is ${short.est_minutes} min`);
+    assert.ok(short.est_minutes <= full.est_minutes / 2 + 2, `${day}: ${short.est_minutes} vs a full ${full.est_minutes}`);
+    assert.equal(short.type, 'skirmish');
+    assert.ok(short.rows.length > 0, `${day}: nothing to do`);
+    for (const r of short.rows) {
+      assert.equal(r.counts_for_progression, false, 'a short day must not feed the ladders');
+    }
+    const keys = short.rows.map(r => `${r.exercise_id}|${r.set_index}|${r.side ?? ''}|${r.part ?? ''}`);
+    assert.equal(new Set(keys).size, keys.length, `${day}: two skirmish rows share a set identity`);
+  }
+});
+
+test('a skirmish never offers a movement whose gate is still shut', () => {
+  const cat = userWith(CAT);
+  const thu = E.skirmishPlan(spec, cat, '2026-09-17', { equipment: EQ });   // the swing is locked here
+  const ctx = { ladders: cat.ladders, spec, equipment: EQ, benchmarks: {}, painFlags: [] };
+  for (const item of thu.blocks.flatMap(b => b.items)) {
+    const step = spec.byStep[item.step_id];
+    assert.ok(E.entryOpen(step, ctx), `${item.exercise_id}: offered a gated rung`);
+  }
+});
+
+test('an injury ceiling stops a ladder climbing, however well it goes', () => {
+  const events = [
+    makeEvent(TYPES.PROFILE, { name: 'X', program_start: '2026-09-14', rest_dow: 0, session_minutes: 50, bodyweight_lb: 128 }, { user: 'cat', dev: 'd1', ts: '2026-09-13T18:00:00Z' }),
+    makeEvent(TYPES.EQUIPMENT, EQ, { user: 'cat', dev: 'd1', ts: '2026-09-13T18:00:01Z' }),
+    makeEvent(TYPES.ASSESSMENT, {
+      start_steps: { push_up: 'push_up.wall' },
+      caps: { push_up: 'push_up.incline' },
+    }, { user: 'cat', dev: 'd1', ts: '2026-09-13T18:00:02Z' }),
+  ];
+  let day = '2026-09-15';
+  let n = 0;
+  let state = reduce(events, spec, { equipment: EQ }).users.cat;
+  // Train push-ups perfectly for weeks; the wrist flag must hold the ceiling.
+  for (let i = 0; i < 12; i++) {
+    const plan = E.prescribe(spec, state, day, { equipment: EQ });
+    const rows = plan.rows.filter(r => r.exercise_id === 'push_up' && r.prescribed !== false);
+    if (rows.length) {
+      const id = `s${i}`;
+      events.push(makeEvent(TYPES.SESSION_START, { session_id: id, template_id: plan.template_id, type: 'full', date: day, plan: { rows } }, { user: 'cat', dev: 'd1', ts: `${day}T13:00:00Z` }));
+      for (const r of rows) events.push(makeEvent(TYPES.SET, { session_id: id, exercise_id: r.exercise_id, step_id: r.step_id, set_index: r.set_index, side: r.side, part: r.part, unit: r.unit, value: r.B, checklist_ok: true, done: true }, { user: 'cat', dev: 'd1', ts: `${day}T13:${String(10 + (n++ % 40)).padStart(2, '0')}:00Z` }));
+      events.push(makeEvent(TYPES.SESSION_END, { session_id: id, duration_min: 45 }, { user: 'cat', dev: 'd1', ts: `${day}T14:00:00Z` }));
+      state = reduce(events, spec, { equipment: EQ }).users.cat;
+    }
+    day = addDays(day, 7);
+  }
+  const ord = (id) => spec.byExercise.push_up.ladder.findIndex(s => s.id === id);
+  assert.ok(ord(state.ladders.push_up.step_id) <= ord('push_up.incline'),
+    `climbed to ${state.ladders.push_up.step_id}, past the wrist-injury ceiling`);
 });

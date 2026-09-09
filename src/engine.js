@@ -184,7 +184,11 @@ export function stepLadders(spec, state, perfs, ctx) {
       else { qualifying = 0; }
 
       const need = steps[i].advance?.consecutive ?? 2;
-      if (qualifying >= need && gap <= 7 && i < steps.length - 1 && entryOpen(steps[i + 1], stepCtx)) {
+      // An injury or a failed screen sets a ceiling that ability cannot argue with.
+      const capId = ctx.caps?.[exId];
+      const capIdx = capId ? steps.findIndex(s => s.id === capId) : -1;
+      const cappedHere = capIdx >= 0 && i >= capIdx;
+      if (qualifying >= need && gap <= 7 && i < steps.length - 1 && !cappedHere && entryOpen(steps[i + 1], stepCtx)) {
         i++; qualifying = 0; fails = 0; sessionsAtStep = 0;
         climbs.push({ exercise_id: exId, step_id: steps[i].id, name: steps[i].name, day: ctx.day });
       } else if (fails >= 2 && i > floorIdx) {
@@ -288,6 +292,106 @@ export function scaledSets(sets, { deload, onRamp }, spec) {
     : deload ? (spec.deload?.set_multiplier ?? 0.6) : 1;
   if (m === 1 || sets <= 1) return sets;
   return Math.min(sets, Math.max(spec.deload?.min_sets ?? 2, Math.floor(sets * m)));
+}
+
+// ---------------------------------------------------------------- skirmish
+/**
+ * The 15-minute version of a day. Three priority movements at the current rung
+ * for three rounds, plus a short walk on the cardio days. It keeps both flames
+ * and counts as a session for the week, but it can never advance a ladder —
+ * that rule lives in stepLadders, so there is no way to farm rungs from it.
+ */
+export function skirmishPlan(spec, user, day, opts = {}) {
+  const full = prescribe(spec, user, day, opts);
+  if (full.rest) return full;
+  const table = spec.byTemplate?.[full.template_id]?.skirmish;
+  if (!table) return full;
+
+  const ctx = {
+    day, spec, equipment: { ...(opts.equipment ?? {}), ...(user.equipment ?? {}) },
+    weekIndex: full.week, ladders: user.ladders, floor: user.floor, caps: user.caps,
+    painFlags: [], benchmarks: user.benchmarks ?? {},
+  };
+
+  // Fit the whole thing into a real short-session budget. Per-side movements
+  // double the rows, so a fixed round count blows out to half an hour on the
+  // days that need it least; drop rounds until the estimate fits.
+  const BUDGET = 18;
+  const warmMin = table.warmup_min ?? 2;
+  const cardioMin = table.cardio?.minutes ?? 0;
+  let blocks = [], rows = [];
+
+  for (let rounds = table.rounds ?? 3; rounds >= 1; rounds--) {
+    blocks = []; rows = [];
+    const usedSets = {};
+    const warm = full.blocks.find(b => b.kind === 'warmup')?.items?.[0];
+    // On the cardio days the warm-up IS the same walk as the block below it;
+    // showing it twice reads as a mistake.
+    const sameWalk = warm && table.cardio?.exercise_id === warm.exercise_id;
+    if (warm && !sameWalk) {
+      const item = { ...warm, rows: warm.rows.slice(0, 1).map(r => ({ ...r, minutes: warmMin, A: warmMin, B: warmMin })) };
+      blocks.push({ kind: 'warmup', minutes: warmMin, items: [item] });
+      rows.push(...item.rows);
+      usedSets[item.exercise_id] = item.rows.length;
+    }
+
+    const items = [];
+    for (const exId of table.exercise_ids ?? []) {
+      const built = buildSkirmishItem(exId, { ...table, rounds }, spec, user, ctx, usedSets);
+      if (built) { items.push(built); rows.push(...built.rows); }
+    }
+    let strengthMin = 0;
+    if (items.length) {
+      const setCount = items.reduce((n, it) => n + it.rows.length, 0);
+      strengthMin = Math.max(4, Math.round((setCount * (35 + (table.rest_sec ?? 45))) / 60));
+      blocks.push({ kind: 'strength_a', minutes: strengthMin, items });
+    }
+
+    if (table.cardio) {
+      const mins = cardioMin + (sameWalk ? warmMin : 0);
+      const built = buildSkirmishItem(table.cardio.exercise_id, table, spec, user, ctx, usedSets, mins);
+      if (built) { blocks.unshift({ kind: 'conditioning', minutes: mins, items: [built] }); rows.unshift(...built.rows); }
+    }
+
+    if ((sameWalk ? 0 : warmMin) + strengthMin + cardioMin <= BUDGET || rounds === 1) break;
+  }
+
+  return {
+    ...full, type: 'skirmish', blocks, rows,
+    est_minutes: blocks.reduce((n, b) => n + b.minutes, 0),
+    name: `${full.name} · Skirmish`,
+  };
+}
+
+function buildSkirmishItem(exId, table, spec, user, ctx, usedSets, minutes = null) {
+  const ex = spec.byExercise?.[exId];
+  if (!ex) return null;
+  const steps = user.stepsByExercise?.[exId] ?? resolveSteps(ex, ctx.equipment);
+  let cur = steps.find(s => s.id === user.ladders?.[exId]?.step_id) ?? steps[0];
+  if (!cur) return null;
+  // If the real rung is gated shut, drop to the last rung that is open rather
+  // than offering nothing.
+  if (!entryOpen(cur, ctx)) {
+    const idx = steps.findIndex(s => s.id === cur.id);
+    cur = steps.slice(0, Math.max(0, idx)).reverse().find(s => entryOpen(s, ctx));
+    if (!cur) return null;          // nothing open here yet: leave it out entirely
+  }
+  const sets = minutes ? 1 : (table.rounds ?? 3);   // `rounds` is overridden by the fit loop
+  const cardio = minutes ? { ...resolveCardio(cur.cardio, ctx.equipment), minutes } : resolveCardio(cur.cardio, ctx.equipment);
+  const bodyweight = user.profile?.bodyweight_lb ?? null;
+  const vestLb = cur.load?.vest_pct ? resolveVest(cur.load.vest_pct, bodyweight, ctx.equipment, cur.load.cap_lb ?? 30) : 0;
+  const startIndex = (usedSets[exId] ?? 0) + 1;
+  usedSets[exId] = (usedSets[exId] ?? 0) + sets;
+  const rows = buildRows(ex, cur, sets, { rest_sec: table.rest_sec ?? 45, counts_for_progression: false },
+    lastValues(user, exId, cur.id), { vestLb, cardio, startIndex });
+  return {
+    exercise_id: exId, name: ex.name, step_id: cur.id, step_name: cur.name,
+    how: cur.how, cues: ex.cues, stop_if: ex.stop_if,
+    checklist: cur.checklist_required ? ex.checklist : null,
+    sets, rest_sec: table.rest_sec ?? 45, load: { ...cur.load, vest_lb: vestLb || undefined },
+    implement_id: cur.implement_id, cardio, counts_for_progression: false,
+    next_unlock: null, rows,
+  };
 }
 
 // ---------------------------------------------------------------- prescribe

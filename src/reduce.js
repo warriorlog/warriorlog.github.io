@@ -12,6 +12,9 @@ const emptyUser = (id) => ({
   profile: {},
   equipment: {},
   floor: {},              // placement result: the step each ladder may never fall below
+  caps: {},               // injury / failed-screen ceilings: never advance past these
+  lockedExercises: new Set(),
+  lockedBenchmarks: new Set(),
   quizDone: false,
   screens: {},
   sessions: [],           // finished sessions, in day order, with their summaries
@@ -59,6 +62,9 @@ export function reduce(events, program, opts = {}) {
       case TYPES.EQUIPMENT: Object.assign(u.equipment, d); break;
       case TYPES.ASSESSMENT:
         Object.assign(u.floor, d.start_steps ?? {});
+        u.caps = { ...(u.caps ?? {}), ...(d.caps ?? {}) };
+        u.lockedExercises = new Set(d.locked ?? []);
+        u.lockedBenchmarks = new Set(d.locked_benchmarks ?? []);
         u.quizDone = true;
         u.placedOn = e.day;
         break;
@@ -178,7 +184,7 @@ function deriveLadders(u, spec, opts = {}) {
       .filter(f => daysBetween(f.day, s.day) >= 0 && daysBetween(f.day, s.day) <= 14)
       .map(f => ({ ...f, daysAgo: daysBetween(f.day, s.day) }));
     const ctx = {
-      day: s.day, spec, equipment: eq, steps, floor: u.floor,
+      day: s.day, spec, equipment: eq, steps, floor: u.floor, caps: u.caps,
       weekIndex: s.week ?? 0, painFlags: painWindow,
       benchmarks: u.benchmarks, ladders: u.ladders,
     };
