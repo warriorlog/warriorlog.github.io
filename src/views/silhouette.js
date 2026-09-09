@@ -60,47 +60,47 @@ const REGIONS = [
   // Drawn in this order, so the layering reads like a body: the back sits behind
   // everything, arms behind the pecs, deltoids capping both, the yoke on top.
   {
-    id: 'back', label: 'Back', slot: 'backplate', half: true,
+    id: 'back', label: 'Back', half: true,
     d: 'M144,138C156,143 164,156 164,174C164,196 159,216 152,234L140,228C146,212 151,192 151,172C151,158 148,146 144,138Z',
     y0: 138, y1: 234, nx: 158, ny: 197,
   },
   {
-    id: 'arms', label: 'Arms', slot: 'gauntlets', half: true,
+    id: 'arms', label: 'Arms', half: true,
     d: 'M158,150C169,153 178,159 182,167C188,184 190,204 188,222C186,246 183,270 182,292L167,292C168,268 170,244 170,222C170,200 164,170 158,150Z',
     y0: 150, y1: 292, nx: 180, ny: 238,
   },
   {
-    id: 'chest', label: 'Chest', slot: 'breastplate',
+    id: 'chest', label: 'Chest',
     d: 'M89,114C102,106 138,106 151,114L153,142C148,158 135,166 120,166C105,166 92,158 87,142Z',
     y0: 106, y1: 166, nx: 105, ny: 148,
   },
   {
-    id: 'shoulders', label: 'Shoulders', slot: 'pauldrons', half: true,
+    id: 'shoulders', label: 'Shoulders', half: true,
     d: 'M150,108C166,111 180,120 184,134C186,146 184,157 181,164C171,159 160,153 150,147Z',
     y0: 108, y1: 164, nx: 172, ny: 139,
   },
   {
-    id: 'neck_traps', label: 'Neck & traps', slot: 'gorget',
+    id: 'neck_traps', label: 'Neck & traps',
     d: 'M108,72L132,72L132,90C144,94 154,101 161,110L153,120C143,112 132,108 120,107C108,108 97,112 87,120L79,110C86,101 96,94 108,90Z',
     y0: 72, y1: 120, nx: 98, ny: 113,
   },
   {
-    id: 'core', label: 'Core', slot: 'belt',
+    id: 'core', label: 'Core',
     d: 'M91,164C104,171 136,171 149,164C147,182 144,198 142,212C141,222 141,232 142,242L98,242C99,232 99,222 98,212C96,198 93,182 91,164Z',
     y0: 164, y1: 242, nx: 120, ny: 206,
   },
   {
-    id: 'glutes', label: 'Glutes & hips', slot: 'hip_guard',
+    id: 'glutes', label: 'Glutes & hips',
     d: 'M98,234L142,234C152,241 157,254 156,268C155,282 147,292 136,293C129,293 124,289 120,282C116,289 111,293 104,293C93,292 85,282 84,268C83,254 88,241 98,234Z',
     y0: 234, y1: 293, nx: 120, ny: 268,
   },
   {
-    id: 'thighs', label: 'Thighs', slot: 'greaves', half: true,
+    id: 'thighs', label: 'Thighs', half: true,
     d: 'M121,286L139,288C150,295 154,318 152,342C150,366 145,386 142,400L124,400C124,366 122,326 121,286Z',
     y0: 286, y1: 400, nx: 138, ny: 346,
   },
   {
-    id: 'calves', label: 'Calves', slot: 'sabatons', half: true,
+    id: 'calves', label: 'Calves', half: true,
     d: 'M124,408L142,408C149,422 151,442 147,460C145,470 141,476 140,482L128,482C129,468 128,450 127,434C126,424 124,416 124,408Z',
     y0: 408, y1: 482, nx: 136, ny: 448,
   },

@@ -9,8 +9,26 @@ const TABS = [
   { id: 'settings', glyph: '⚙', label: 'Settings' },
 ];
 
+/**
+ * Which tabs to show. Ten systems on day one is how an app gets deleted in week
+ * two, so each one appears the first time it has something real to say. Nothing
+ * is ever taken away again, and the current screen always stays reachable.
+ */
+export function visibleTabs(state) {
+  const u = state.users?.[state.me];
+  const sessions = u?.sessions?.length ?? 0;
+  const partner = state.users?.[state.me === 'sean' ? 'cat' : 'sean'];
+  const partnerActive = !!(partner?.quizDone || partner?.sessions?.length);
+
+  const on = new Set(['home', 'settings']);
+  if (sessions >= 1) { on.add('body'); on.add('journal'); }
+  if (partnerActive && sessions >= 1) on.add('duo');
+  on.add(state.route?.name === 'complete' ? 'home' : state.route?.name);
+  return TABS.filter(t => on.has(t.id));
+}
+
 export function tabbar(state) {
-  const items = TABS.map(tb => {
+  const items = visibleTabs(state).map(tb => {
     const current = state.route.name === tb.id ? ' aria-current="page"' : '';
     return `<a href="#/${tb.id}" data-action="nav" data-href="#/${tb.id}"${current}>
       <span class="glyph">${tb.glyph}</span><span>${tb.label}</span></a>`;

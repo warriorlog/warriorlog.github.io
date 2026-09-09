@@ -53,7 +53,7 @@ export function render(state) {
       ${figure}
       <p class="small faint center">Fill is level, outline is armour. Ring: ${zone2} of ${ZONE2_WEEK_TARGET} Zone-2 min this week.</p>
       <div class="wl-legend">${raw(MATERIAL.map((m, i) =>
-        `<span><i style="color:${['#6b7280', '#cd7f32', '#c0c0c0', '#ffd700'][i]}"></i>${m}</span>`).join(''))}</div>
+        `<span><i data-tier="${i}"></i>${m}</span>`).join(''))}</div>
       <div class="regions">${raw(regions)}</div></div>
     <div class="card stack"><h3>Armoury</h3>
       <p class="faint small">Armour comes only from benchmark tiers and named rungs. XP alone never buys it.</p>

@@ -277,6 +277,10 @@ button { border: 0; background: none; cursor: pointer; touch-action: manipulatio
 .wl-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; }
 .wl-legend span { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--ink-faint); }
 .wl-legend i { width: 11px; height: 11px; border-radius: 50%; border: 2px solid currentColor; display: inline-block; }
+.wl-legend i[data-tier="0"] { color: var(--iron); }
+.wl-legend i[data-tier="1"] { color: var(--bronze); }
+.wl-legend i[data-tier="2"] { color: var(--silver); }
+.wl-legend i[data-tier="3"] { color: var(--gold); }
 
 /* --------------------------------------------------------------- boss arena
    The one screen where a bar is allowed to be dramatic. Nothing here is red and

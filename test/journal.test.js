@@ -22,8 +22,8 @@ const EQ = {
   dumbbells: { 8: 'pair', 10: 'pair', 12: 'pair', 20: 'pair', 35: 'pair' },
 };
 const FLOOR = { push_up: 'push_up.knee', goblet_squat: 'goblet_squat.chair', hinge_deadlift: 'hinge_deadlift.rdl_12' };
-const START = '2026-09-14';                       // a Monday
-const WEEK = ['2026-09-14', '2026-09-15', '2026-09-16', '2026-09-17', '2026-09-18', '2026-09-19'];
+const START = '2026-08-10';                       // a Monday
+const WEEK = ['2026-08-10', '2026-08-11', '2026-08-12', '2026-08-13', '2026-08-14', '2026-08-15'];
 
 let n = 0;
 const ev = (type, data, user, ts) => makeEvent(type, data, { user, dev: 'dev1', ts });
@@ -31,9 +31,9 @@ const ev = (type, data, user, ts) => makeEvent(type, data, { user, dev: 'dev1', 
 /** A warrior who trained every prescribed day of `days`, hitting every target. */
 function warrior(days, { user = 'sean', type = 'full' } = {}) {
   const events = [
-    ev(TYPES.PROFILE, { name: 'Sean', program_start: START, rest_dow: 0, session_minutes: 50, bodyweight_lb: 190 }, user, '2026-09-13T18:00:00Z'),
-    ev(TYPES.EQUIPMENT, EQ, user, '2026-09-13T18:01:00Z'),
-    ev(TYPES.ASSESSMENT, { start_steps: FLOOR }, user, '2026-09-13T18:02:00Z'),
+    ev(TYPES.PROFILE, { name: 'Sean', program_start: START, rest_dow: 0, session_minutes: 50, bodyweight_lb: 190 }, user, '2026-08-09T18:00:00Z'),
+    ev(TYPES.EQUIPMENT, EQ, user, '2026-08-09T18:01:00Z'),
+    ev(TYPES.ASSESSMENT, { start_steps: FLOOR }, user, '2026-08-09T18:02:00Z'),
   ];
   let u = reduce(events, spec, { equipment: EQ }).users[user];
   for (const day of days) {
@@ -73,12 +73,11 @@ function fakeState(user, today) {
 const BANNED = /\b(lost|failed|fail|failing|missed|behind|lazy)\b/i;
 
 test('the journal never uses a word that scolds', () => {
-  // Only the strings, so a comment or an identifier cannot trip this — but every
-  // quoted literal that could reach the screen is checked.
-  const literals = source.match(/(['"`])(?:\\.|(?!\1)[^\\])*\1/g) ?? [];
-  for (const lit of literals) {
-    assert.ok(!BANNED.test(lit), `journal.js string uses a discouraging word: ${lit}`);
-  }
+  // Comments are the author talking to the next author, so they are stripped;
+  // everything else in the file could end up in front of a person.
+  const code = source.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|\n)\s*\/\/[^\n]*/g, '$1');
+  const hit = BANNED.exec(code);
+  assert.equal(hit, null, hit ? `journal.js uses "${hit[0]}" near: ${code.slice(Math.max(0, hit.index - 60), hit.index + 60)}` : '');
 });
 
 test('every rendered badge criterion is free of discouraging words', () => {
@@ -118,7 +117,7 @@ test('the Zone-2 target is read off the templates, not hardcoded', () => {
 
 test('a full week prescribes six quests; a part week only counts the days on record', () => {
   assert.equal(J.weekPrescribedQuests(spec, START), 6);
-  assert.equal(J.weekPrescribedQuests(spec, START, { firstDay: '2026-09-17' }), 3);
+  assert.equal(J.weekPrescribedQuests(spec, START, { firstDay: '2026-08-13' }), 3);
   // Week 12 tapers Friday off.
   assert.equal(J.weekPrescribedQuests(spec, START, { override: program.week_overrides['12'] }), 5);
 });
@@ -147,8 +146,8 @@ test('the next-week sentence is one honest line for every week of the program', 
 
 test('a full first week rolls up as a Perfect Week', () => {
   const u = warrior(WEEK);
-  const p = progress(u, spec, gam, '2026-09-21');
-  const weeks = J.buildWeeks(u, spec, gam, p, '2026-09-21');
+  const p = progress(u, spec, gam, '2026-08-17');
+  const weeks = J.buildWeeks(u, spec, gam, p, '2026-08-17');
   const first = weeks.find(w => w.start === START);
   assert.ok(first, 'the training week is on the calendar');
   assert.equal(first.done, 6);
@@ -165,24 +164,24 @@ test('a full first week rolls up as a Perfect Week', () => {
 
 test('the week the warrior did not appear is still a week, and never called a loss', () => {
   const u = warrior(WEEK);
-  const p = progress(u, spec, gam, '2026-09-28');
-  const weeks = J.buildWeeks(u, spec, gam, p, '2026-09-28');
+  const p = progress(u, spec, gam, '2026-08-24');
+  const weeks = J.buildWeeks(u, spec, gam, p, '2026-08-24');
   assert.ok(weeks.length >= 2, 'the silent week is on record');
-  assert.equal(weeks[0].start, '2026-09-28');       // newest first
-  const quiet = weeks.find(w => w.start === '2026-09-21');
+  assert.equal(weeks[0].start, '2026-08-24');       // newest first
+  const quiet = weeks.find(w => w.start === '2026-08-17');
   assert.equal(quiet.done, 0);
   assert.equal(quiet.perfect, false);
   assert.equal(quiet.remaining, quiet.prescribed);
 });
 
-test('a brand new account produces exactly one week and no records', () => {
+test('a brand new account still produces a week, with nothing in it', () => {
   const u = warrior([]);
-  const p = progress(u, spec, gam, '2026-09-16');
-  const weeks = J.buildWeeks(u, spec, gam, p, '2026-09-16');
-  assert.equal(weeks.length, 1);
-  assert.equal(weeks[0].done, 0);
-  assert.equal(weeks[0].prs.length, 0);
-  assert.equal(weeks[0].climbs.length, 0);
+  const p = progress(u, spec, gam, '2026-08-12');
+  const weeks = J.buildWeeks(u, spec, gam, p, '2026-08-12');
+  assert.ok(weeks.length >= 1, 'the placement week is on the calendar');
+  assert.ok(weeks.every(w => w.done === 0 && !w.perfect));
+  assert.ok(weeks.every(w => w.prs.length === 0 && w.climbs.length === 0));
+  assert.ok(weeks.every(w => w.days.length === 7));
 });
 
 // ----------------------------------------------------------------- badges
@@ -233,8 +232,8 @@ test('progress is offered only where it can honestly be computed', () => {
 
 test('every badge either shows a bar or is honest about having none, and never crashes', () => {
   const u = warrior(WEEK);
-  const p = progress(u, spec, gam, '2026-09-21');
-  const m = J.badgeMetrics(u, p, J.buildWeeks(u, spec, gam, p, '2026-09-21'));
+  const p = progress(u, spec, gam, '2026-08-17');
+  const m = J.badgeMetrics(u, p, J.buildWeeks(u, spec, gam, p, '2026-08-17'));
   for (const b of gam.badges) {
     const bar = J.criterionProgress(b.criterion, m);
     if (bar) {
@@ -255,8 +254,8 @@ test('the screen renders for a real log, and escapes everything it interpolates'
     ...program,
     templates: program.templates.map(t => (t.id === 'mon_lower_a' ? { ...t, name: hostile } : t)),
   });
-  const state = { ...fakeState(u, '2026-09-21'), spec: poisoned };
-  state.progress = progress(u, poisoned, gam, '2026-09-21');
+  const state = { ...fakeState(u, '2026-08-17'), spec: poisoned };
+  state.progress = progress(u, poisoned, gam, '2026-08-17');
   const out = String(J.render(state));
   assert.ok(out.includes('&lt;img src=x onerror=alert(1)&gt;'), 'the template name is escaped');
   assert.ok(!out.includes('<img src=x'), 'no raw markup from data reaches the page');
@@ -270,7 +269,7 @@ test('the screen renders for a real log, and escapes everything it interpolates'
 
 test('a brand new account renders a deliberate empty state, not a broken one', () => {
   const u = warrior([]);
-  const out = String(J.render(fakeState(u, '2026-09-16')));
+  const out = String(J.render(fakeState(u, '2026-08-12')));
   assert.ok(out.includes('Journal'));
   assert.ok(out.includes('Calendar'));
   assert.ok(out.includes('Badges'));

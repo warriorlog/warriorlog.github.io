@@ -163,8 +163,12 @@ export function buildWeeks(user, spec, g, prog, today = dayKey()) {
   const statuses = prog.flame?.statuses ?? new Map();
 
   const weeks = [];
-  const stop = weekStart(today);
-  for (let start = weekStart(first); start <= stop; start = addDays(start, 7)) {
+  const from = weekStart(first);
+  // A phone whose clock ran ahead can leave a session dated after today. Ending
+  // the run at the later of the two keeps that week on the calendar instead of
+  // silently emptying it.
+  const stop = weekStart(today) > from ? weekStart(today) : from;
+  for (let start = from; start <= stop; start = addDays(start, 7)) {
     const end = addDays(start, 6);
     const weekId = isoWeekKey(start);
     const programWeek = weekIndex(start, programStart);
