@@ -251,3 +251,36 @@ test('the same history always derives the same numbers', () => {
   assert.equal(a.xp_total, b.xp_total);
   assert.deepEqual(a.by_source, b.by_source);
 });
+
+test('a genuinely perfect week is counted, and lights its badge', () => {
+  // The count was hardcoded to zero, so the Perfect Week badge could never light
+  // however well anyone trained.
+  const { state } = trained(CAT, WEEK);
+  const p = G.progress(state, spec, gam, '2026-09-21');
+  assert.equal(p.perfect_weeks.count, 1, 'six prescribed quests, all done, none skipped');
+  assert.equal(p.metrics.perfectWeeks, 1);
+  assert.ok(p.badges.find(b => b.id === 'perfect_week')?.earned, 'the badge must actually light');
+  assert.ok(p.by_source.perfect_weeks > 0, 'and it pays what the table says');
+});
+
+test('a week with a quest still to come is not perfect', () => {
+  const { state } = trained(CAT, WEEK.slice(0, 4));
+  const p = G.progress(state, spec, gam, '2026-09-21');
+  assert.equal(p.perfect_weeks.count, 0);
+  assert.equal(p.badges.find(b => b.id === 'perfect_week')?.earned, false);
+});
+
+test('a week carried by a shield is not perfect, but is not a defeat either', () => {
+  // Missing Wednesday spends the starting shield: the flame survives, the
+  // perfect week does not.
+  const { state } = trained(CAT, ['2026-09-14', '2026-09-15', '2026-09-17', '2026-09-18', '2026-09-19']);
+  const p = G.progress(state, spec, gam, '2026-09-21');
+  assert.equal(p.perfect_weeks.count, 0, 'a shield was spent');
+  assert.equal(p.flame.state, 'lit', 'but nothing was taken away');
+});
+
+test('short days keep the flame without buying a perfect week', () => {
+  const { state } = trained(CAT, WEEK, { type: 'skirmish' });
+  const p = G.progress(state, spec, gam, '2026-09-21');
+  assert.equal(p.perfect_weeks.count, 0, 'a week of short sessions is not a perfect week');
+});

@@ -6,7 +6,7 @@
 // ordinal. A wall push-up pays exactly what a vest push-up pays. That is what
 // keeps the duel fair between two people of different strength, and it removes
 // any incentive to reach for the 53 lb bell before it has been earned.
-import { addDays, daysBetween, dayKey, isoWeekKey, clamp } from './util.js';
+import { addDays, daysBetween, dayKey, isoWeekKey, weekStart, dow, clamp } from './util.js';
 
 // ---------------------------------------------------------------- levels
 export function xpForLevel(level, g) {
@@ -241,6 +241,52 @@ export function flame(user, g, today) {
   return { count, best, state, shields: shieldsLeft, ember_count: emberCount, statuses };
 }
 
+/**
+ * Perfect weeks: every prescribed quest done, enough of them full, and no shield
+ * spent. Counted here rather than in a view because a badge depends on it.
+ */
+export function perfectWeeks(user, spec, gam, statuses, today = dayKey()) {
+  const cfg = gam.perfect_week ?? {};
+  const first = user.sessions[0]?.day;
+  if (!first) return { count: 0, weeks: [] };
+
+  const byWeek = new Map();
+  for (const s of user.sessions) {
+    if (s.type === 'kindle') continue;
+    const k = isoWeekKey(s.day);
+    if (!byWeek.has(k)) byWeek.set(k, []);
+    byWeek.get(k).push(s);
+  }
+
+  const weeks = [];
+  for (const [weekId, sessions] of byWeek) {
+    const start = weekStart(sessions[0].day);
+    const programStart = user.profile?.program_start;
+    let prescribed = 0;
+    let shields = 0;
+    for (let i = 0; i < 7; i++) {
+      const day = addDays(start, i);
+      if (day < first) continue;                       // the week they joined is only counted from day one
+      if (daysBetween(day, today) < 0) continue;        // days that have not happened yet
+      const template = (spec.templates ?? []).find(t => t.dow === dow(day));
+      if (!template?.minutes) continue;
+      // A taper week can switch a training day off.
+      if (programStart) {
+        const week = Math.floor(daysBetween(programStart, day) / 7) + 1;
+        if (spec.week_overrides?.[String(week)]?.days?.[String(dow(day))] === 'off') continue;
+      }
+      prescribed++;
+      if (statuses?.get(day) === 'shield') shields++;
+    }
+    const done = sessions.filter(s => s.sets.length).length;
+    const full = sessions.filter(s => s.type === 'full' && isComplete(s, spec)).length;
+    const minFull = Math.min(cfg.min_full ?? 4, prescribed);
+    const perfect = prescribed > 0 && done >= prescribed && full >= minFull && shields === 0;
+    weeks.push({ week_id: weekId, prescribed, done, full, shields, perfect });
+  }
+  return { count: weeks.filter(w => w.perfect).length, weeks };
+}
+
 // ---------------------------------------------------------------- gear
 /** Armour comes only from benchmark tiers and named ladder rungs — never from XP. */
 export function gearTiers(user, spec, g) {
@@ -399,17 +445,22 @@ export function progress(user, spec, g, today = dayKey()) {
     run: atOrPastStep({ spec, user }, 'treadmill_intervals', 'treadmill_intervals.jog_8'),
   };
 
+  const perfect = perfectWeeks(user, spec, g, fl.statuses, today);
+  const perfectXp = perfect.count * (xp.perfect_week ?? 300);
+  xpTotal += perfectXp; if (perfectXp) bySource.perfect_weeks = perfectXp;
+
   const metrics = {
     user, spec, xpTotal, level, flame: fl, gear, gates, prCount,
     sessions: user.sessions, allSets: user.sessions.flatMap(s => s.sets),
     pledgesKept: user.pledges.filter(p => p.kept).length,
-    perfectWeeks: 0, zone2ByWeek, rekindled: fl.state === 'lit' && fl.best > fl.count,
+    perfectWeeks: perfect.count, zone2ByWeek, rekindled: fl.state === 'lit' && fl.best > fl.count,
     duo: null, earnedOn: {},
   };
 
   return {
     xp_total: xpTotal, by_source: bySource, level, flame: fl, gear, gates,
     regions: Object.fromEntries(Object.entries(regions).map(([k, v]) => [k, { xp: v, level: regionLevel(v, g) }])),
-    zone2_by_week: zone2ByWeek, sessions: perSession, badges: badges(metrics, g), metrics,
+    zone2_by_week: zone2ByWeek, sessions: perSession, perfect_weeks: perfect,
+    badges: badges(metrics, g), metrics,
   };
 }

@@ -353,6 +353,8 @@ button { border: 0; background: none; cursor: pointer; touch-action: manipulatio
 .drow { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-top: 1px solid var(--line); }
 .drow .dval { font-weight: 700; font-variant-numeric: tabular-nums; }
 .drow .dstrike { width: 42px; text-align: right; color: var(--ember); font-weight: 800; font-size: 14px; }
+.drow .dend { display: flex; align-items: center; gap: 8px; flex: none; }
+.drow .grow { min-width: 0; }
 .drow .pill { font-size: 11px; }
 
 /* ==========================================================================
@@ -505,8 +507,6 @@ button { border: 0; background: none; cursor: pointer; touch-action: manipulatio
    stretch its own track to max-content and push the card open. */
 .jr-group, .jr-badge { grid-template-columns: minmax(0, 1fr); }
 .jr-pr > .grow, .jr-sess > summary > .grow { min-width: 0; }
-.drow .dend { display: flex; align-items: center; gap: 8px; flex: none; }
-.drow .grow { min-width: 0; }
 /* A long rung name must not squeeze the exercise it belongs to down to one
    letter; both halves of a report row get a share and both ellipsize. */
 .jr-row > .truncate { flex: 1 1 40%; }
