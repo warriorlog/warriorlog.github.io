@@ -511,3 +511,27 @@ button { border: 0; background: none; cursor: pointer; touch-action: manipulatio
    letter; both halves of a report row get a share and both ellipsize. */
 .jr-row > .truncate { flex: 1 1 40%; }
 .jr-row > .pill { flex: 0 1 auto; max-width: 62%; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------------------------------------------------------------- how-to
+   Instructions for the movement in front of you. They open themselves the first
+   time you reach a rung and collapse once you have logged it, so a new movement
+   teaches itself without cluttering a session you already know. */
+.howto { padding: 0 var(--pad) 4px; }
+.howto > summary {
+  list-style: none; cursor: pointer; padding: 8px 0;
+  font-size: 14px; font-weight: 600; color: var(--ember);
+  min-height: 40px; display: flex; align-items: center; gap: 6px;
+}
+.howto > summary::-webkit-details-marker { display: none; }
+.howto > summary::before { content: "▸"; display: inline-block; transition: transform .15s; }
+.howto[open] > summary::before { transform: rotate(90deg); }
+.howto .how { margin: 2px 0 8px; font-size: 15px; line-height: 1.5; color: var(--ink); }
+.howto .cues { padding-left: 18px; margin: 0 0 6px; }
+.exercise > .cues { padding: 0 var(--pad) 12px; }
+.stopif {
+  margin: 0 var(--pad) 12px; padding: 9px 11px; border-radius: 9px;
+  background: rgba(229,118,107,.08); border: 1px solid rgba(229,118,107,.25);
+  font-size: 13px; line-height: 1.45; color: #e0a49d;
+}
+.stopif strong { color: #e5766b; }
+.checklist-head { padding: 0 var(--pad) 6px; }

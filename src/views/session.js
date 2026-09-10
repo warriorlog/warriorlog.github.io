@@ -89,18 +89,40 @@ function exerciseCard(g, spec, logged, state) {
   const step = spec.byStep[g.step_id];
   const allDone = g.rows.every(r => logged.has(key(r)));
   const rowsHtml = g.rows.map(r => setRow(r, logged.get(key(r)), step, state)).join('');
+
+  // Have they ever logged this exact rung before? If not, the instructions open
+  // themselves: nobody should have to hunt for how to do a movement they have
+  // never seen, and a Turkish get-up is not guessable from its name.
+  const firstTime = !state.users[state.me].sessions.some(sess =>
+    sess.sets.some(x => x.step_id === g.step_id));
+
   const checklist = step?.checklist_required && ex?.checklist
-    ? `<div class="checklist">${ex.checklist.cues.map((c, i) =>
+    ? `<div class="checklist-head tiny">Tick anything you did not hit</div>
+       <div class="checklist">${ex.checklist.cues.map((c, i) =>
         `<button class="cue" data-action="cue" data-key="${g.exercise_id}-${i}" data-ex="${g.exercise_id}" data-i="${i}" aria-pressed="false">${escape(c)}</button>`).join('')}</div>`
     : '';
-  const cues = (ex?.cues ?? []).slice(0, 3).map(c => `<li>${escape(c)}</li>`).join('');
+
+  const cues = (ex?.cues ?? []).map(c => `<li>${escape(c)}</li>`).join('');
+  const how = step?.how
+    ? `<details class="howto"${firstTime ? ' open' : ''}>
+         <summary>${firstTime ? 'How to do it' : 'How to do it'}</summary>
+         <p class="how">${escape(step.how)}</p>
+         ${cues ? `<ul class="cues">${cues}</ul>` : ''}
+       </details>`
+    : (cues ? `<ul class="cues">${cues}</ul>` : '');
+
+  const stop = ex?.stop_if
+    ? `<p class="stopif"><strong>Stop if:</strong> ${escape(ex.stop_if)}</p>` : '';
+
   return `<section class="exercise${allDone ? ' done' : ''}">
     <header>
       <div class="row-between"><h3>${escape(ex?.name ?? g.exercise_id)}</h3>
         <span class="pill">${escape(implementLabel(step))}</span></div>
       <div class="small muted">${escape(step?.name ?? '')}</div>
+      ${firstTime ? '<span class="pill hot" style="margin-top:6px">First time on this rung</span>' : ''}
     </header>
-    <ul class="cues">${cues}</ul>
+    ${how}
+    ${stop}
     ${checklist}
     ${rowsHtml}
   </section>`;

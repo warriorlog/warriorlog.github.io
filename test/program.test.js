@@ -377,3 +377,29 @@ test('nothing that cannot progress ever promises a rung', async () => {
     }
   }
 });
+
+test('every movement can teach itself: instructions, cues and a stop rule', () => {
+  // The session card is the only place a beginner meets a new movement. A
+  // Turkish get-up is not guessable from its name, so the data has to carry
+  // enough to perform it safely without leaving the app.
+  for (const ex of program.exercises) {
+    assert.ok((ex.cues ?? []).length >= 1, `${ex.id}: no coaching cues`);
+    assert.ok(ex.stop_if && ex.stop_if.length > 20, `${ex.id}: no usable stop rule`);
+    for (const step of ex.ladder) {
+      assert.ok(step.how && step.how.length > 25,
+        `${step.id}: "${step.how ?? ''}" does not explain how to perform it`);
+    }
+  }
+});
+
+test('the movements a beginner meets first are the best explained', () => {
+  // Whatever the placement, these are the rungs someone can be dropped onto in
+  // week one with no prior experience.
+  const opening = ['turkish_get_up', 'swing', 'hinge_deadlift', 'goblet_squat', 'push_up'];
+  for (const id of opening) {
+    const ex = spec.byExercise[id];
+    const first = ex.ladder[0];
+    assert.ok(first.how.length > 60, `${first.id}: the opening rung needs a fuller explanation`);
+    assert.ok((ex.cues ?? []).length >= 3, `${id}: an unfamiliar movement needs at least three cues`);
+  }
+});
