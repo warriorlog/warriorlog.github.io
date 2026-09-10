@@ -395,11 +395,37 @@ test('every movement can teach itself: instructions, cues and a stop rule', () =
 test('the movements a beginner meets first are the best explained', () => {
   // Whatever the placement, these are the rungs someone can be dropped onto in
   // week one with no prior experience.
-  const opening = ['turkish_get_up', 'swing', 'hinge_deadlift', 'goblet_squat', 'push_up'];
+  const opening = ['overhead_carry', 'bird_dog', 'swing', 'hinge_deadlift', 'goblet_squat', 'push_up'];
   for (const id of opening) {
     const ex = spec.byExercise[id];
     const first = ex.ladder[0];
     assert.ok(first.how.length > 60, `${first.id}: the opening rung needs a fuller explanation`);
     assert.ok((ex.cues ?? []).length >= 3, `${id}: an unfamiliar movement needs at least three cues`);
+  }
+});
+
+test('nothing scheduled is a movement you have to memorise', () => {
+  // Sean's rule: every movement has to be understandable without leaving the
+  // app. A sequence of separate positions is not, however good the exercise.
+  const SEQUENCE = /roll to (the )?elbow|sweep the leg|lunge to standing|reverse the exact same path/i;
+  const scheduled = new Set(program.templates.flatMap(t =>
+    (t.blocks ?? []).flatMap(b => (b.items ?? []).flatMap(it =>
+      [it.exercise_id, ...(it.fallback_when_locked ?? []).map(f => f.exercise_id)]))));
+  for (const id of scheduled) {
+    const ex = spec.byExercise[id];
+    if (!ex) continue;
+    assert.ok(!ex.retired, `${id} is retired but still scheduled`);
+    for (const step of ex.ladder) {
+      assert.ok(!SEQUENCE.test(step.how),
+        `${step.id} is a memorised sequence of positions, not a single movement`);
+    }
+  }
+});
+
+test('a retired movement is kept, not deleted, so no logged rung dangles', () => {
+  const retired = program.exercises.filter(e => e.retired);
+  for (const ex of retired) {
+    assert.ok(ex.retired_note, `${ex.id}: retired with no explanation of why`);
+    assert.ok(ex.ladder.length, `${ex.id}: its rungs must survive for anything already logged`);
   }
 });

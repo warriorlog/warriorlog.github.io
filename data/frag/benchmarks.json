@@ -16,11 +16,20 @@
         {
           "id": "run",
           "when": [
-            { "rule": "ladder_at_or_past", "exercise": "treadmill_intervals", "step_id": "treadmill_intervals.jog_8" }
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "treadmill_intervals",
+              "step_id": "treadmill_intervals.jog_8"
+            }
           ],
           "how": "Run/walk the mile as fast as you can hold form. Never set the belt above the work speed of your current interval step (jog_8 = 5.0 mph, run_9 = 5.5, run_10 and above = 6.0); the RUN GATE speed cap applies to the test exactly as it does to a training interval.",
           "multiplier": 1,
-          "tiers": [3600, 720, 569, 479],
+          "tiers": [
+            3600,
+            720,
+            569,
+            479
+          ],
           "tier_cap": 3
         },
         {
@@ -28,7 +37,12 @@
           "when": [],
           "how": "Fastest one-mile WALK. Belt capped at 4.5 mph, no jogging, no rails, 1% incline. This is the test until the interval ladder reaches treadmill_intervals.jog_8; it is a real test with its own tier table, not a consolation prize.",
           "multiplier": 1,
-          "tiers": [3600, 1080, 900, 779],
+          "tiers": [
+            3600,
+            1080,
+            900,
+            779
+          ],
           "tier_cap": 3
         }
       ]
@@ -47,11 +61,20 @@
         {
           "id": "full",
           "when": [
-            { "rule": "ladder_at_or_past", "exercise": "push_up", "step_id": "push_up.full" }
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "push_up",
+              "step_id": "push_up.full"
+            }
           ],
           "how": "Full push-ups on the toes, 1 point each.",
           "multiplier": 1,
-          "tiers": [0, 15, 30, 45],
+          "tiers": [
+            0,
+            15,
+            30,
+            45
+          ],
           "tier_cap": 3
         },
         {
@@ -59,7 +82,12 @@
           "when": [],
           "how": "Knee push-ups, scored 0.5 each. Same 2-minute clock, same lockout standard.",
           "multiplier": 0.5,
-          "tiers": [0, 15, 30, 45],
+          "tiers": [
+            0,
+            15,
+            30,
+            45
+          ],
           "tier_cap": 1
         }
       ]
@@ -78,11 +106,20 @@
         {
           "id": "full",
           "when": [
-            { "rule": "ladder_at_or_past", "exercise": "hollow_hold", "step_id": "hollow_hold.full_hollow" }
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "hollow_hold",
+              "step_id": "hollow_hold.full_hollow"
+            }
           ],
           "how": "Full hollow: legs straight, arms overhead, low back pressed flat. 1 point per second.",
           "multiplier": 1,
-          "tiers": [0, 30, 60, 90],
+          "tiers": [
+            0,
+            30,
+            60,
+            90
+          ],
           "tier_cap": 3
         },
         {
@@ -90,7 +127,12 @@
           "when": [],
           "how": "Tuck hollow: knees over hips, shins parallel to the floor, arms at the shins, low back flat. Scored 0.5 s per second held.",
           "multiplier": 0.5,
-          "tiers": [0, 30, 60, 90],
+          "tiers": [
+            0,
+            30,
+            60,
+            90
+          ],
           "tier_cap": 1
         }
       ]
@@ -111,23 +153,44 @@
         {
           "id": "kb53",
           "when": [
-            { "rule": "ladder_at_or_past", "exercise": "swing", "step_id": "swing.cont_53" }
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "swing",
+              "step_id": "swing.cont_53"
+            }
           ],
           "how": "Continuous two-hand swings with the 53 lb kettlebell.",
           "implement_id": "kb53",
           "multiplier": 1,
-          "tiers": [0, 50, 80, 110],
+          "tiers": [
+            0,
+            50,
+            80,
+            110
+          ],
           "tier_cap": 3
         },
         {
           "id": "db",
           "when": [
-            { "rule": "ladder_at_or_past", "exercise": "swing", "step_id": "swing.cont_20" }
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "swing",
+              "step_id": "swing.cont_20"
+            }
           ],
           "how": "Continuous two-hand swings with the dumbbell your swing ladder is currently on (20 lb or 35 lb). Tier caps at soldier until the 53 lb bell is earned.",
-          "implement_rule": { "kind": "current_ladder_implement", "exercise": "swing" },
+          "implement_rule": {
+            "kind": "current_ladder_implement",
+            "exercise": "swing"
+          },
           "multiplier": 1,
-          "tiers": [0, 50, 80, 110],
+          "tiers": [
+            0,
+            50,
+            80,
+            110
+          ],
           "tier_cap": 1
         },
         {
@@ -138,7 +201,12 @@
           "lock_note": "Earn swing.cont_20 (continuous swings, 20 lb dumbbell) to unlock this boss.",
           "multiplier": 0,
           "tier_points": 0,
-          "tiers": [0, 50, 80, 110],
+          "tiers": [
+            0,
+            50,
+            80,
+            110
+          ],
           "tier_cap": 0
         }
       ]
@@ -160,10 +228,26 @@
         "max_pct_bodyweight": 35,
         "requires_ladder_reached": true,
         "candidates": [
-          { "lb": 12, "implement_id": "db12", "step_id": "goblet_squat.db12" },
-          { "lb": 20, "implement_id": "db20", "step_id": "goblet_squat.db20" },
-          { "lb": 35, "implement_id": "db35", "step_id": "goblet_squat.db35" },
-          { "lb": 53, "implement_id": "kb53", "step_id": "goblet_squat.kb53" }
+          {
+            "lb": 12,
+            "implement_id": "db12",
+            "step_id": "goblet_squat.db12"
+          },
+          {
+            "lb": 20,
+            "implement_id": "db20",
+            "step_id": "goblet_squat.db20"
+          },
+          {
+            "lb": 35,
+            "implement_id": "db35",
+            "step_id": "goblet_squat.db35"
+          },
+          {
+            "lb": 53,
+            "implement_id": "kb53",
+            "step_id": "goblet_squat.kb53"
+          }
         ],
         "select": "heaviest candidate whose lb <= 0.35 * bodyweight_lb AND whose step_id the goblet_squat ladder has reached",
         "below_target_tier_cap": 1,
@@ -173,12 +257,21 @@
         {
           "id": "loaded",
           "when": [
-            { "rule": "ladder_at_or_past", "exercise": "goblet_squat", "step_id": "goblet_squat.db12" }
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "goblet_squat",
+              "step_id": "goblet_squat.db12"
+            }
           ],
           "how": "Goblet squats holding the implement resolved by load_rule. The 53 lb bell is deadlifted to the knees and curled to the chest with two hands, never swung up.",
           "uses_load_rule": true,
           "multiplier": 1,
-          "tiers": [0, 10, 20, 30],
+          "tiers": [
+            0,
+            10,
+            20,
+            30
+          ],
           "tier_cap": 3,
           "tier_cap_below_target": 1
         },
@@ -187,7 +280,12 @@
           "when": [],
           "how": "No loaded goblet step reached yet: max unbroken bodyweight squats to the same depth standard, arms forward as a counterweight, chair behind you as a depth target.",
           "multiplier": 1,
-          "tiers": [0, 10, 20, 30],
+          "tiers": [
+            0,
+            10,
+            20,
+            30
+          ],
           "tier_cap": 1
         }
       ]
@@ -206,23 +304,49 @@
         {
           "id": "vest10",
           "when": [
-            { "rule": "ladder_at_or_past", "exercise": "step_up", "step_id": "step_up.vest10" }
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "step_up",
+              "step_id": "step_up.vest10"
+            }
           ],
           "how": "Wearing the vest at 10% bodyweight, rounded down to the vest increment.",
-          "load": { "kind": "bw_vest", "lb": 0, "n": 1, "vest_pct": 10, "cap_lb": 30 },
+          "load": {
+            "kind": "bw_vest",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": 10,
+            "cap_lb": 30
+          },
           "implement_id": "vest",
           "multiplier": 1,
-          "tiers": [0, 40, 60, 80],
+          "tiers": [
+            0,
+            40,
+            60,
+            80
+          ],
           "tier_cap": 3
         },
         {
           "id": "unweighted",
           "when": [],
           "how": "Bodyweight step-ups, no vest. The vest is not worn until the step_up ladder reaches step_up.vest10.",
-          "load": { "kind": "bw", "lb": 0, "n": 1, "vest_pct": null, "cap_lb": null },
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
           "implement_id": "bw",
           "multiplier": 1,
-          "tiers": [0, 40, 60, 80],
+          "tiers": [
+            0,
+            40,
+            60,
+            80
+          ],
           "tier_cap": 1
         }
       ]
@@ -231,7 +355,7 @@
   "placement": {
     "notes": [
       "Target time: about 60 seconds per user. Screens first, then Q1-Q8, then the shared equipment card (asked once for the household, editable by either user).",
-      "swing ALWAYS starts at swing.hike_park_20 and turkish_get_up ALWAYS starts at turkish_get_up.naked, whatever the answer to q8_kb. Both are ord 1, so default_step 'first' already produces this and no rule may override it.",
+      "swing ALWAYS starts at swing.hike_park_20 and whatever the answer to q8_kb. Both are ord 1, so default_step 'first' already produces this and no rule may override it.",
       "treadmill_intervals always starts at ord 1 (treadmill_intervals.walk_6); the RUN GATE, not the quiz, opens jogging.",
       "Bodyweight, height, age and sex live only on the owner's phone. No placement rule reads them, which is why the original 'goblet 20 lb if bodyweight >= 160 lb' and 'press 12 lb if male >= 160 lb' bumps were dropped: a beginner starting one rung lower costs two weeks, starting one rung too high costs a back."
     ],
@@ -251,12 +375,30 @@
         "multi": true,
         "prompt": "Any joint or area that currently hurts, or that you have injured before?",
         "choices": [
-          { "value": "none", "label": "None" },
-          { "value": "low_back", "label": "Low back" },
-          { "value": "shoulder", "label": "Shoulder" },
-          { "value": "knee", "label": "Knee" },
-          { "value": "wrist", "label": "Wrist" },
-          { "value": "neck", "label": "Neck" }
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "low_back",
+            "label": "Low back"
+          },
+          {
+            "value": "shoulder",
+            "label": "Shoulder"
+          },
+          {
+            "value": "knee",
+            "label": "Knee"
+          },
+          {
+            "value": "wrist",
+            "label": "Wrist"
+          },
+          {
+            "value": "neck",
+            "label": "Neck"
+          }
         ],
         "sets_setting": "health.injury_flags"
       },
@@ -288,9 +430,18 @@
         "type": "choice",
         "prompt": "Squat test - pick the hardest one that is true:",
         "choices": [
-          { "value": "none", "label": "I cannot do 10 pain-free sit-to-stands from a chair" },
-          { "value": "sit_to_stand_10", "label": "10 pain-free chair sit-to-stands, yes" },
-          { "value": "bw_squat_15", "label": "That, plus 15 full-depth bodyweight squats" }
+          {
+            "value": "none",
+            "label": "I cannot do 10 pain-free sit-to-stands from a chair"
+          },
+          {
+            "value": "sit_to_stand_10",
+            "label": "10 pain-free chair sit-to-stands, yes"
+          },
+          {
+            "value": "bw_squat_15",
+            "label": "That, plus 15 full-depth bodyweight squats"
+          }
         ]
       },
       {
@@ -299,9 +450,18 @@
         "type": "choice",
         "prompt": "How long can you hold a front plank with a flat back?",
         "choices": [
-          { "value": "lt20", "label": "Under 20 seconds" },
-          { "value": "20_45", "label": "20 to 45 seconds" },
-          { "value": "gt45", "label": "Over 45 seconds" }
+          {
+            "value": "lt20",
+            "label": "Under 20 seconds"
+          },
+          {
+            "value": "20_45",
+            "label": "20 to 45 seconds"
+          },
+          {
+            "value": "gt45",
+            "label": "Over 45 seconds"
+          }
         ]
       },
       {
@@ -317,9 +477,18 @@
         "type": "choice",
         "prompt": "Overhead test: 10 presses with an 8 lb dumbbell, half-kneeling, one arm.",
         "choices": [
-          { "value": "cannot", "label": "I cannot do 10, or it hurts" },
-          { "value": "with_effort", "label": "10 reps, but they were work" },
-          { "value": "easy", "label": "10 reps, easy" }
+          {
+            "value": "cannot",
+            "label": "I cannot do 10, or it hurts"
+          },
+          {
+            "value": "with_effort",
+            "label": "10 reps, but they were work"
+          },
+          {
+            "value": "easy",
+            "label": "10 reps, easy"
+          }
         ]
       },
       {
@@ -334,9 +503,18 @@
         "type": "choice",
         "prompt": "Cardio - pick the hardest one that is true:",
         "choices": [
-          { "value": "cannot_20", "label": "I cannot walk 20 minutes at 3.0 mph comfortably" },
-          { "value": "comfortable", "label": "20 minutes at 3.0 mph is comfortable" },
-          { "value": "can_jog_5", "label": "That, and I can jog 5 minutes without stopping" }
+          {
+            "value": "cannot_20",
+            "label": "I cannot walk 20 minutes at 3.0 mph comfortably"
+          },
+          {
+            "value": "comfortable",
+            "label": "20 minutes at 3.0 mph is comfortable"
+          },
+          {
+            "value": "can_jog_5",
+            "label": "That, and I can jog 5 minutes without stopping"
+          }
         ]
       },
       {
@@ -381,9 +559,18 @@
         "type": "choice",
         "prompt": "8 lb dumbbells:",
         "choices": [
-          { "value": "pair", "label": "Pair" },
-          { "value": "single", "label": "One only" },
-          { "value": "none", "label": "None" }
+          {
+            "value": "pair",
+            "label": "Pair"
+          },
+          {
+            "value": "single",
+            "label": "One only"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
         ],
         "sets_setting": "equipment.db.8"
       },
@@ -394,9 +581,18 @@
         "type": "choice",
         "prompt": "10 lb dumbbells:",
         "choices": [
-          { "value": "pair", "label": "Pair" },
-          { "value": "single", "label": "One only" },
-          { "value": "none", "label": "None" }
+          {
+            "value": "pair",
+            "label": "Pair"
+          },
+          {
+            "value": "single",
+            "label": "One only"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
         ],
         "sets_setting": "equipment.db.10"
       },
@@ -407,9 +603,18 @@
         "type": "choice",
         "prompt": "12 lb dumbbells:",
         "choices": [
-          { "value": "pair", "label": "Pair" },
-          { "value": "single", "label": "One only" },
-          { "value": "none", "label": "None" }
+          {
+            "value": "pair",
+            "label": "Pair"
+          },
+          {
+            "value": "single",
+            "label": "One only"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
         ],
         "sets_setting": "equipment.db.12"
       },
@@ -420,9 +625,18 @@
         "type": "choice",
         "prompt": "20 lb dumbbells:",
         "choices": [
-          { "value": "pair", "label": "Pair" },
-          { "value": "single", "label": "One only" },
-          { "value": "none", "label": "None" }
+          {
+            "value": "pair",
+            "label": "Pair"
+          },
+          {
+            "value": "single",
+            "label": "One only"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
         ],
         "sets_setting": "equipment.db.20"
       },
@@ -433,9 +647,18 @@
         "type": "choice",
         "prompt": "35 lb dumbbells:",
         "choices": [
-          { "value": "pair", "label": "Pair" },
-          { "value": "single", "label": "One only" },
-          { "value": "none", "label": "None" }
+          {
+            "value": "pair",
+            "label": "Pair"
+          },
+          {
+            "value": "single",
+            "label": "One only"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
         ],
         "sets_setting": "equipment.db.35"
       },
@@ -492,84 +715,284 @@
       }
     ],
     "rules": [
-      { "when": { "q": "q1_pushups", "op": "eq", "value": 0 },
-        "set": { "push_up": "push_up.wall" } },
-      { "when": { "q": "q1_pushups", "op": "between", "value": [1, 4] },
-        "set": { "push_up": "push_up.knee" } },
-      { "when": { "q": "q1_pushups", "op": "between", "value": [5, 9] },
-        "set": { "push_up": "push_up.full" } },
-      { "when": { "q": "q1_pushups", "op": "between", "value": [10, 14] },
-        "set": { "push_up": "push_up.full" } },
-      { "when": { "q": "q1_pushups", "op": "gte", "value": 15 },
-        "set": { "push_up": "push_up.full_high" } },
-
-      { "when": { "q": "q1_pushups", "op": "lte", "value": 4 },
-        "set": { "diamond_push_up": "diamond_push_up.wall" } },
-      { "when": { "q": "q1_pushups", "op": "between", "value": [5, 14] },
-        "set": { "diamond_push_up": "diamond_push_up.incline" } },
-      { "when": { "q": "q1_pushups", "op": "gte", "value": 15 },
-        "set": { "diamond_push_up": "diamond_push_up.knee" } },
-
-      { "when": { "q": "q1_pushups", "op": "gte", "value": 5 },
-        "set": { "pike_push_up": "pike_push_up.floor" } },
-
-      { "when": { "q": "q2_squat", "op": "eq", "value": "none" },
-        "set": { "goblet_squat": "goblet_squat.chair" } },
-      { "when": { "q": "q2_squat", "op": "eq", "value": "sit_to_stand_10" },
-        "set": { "goblet_squat": "goblet_squat.bw_squat" } },
-      { "when": { "q": "q2_squat", "op": "eq", "value": "bw_squat_15" },
-        "set": { "goblet_squat": "goblet_squat.db12", "step_up": "step_up.chair" } },
-
-      { "when": { "q": "q3_plank", "op": "eq", "value": "lt20" },
-        "set": { "plank_side_plank": "plank_side_plank.knee", "hollow_hold": "hollow_hold.dead_bug" } },
-      { "when": { "q": "q3_plank", "op": "eq", "value": "20_45" },
-        "set": { "plank_side_plank": "plank_side_plank.short", "hollow_hold": "hollow_hold.tuck_hold" } },
-      { "when": { "q": "q3_plank", "op": "eq", "value": "gt45" },
-        "set": { "plank_side_plank": "plank_side_plank.medium", "hollow_hold": "hollow_hold.tuck_extend", "hip_thrust": "hip_thrust.db20" } },
-
-      { "when": { "q": "q4_hinge", "op": "eq", "value": true },
-        "set": { "hinge_deadlift": "hinge_deadlift.rdl_12" } },
-
-      { "when": { "q": "q5_overhead", "op": "eq", "value": "easy" },
-        "set": { "db_overhead_press": "db_overhead_press.half_kneel_10",
-                 "db_lateral_raise": "db_lateral_raise.db10",
-                 "db_rear_delt_fly": "db_rear_delt_fly.db8",
-                 "db_curl": "db_curl.db10",
-                 "db_hammer_curl": "db_hammer_curl.db10",
-                 "db_triceps_extension": "db_triceps_extension.db10",
-                 "db_floor_press": "db_floor_press.db10" } },
-
-      { "when": { "q": "q6_carry", "op": "eq", "value": true },
-        "set": { "db_row": "db_row.db20",
-                 "suitcase_carry": "suitcase_carry.db20",
-                 "farmer_carry": "farmer_carry.db20",
-                 "db_shrug": "db_shrug.db20" } },
-
-      { "when": { "q": "q7_cardio", "op": "eq", "value": "cannot_20" },
-        "set": { "treadmill_zone2": "treadmill_zone2.flat_20" } },
-      { "when": { "q": "q7_cardio", "op": "eq", "value": "comfortable" },
-        "set": { "treadmill_zone2": "treadmill_zone2.w30_2" } },
-      { "when": { "q": "q7_cardio", "op": "eq", "value": "can_jog_5" },
-        "set": { "treadmill_zone2": "treadmill_zone2.w30_4" } }
+      {
+        "when": {
+          "q": "q1_pushups",
+          "op": "eq",
+          "value": 0
+        },
+        "set": {
+          "push_up": "push_up.wall"
+        }
+      },
+      {
+        "when": {
+          "q": "q1_pushups",
+          "op": "between",
+          "value": [
+            1,
+            4
+          ]
+        },
+        "set": {
+          "push_up": "push_up.knee"
+        }
+      },
+      {
+        "when": {
+          "q": "q1_pushups",
+          "op": "between",
+          "value": [
+            5,
+            9
+          ]
+        },
+        "set": {
+          "push_up": "push_up.full"
+        }
+      },
+      {
+        "when": {
+          "q": "q1_pushups",
+          "op": "between",
+          "value": [
+            10,
+            14
+          ]
+        },
+        "set": {
+          "push_up": "push_up.full"
+        }
+      },
+      {
+        "when": {
+          "q": "q1_pushups",
+          "op": "gte",
+          "value": 15
+        },
+        "set": {
+          "push_up": "push_up.full_high"
+        }
+      },
+      {
+        "when": {
+          "q": "q1_pushups",
+          "op": "lte",
+          "value": 4
+        },
+        "set": {
+          "diamond_push_up": "diamond_push_up.wall"
+        }
+      },
+      {
+        "when": {
+          "q": "q1_pushups",
+          "op": "between",
+          "value": [
+            5,
+            14
+          ]
+        },
+        "set": {
+          "diamond_push_up": "diamond_push_up.incline"
+        }
+      },
+      {
+        "when": {
+          "q": "q1_pushups",
+          "op": "gte",
+          "value": 15
+        },
+        "set": {
+          "diamond_push_up": "diamond_push_up.knee"
+        }
+      },
+      {
+        "when": {
+          "q": "q1_pushups",
+          "op": "gte",
+          "value": 5
+        },
+        "set": {
+          "pike_push_up": "pike_push_up.floor"
+        }
+      },
+      {
+        "when": {
+          "q": "q2_squat",
+          "op": "eq",
+          "value": "none"
+        },
+        "set": {
+          "goblet_squat": "goblet_squat.chair"
+        }
+      },
+      {
+        "when": {
+          "q": "q2_squat",
+          "op": "eq",
+          "value": "sit_to_stand_10"
+        },
+        "set": {
+          "goblet_squat": "goblet_squat.bw_squat"
+        }
+      },
+      {
+        "when": {
+          "q": "q2_squat",
+          "op": "eq",
+          "value": "bw_squat_15"
+        },
+        "set": {
+          "goblet_squat": "goblet_squat.db12",
+          "step_up": "step_up.chair"
+        }
+      },
+      {
+        "when": {
+          "q": "q3_plank",
+          "op": "eq",
+          "value": "lt20"
+        },
+        "set": {
+          "plank_side_plank": "plank_side_plank.knee",
+          "hollow_hold": "hollow_hold.dead_bug"
+        }
+      },
+      {
+        "when": {
+          "q": "q3_plank",
+          "op": "eq",
+          "value": "20_45"
+        },
+        "set": {
+          "plank_side_plank": "plank_side_plank.short",
+          "hollow_hold": "hollow_hold.tuck_hold"
+        }
+      },
+      {
+        "when": {
+          "q": "q3_plank",
+          "op": "eq",
+          "value": "gt45"
+        },
+        "set": {
+          "plank_side_plank": "plank_side_plank.medium",
+          "hollow_hold": "hollow_hold.tuck_extend",
+          "hip_thrust": "hip_thrust.db20"
+        }
+      },
+      {
+        "when": {
+          "q": "q4_hinge",
+          "op": "eq",
+          "value": true
+        },
+        "set": {
+          "hinge_deadlift": "hinge_deadlift.rdl_12"
+        }
+      },
+      {
+        "when": {
+          "q": "q5_overhead",
+          "op": "eq",
+          "value": "easy"
+        },
+        "set": {
+          "db_overhead_press": "db_overhead_press.half_kneel_10",
+          "db_lateral_raise": "db_lateral_raise.db10",
+          "db_rear_delt_fly": "db_rear_delt_fly.db8",
+          "db_curl": "db_curl.db10",
+          "db_hammer_curl": "db_hammer_curl.db10",
+          "db_triceps_extension": "db_triceps_extension.db10",
+          "db_floor_press": "db_floor_press.db10"
+        }
+      },
+      {
+        "when": {
+          "q": "q6_carry",
+          "op": "eq",
+          "value": true
+        },
+        "set": {
+          "db_row": "db_row.db20",
+          "suitcase_carry": "suitcase_carry.db20",
+          "farmer_carry": "farmer_carry.db20",
+          "db_shrug": "db_shrug.db20"
+        }
+      },
+      {
+        "when": {
+          "q": "q7_cardio",
+          "op": "eq",
+          "value": "cannot_20"
+        },
+        "set": {
+          "treadmill_zone2": "treadmill_zone2.flat_20"
+        }
+      },
+      {
+        "when": {
+          "q": "q7_cardio",
+          "op": "eq",
+          "value": "comfortable"
+        },
+        "set": {
+          "treadmill_zone2": "treadmill_zone2.w30_2"
+        }
+      },
+      {
+        "when": {
+          "q": "q7_cardio",
+          "op": "eq",
+          "value": "can_jog_5"
+        },
+        "set": {
+          "treadmill_zone2": "treadmill_zone2.w30_4"
+        }
+      }
     ],
     "default_step": "first",
     "locked": [
       {
         "id": "parq_hold",
-        "when": { "q": "q_parq", "op": "eq", "value": true },
-        "lock": ["treadmill_intervals"],
-        "lock_benchmarks": ["bb_mile_time", "bb_swings_5min"],
+        "when": {
+          "q": "q_parq",
+          "op": "eq",
+          "value": true
+        },
+        "lock": [
+          "treadmill_intervals"
+        ],
+        "lock_benchmarks": [
+          "bb_mile_time",
+          "bb_swings_5min"
+        ],
         "note": "Health screen flagged. Zone-2 walking and all strength work continue as written; intervals, the mile time trial and the five-minute swing test stay locked until a doctor clears you. Tell the app once you are cleared."
       },
       {
         "id": "vest_walk_hold",
-        "when": { "q": "q7_cardio", "op": "in", "value": ["cannot_20", "comfortable", "can_jog_5"] },
-        "lock": ["vest_walk"],
+        "when": {
+          "q": "q7_cardio",
+          "op": "in",
+          "value": [
+            "cannot_20",
+            "comfortable",
+            "can_jog_5"
+          ]
+        },
+        "lock": [
+          "vest_walk"
+        ],
         "note": "Vest walks always start locked, whatever your cardio answer. They open when the Zone-2 ladder reaches treadmill_zone2.w33_8."
       },
       {
         "id": "shoulder_screen_fail",
-        "when": { "q": "q_shoulder_slides", "op": "eq", "value": false },
+        "when": {
+          "q": "q_shoulder_slides",
+          "op": "eq",
+          "value": false
+        },
         "cap": {
           "db_overhead_press": "db_overhead_press.half_kneel_8",
           "pike_push_up": "pike_push_up.incline"
@@ -578,7 +1001,11 @@
       },
       {
         "id": "hip_knee_screen_fail",
-        "when": { "q": "q_hip_sit_stand", "op": "eq", "value": false },
+        "when": {
+          "q": "q_hip_sit_stand",
+          "op": "eq",
+          "value": false
+        },
         "cap": {
           "goblet_squat": "goblet_squat.chair",
           "split_squat": "split_squat.wall_assist",
@@ -588,7 +1015,11 @@
       },
       {
         "id": "injury_low_back",
-        "when": { "q": "q_injuries", "op": "contains", "value": "low_back" },
+        "when": {
+          "q": "q_injuries",
+          "op": "contains",
+          "value": "low_back"
+        },
         "cap": {
           "hinge_deadlift": "hinge_deadlift.wall_drill",
           "swing": "swing.hike_park_20",
@@ -598,7 +1029,11 @@
       },
       {
         "id": "injury_shoulder",
-        "when": { "q": "q_injuries", "op": "contains", "value": "shoulder" },
+        "when": {
+          "q": "q_injuries",
+          "op": "contains",
+          "value": "shoulder"
+        },
         "cap": {
           "db_overhead_press": "db_overhead_press.half_kneel_8",
           "pike_push_up": "pike_push_up.incline",
@@ -608,7 +1043,11 @@
       },
       {
         "id": "injury_knee",
-        "when": { "q": "q_injuries", "op": "contains", "value": "knee" },
+        "when": {
+          "q": "q_injuries",
+          "op": "contains",
+          "value": "knee"
+        },
         "cap": {
           "goblet_squat": "goblet_squat.chair",
           "split_squat": "split_squat.wall_assist",
@@ -618,7 +1057,11 @@
       },
       {
         "id": "injury_wrist",
-        "when": { "q": "q_injuries", "op": "contains", "value": "wrist" },
+        "when": {
+          "q": "q_injuries",
+          "op": "contains",
+          "value": "wrist"
+        },
         "cap": {
           "push_up": "push_up.incline",
           "diamond_push_up": "diamond_push_up.wall"
@@ -627,7 +1070,11 @@
       },
       {
         "id": "injury_neck",
-        "when": { "q": "q_injuries", "op": "contains", "value": "neck" },
+        "when": {
+          "q": "q_injuries",
+          "op": "contains",
+          "value": "neck"
+        },
         "cap": {
           "neck_isometrics": "neck_isometrics.iso10",
           "db_shrug": "db_shrug.db12",

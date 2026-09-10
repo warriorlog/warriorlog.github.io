@@ -636,14 +636,14 @@
       }
     },
     {
-      "id": "get_up_shoe",
-      "name": "Steady Hand",
+      "id": "overhead_hold",
+      "name": "Steady Overhead",
       "rarity": "common",
       "duo": false,
       "criterion": {
         "metric": "ladder_step",
-        "exercise": "turkish_get_up",
-        "step_id": "turkish_get_up.db8",
+        "exercise": "overhead_carry",
+        "step_id": "overhead_carry.db12",
         "op": "eq",
         "value": true
       }

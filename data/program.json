@@ -103,7 +103,8 @@
     {
       "action": "never",
       "exercise_ids": [
-        "turkish_get_up",
+        "overhead_carry",
+        "bird_dog",
         "swing",
         "swing_density",
         "warmup_flow"
@@ -427,12 +428,16 @@
           "minutes": 6,
           "items": [
             {
-              "exercise_id": "turkish_get_up",
-              "sets": 3,
+              "exercise_id": "overhead_carry",
+              "sets": 2,
               "rest_sec": 30,
-              "note": "3 per side (6 total) with 30 s rest: 3 x (about 90 s for both sides + 30 s) = 6 min. 4 sets did not fit. Slow and perfect, never to fatigue. Time guard may never drop this block.",
-              "counts_for_progression": true,
-              "time_override_min": null
+              "note": "Straight overhead, arm locked. Walk or march for the clock."
+            },
+            {
+              "exercise_id": "bird_dog",
+              "sets": 2,
+              "rest_sec": 30,
+              "note": "Slow and square. Stability, not speed."
             }
           ]
         },
@@ -478,7 +483,7 @@
         "rounds": 3,
         "rest_sec": 45,
         "exercise_ids": [
-          "turkish_get_up",
+          "overhead_carry",
           "suitcase_carry"
         ],
         "cardio": {
@@ -7135,7 +7140,9 @@
           },
           "terminal": true
         }
-      ]
+      ],
+      "retired": true,
+      "retired_note": "Removed from the schedule at Sean's request: seven sequential segments is too much to learn mid-session. Its job is covered by overhead_carry and bird_dog. Kept here rather than deleted so a logged rung never dangles; re-add it to wed_heart to bring it back."
     },
     {
       "id": "hollow_hold",
@@ -8286,6 +8293,357 @@
           "advance": {
             "rule": "all_sets_time_gte",
             "value": 60,
+            "consecutive": 2
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "overhead_carry",
+      "name": "Overhead carry",
+      "region": "shoulders",
+      "pattern": "carry",
+      "equipment": "dumbbells, kettlebell",
+      "region_weights": {
+        "shoulders": 0.5,
+        "core": 0.35,
+        "neck_traps": 0.15
+      },
+      "cues": [
+        "Arm dead vertical, biceps beside your ear, elbow locked",
+        "Shoulder blade pulled down and back, never shrugged up to the ear",
+        "Ribs down and stomach braced so the low back does not arch",
+        "If the arm drifts forward or the elbow bends, put it down and reset the clock"
+      ],
+      "stop_if": "Sharp shoulder, elbow or wrist pain, the elbow bends under the weight, or you cannot keep the arm vertical",
+      "ladder": [
+        {
+          "id": "overhead_carry.db8",
+          "ord": 1,
+          "name": "8 lb overhead carry",
+          "how": "One 8 lb dumbbell pressed straight overhead, arm locked, biceps by your ear. Walk laps of the room, or march in place, keeping the arm vertical for the whole clock. Switch hands between rows.",
+          "unit": "sec",
+          "sides": "each",
+          "A": 25,
+          "B": 30,
+          "load": {
+            "kind": "db",
+            "lb": 8,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "db8",
+          "requires": [
+            "db:8"
+          ],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 30,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "overhead_carry.db10",
+          "ord": 2,
+          "name": "10 lb overhead carry",
+          "how": "One 10 lb dumbbell locked out overhead, arm vertical, ribs down. Walk or march for the whole clock without letting the weight drift forward or the shoulder shrug up. Switch hands between rows.",
+          "unit": "sec",
+          "sides": "each",
+          "A": 25,
+          "B": 35,
+          "load": {
+            "kind": "db",
+            "lb": 10,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "db10",
+          "requires": [
+            "db:10"
+          ],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 35,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "overhead_carry.db12",
+          "ord": 3,
+          "name": "12 lb overhead carry",
+          "how": "One 12 lb dumbbell locked out overhead. Squeeze the shoulder blade down, brace the stomach and walk tall. If the arm drifts out of vertical, stop the clock and reset. Switch hands between rows.",
+          "unit": "sec",
+          "sides": "each",
+          "A": 30,
+          "B": 40,
+          "load": {
+            "kind": "db",
+            "lb": 12,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "db12",
+          "requires": [
+            "db:12"
+          ],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 40,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "overhead_carry.db20",
+          "ord": 4,
+          "name": "20 lb overhead carry",
+          "how": "One 20 lb dumbbell locked out overhead, arm vertical the whole way. Walk or march with the ribs pulled down so the low back does not arch. Switch hands between rows.",
+          "unit": "sec",
+          "sides": "each",
+          "A": 30,
+          "B": 40,
+          "load": {
+            "kind": "db",
+            "lb": 20,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "db20",
+          "requires": [
+            "db:20"
+          ],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 40,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "overhead_carry.db35",
+          "ord": 5,
+          "name": "35 lb overhead carry",
+          "how": "One 35 lb dumbbell locked out overhead. Press it up with both hands if you need to, then hold it vertical and walk. Switch hands between rows.",
+          "unit": "sec",
+          "sides": "each",
+          "A": 30,
+          "B": 45,
+          "load": {
+            "kind": "db",
+            "lb": 35,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "db35",
+          "requires": [
+            "db:35"
+          ],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 45,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "overhead_carry.kb53",
+          "ord": 6,
+          "name": "53 lb kettlebell overhead carry",
+          "how": "Deadlift the bell to your knees, curl it to your chest with both hands, then press it overhead with both hands and hold it locked out on one arm. Bell resting on the back of the forearm, arm vertical. Walk tall. Switch hands between rows.",
+          "unit": "sec",
+          "sides": "each",
+          "A": 25,
+          "B": 40,
+          "load": {
+            "kind": "kb",
+            "lb": 53,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "kb53",
+          "requires": [
+            "kb:53"
+          ],
+          "entry_requires": [
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "hinge_deadlift",
+              "step_id": "hinge_deadlift.kb53_floor"
+            },
+            {
+              "rule": "ladder_at_or_past",
+              "exercise": "db_overhead_press",
+              "step_id": "db_overhead_press.strict_35"
+            }
+          ],
+          "advance": {
+            "rule": "all_sets_time_gte",
+            "value": 40,
+            "consecutive": 2
+          },
+          "terminal": true
+        }
+      ]
+    },
+    {
+      "id": "bird_dog",
+      "name": "Bird dog",
+      "region": "core",
+      "pattern": "core",
+      "equipment": "bodyweight, dumbbells",
+      "region_weights": {
+        "core": 0.55,
+        "glutes": 0.3,
+        "back": 0.15
+      },
+      "cues": [
+        "Hips stay square to the floor: no rocking as the leg goes back",
+        "Reach long rather than high; the arm and leg finish level with your back, not above it",
+        "Neck stays in line with your spine, eyes down at the floor",
+        "Move slowly. This is a stability exercise, not a speed one"
+      ],
+      "stop_if": "Low-back pain, or your hips rock so much you cannot keep them square even with a shorter reach",
+      "ladder": [
+        {
+          "id": "bird_dog.basic",
+          "ord": 1,
+          "name": "Bird dog",
+          "how": "On hands and knees, hands under shoulders and knees under hips. Reach one arm straight forward and the opposite leg straight back until both are level with your back, hold for a second, then return under control. Alternate sides.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 10,
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 0,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "bw",
+          "requires": [
+            "bw"
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 10,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "bird_dog.pause3",
+          "ord": 2,
+          "name": "Bird dog, 3 s hold",
+          "how": "Same movement, but hold the arm and leg out straight for 3 full seconds before returning. Keep your hips square to the floor the whole time.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 0,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "bw",
+          "requires": [
+            "bw"
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 12,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "bird_dog.pause5",
+          "ord": 3,
+          "name": "Bird dog, 5 s hold",
+          "how": "Same movement with a 5 second hold. Imagine balancing a glass of water on your low back: if your hips rock, shorten the reach.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 8,
+          "B": 12,
+          "load": {
+            "kind": "bw",
+            "lb": 0,
+            "n": 0,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "bw",
+          "requires": [
+            "bw"
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 12,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "bird_dog.db8",
+          "ord": 4,
+          "name": "Bird dog + 8 lb",
+          "how": "Bird dog holding an 8 lb dumbbell in the reaching hand, 3 second hold. Only add the weight once your hips stay completely still without it.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 6,
+          "B": 10,
+          "load": {
+            "kind": "db",
+            "lb": 8,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "db8",
+          "requires": [
+            "db:8"
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 10,
+            "consecutive": 2
+          },
+          "terminal": false
+        },
+        {
+          "id": "bird_dog.db10",
+          "ord": 5,
+          "name": "Bird dog + 10 lb",
+          "how": "Bird dog holding a 10 lb dumbbell in the reaching hand, 3 second hold.",
+          "unit": "reps",
+          "sides": "each",
+          "A": 6,
+          "B": 12,
+          "load": {
+            "kind": "db",
+            "lb": 10,
+            "n": 1,
+            "vest_pct": null,
+            "cap_lb": null
+          },
+          "implement_id": "db10",
+          "requires": [
+            "db:10"
+          ],
+          "advance": {
+            "rule": "all_sets_reps_gte",
+            "value": 12,
             "consecutive": 2
           },
           "terminal": true
@@ -9752,7 +10110,7 @@
   "placement": {
     "notes": [
       "Target time: about 60 seconds per user. Screens first, then Q1-Q8, then the shared equipment card (asked once for the household, editable by either user).",
-      "swing ALWAYS starts at swing.hike_park_20 and turkish_get_up ALWAYS starts at turkish_get_up.naked, whatever the answer to q8_kb. Both are ord 1, so default_step 'first' already produces this and no rule may override it.",
+      "swing ALWAYS starts at swing.hike_park_20 and whatever the answer to q8_kb. Both are ord 1, so default_step 'first' already produces this and no rule may override it.",
       "treadmill_intervals always starts at ord 1 (treadmill_intervals.walk_6); the RUN GATE, not the quiz, opens jogging.",
       "Bodyweight, height, age and sex live only on the owner's phone. No placement rule reads them, which is why the original 'goblet 20 lb if bodyweight >= 160 lb' and 'press 12 lb if male >= 160 lb' bumps were dropped: a beginner starting one rung lower costs two weeks, starting one rung too high costs a back."
     ],

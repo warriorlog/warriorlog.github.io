@@ -47,7 +47,7 @@ const program = {
     { action: 'trim', target: 'zone2_finisher', floor_min: 4 },
     { action: 'trim', target: 'cooldown_flow', floor_min: 2 },
     { action: 'drop_last_set', block: 'strength_b' },
-    { action: 'never', exercise_ids: ['turkish_get_up', 'swing', 'swing_density', 'warmup_flow'] },
+    { action: 'never', exercise_ids: ['overhead_carry', 'bird_dog', 'swing', 'swing_density', 'warmup_flow'] },
   ],
   templates,
   exercises,

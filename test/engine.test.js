@@ -177,7 +177,7 @@ test('a short day trims the finisher and the last accessory set, never the get-u
   const plan = E.prescribe(spec, cat, '2026-09-14', { equipment: EQ });
   assert.ok(plan.est_minutes <= 45, `trimmed to ${plan.est_minutes}`);
   const dropped = plan.rows.filter(r => r.prescribed === false);
-  assert.ok(dropped.every(r => !['turkish_get_up', 'swing', 'swing_density', 'warmup_flow'].includes(r.exercise_id)));
+  assert.ok(dropped.every(r => !['overhead_carry', 'bird_dog', 'swing', 'swing_density', 'warmup_flow'].includes(r.exercise_id)));
 });
 
 test('a dropped set counts for neither fidelity nor available XP', () => {

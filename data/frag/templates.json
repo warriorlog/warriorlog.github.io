@@ -316,12 +316,16 @@
           "minutes": 6,
           "items": [
             {
-              "exercise_id": "turkish_get_up",
-              "sets": 3,
+              "exercise_id": "overhead_carry",
+              "sets": 2,
               "rest_sec": 30,
-              "note": "3 per side (6 total) with 30 s rest: 3 x (about 90 s for both sides + 30 s) = 6 min. 4 sets did not fit. Slow and perfect, never to fatigue. Time guard may never drop this block.",
-              "counts_for_progression": true,
-              "time_override_min": null
+              "note": "Straight overhead, arm locked. Walk or march for the clock."
+            },
+            {
+              "exercise_id": "bird_dog",
+              "sets": 2,
+              "rest_sec": 30,
+              "note": "Slow and square. Stability, not speed."
             }
           ]
         },
@@ -367,7 +371,7 @@
         "rounds": 3,
         "rest_sec": 45,
         "exercise_ids": [
-          "turkish_get_up",
+          "overhead_carry",
           "suitcase_carry"
         ],
         "cardio": {
