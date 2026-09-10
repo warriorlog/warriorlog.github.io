@@ -171,8 +171,10 @@ export function silhouette({ regions = {}, gear = {}, heart = {}, divisor = 40, 
       + `<use href="#${pid}" fill="none" stroke="${TIER_STROKE[tier]}" stroke-width="${tier ? 1.9 : 1.4}" stroke-linejoin="round"/>`
       + `</g>`);
 
-    numbers.push(`<text x="${r.nx}" y="${r.ny}" class="wl-n${level ? '' : ' wl-n0'}" text-anchor="middle"`
-      + ` font-size="12" font-weight="700" paint-order="stroke" stroke-width="3.4" stroke-linejoin="round">${level}</text>`);
+    if (level > 0) {
+      numbers.push(`<text x="${r.nx}" y="${r.ny}" class="wl-n" text-anchor="middle"`
+        + ` font-size="12" font-weight="700" paint-order="stroke" stroke-width="3.4" stroke-linejoin="round">${level}</text>`);
+    }
   });
 
   // ---- heart: head fills with heart level, ring around it with Zone-2 minutes
@@ -205,8 +207,10 @@ export function silhouette({ regions = {}, gear = {}, heart = {}, divisor = 40, 
     + (hTier === 3 ? `<use href="#${uid}h" fill="none" stroke="${TIER_STROKE[3]}" stroke-width="5" opacity=".3"/>` : '')
     + `<use href="#${uid}h" fill="none" stroke="${TIER_STROKE[hTier]}" stroke-width="${hTier ? 1.9 : 1.4}"/>`
     + `<path class="wl-pulse" d="M134,130C128,125 124,120 124,114C124,110 127,108 130,109C132,110 133,111 134,113C135,111 136,110 138,109C141,108 144,110 144,114C144,120 140,125 134,130Z"/>`
-    + `<text x="120" y="57" class="wl-n${hLvl ? '' : ' wl-n0'}" text-anchor="middle" font-size="15" font-weight="700"`
-    + ` paint-order="stroke" stroke-width="3.6" stroke-linejoin="round">${hLvl}</text>`
+    + (hLvl > 0
+      ? `<text x="120" y="57" class="wl-n" text-anchor="middle" font-size="15" font-weight="700"`
+        + ` paint-order="stroke" stroke-width="3.6" stroke-linejoin="round">${hLvl}</text>`
+      : '')
     + `</g>`;
 
   const defs = `<defs>`

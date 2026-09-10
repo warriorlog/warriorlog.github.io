@@ -295,6 +295,9 @@ export function gearTiers(user, spec, g) {
     let tier = 0;
     if (slot.source?.kind === 'benchmark') {
       tier = user.benchmarks?.[slot.source.id]?.tier ?? 0;
+    } else if (slot.source?.kind === 'benchmark_max') {
+      // Thighs are served by two different tests; the better one dresses them.
+      tier = Math.max(0, ...(slot.source.ids ?? []).map(id => user.benchmarks?.[id]?.tier ?? 0));
     } else if (slot.source?.kind === 'ladder') {
       const cur = user.ladders?.[slot.source.exercise]?.step_id;
       const ladder = spec.byExercise?.[slot.source.exercise]?.ladder ?? [];

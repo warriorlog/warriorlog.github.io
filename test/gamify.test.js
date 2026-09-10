@@ -286,3 +286,21 @@ test('short days keep the flame without buying a perfect week', () => {
   const p = G.progress(state, spec, gam, '2026-09-21');
   assert.equal(p.perfect_weeks.count, 0, 'a week of short sessions is not a perfect week');
 });
+
+test('every armour slot is reachable, whatever kind of source it has', () => {
+  // The thigh slot reads the better of two tests, a shape nothing implemented,
+  // so that piece could never be earned however well anyone performed.
+  const { state } = trained(CAT, WEEK);
+  for (const slot of gam.gear_slots) {
+    const kind = slot.source?.kind;
+    assert.ok(['benchmark', 'benchmark_max', 'ladder'].includes(kind), `${slot.id}: unknown source kind ${kind}`);
+    const champion = { ...state, benchmarks: {}, ladders: { ...state.ladders } };
+    if (kind === 'benchmark') champion.benchmarks[slot.source.id] = { tier: 3 };
+    if (kind === 'benchmark_max') for (const id of slot.source.ids) champion.benchmarks[id] = { tier: 3 };
+    if (kind === 'ladder') {
+      const top = slot.source.steps[slot.source.steps.length - 1];
+      champion.ladders[slot.source.exercise] = { step_id: top };
+    }
+    assert.equal(G.gearTiers(champion, spec, gam)[slot.id].tier, 3, `${slot.id} cannot reach gold`);
+  }
+});
