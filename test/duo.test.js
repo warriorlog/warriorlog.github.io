@@ -187,3 +187,42 @@ test('the locked record carries the result and nothing private', () => {
     assert.ok(!text.includes(field), `${field} must not ride along in a public week record`);
   }
 });
+
+test('a partner who has not joined is never scored, and never written down', () => {
+  // Sean may train alone for weeks. Those weeks are his, not a record of Cat
+  // failing to appear in an app she has not installed.
+  const sean = build('sean', SEAN, WEEK);
+  const notJoined = { id: 'cat', quizDone: false, sessions: [], modes: [], climbs: [], weekLocks: {}, benchmarkHistory: [] };
+  const r = D.resolveWeek(sean.state, notJoined, spec, gam, '2026-W38', sean.prog, null);
+  assert.equal(r.status, 'solo');
+  assert.equal(r.winner, null);
+
+  const due = D.weeksDueForLock(sean.state, notJoined, spec, gam, '2026-09-29', sean.prog, null);
+  assert.deepEqual(due, [], 'nothing about training alone belongs in a shared record');
+});
+
+test('the week a partner joins is not scored against them', () => {
+  const sean = build('sean', SEAN, WEEK);
+  const cat = build('cat', CAT, ['2026-09-18', '2026-09-19']);   // joined on the Friday
+  cat.state.placedOn = '2026-09-18';
+  const r = D.resolveWeek(sean.state, cat.state, spec, gam, '2026-W38', sean.prog, cat.prog);
+  assert.equal(r.status, 'no_contest', 'a partial first week is not a fair contest');
+  assert.equal(r.winner, null);
+});
+
+test('once both have a full week together, the duel is on', () => {
+  const sean = build('sean', SEAN, WEEK);
+  const cat = build('cat', CAT, WEEK);
+  cat.state.placedOn = '2026-09-07';        // joined the week before
+  const r = D.resolveWeek(sean.state, cat.state, spec, gam, '2026-W38', sean.prog, cat.prog);
+  assert.ok(['contested', 'dead_heat'].includes(r.status), `got ${r.status}`);
+});
+
+test('training alone never builds a losing streak for the absent partner', () => {
+  const sean = build('sean', SEAN, WEEK);
+  const notJoined = { id: 'cat', quizDone: false, sessions: [], modes: [], climbs: [], weekLocks: {}, benchmarkHistory: [] };
+  sean.state.weekLocks = {};
+  const belt = D.beltState(sean.state, notJoined, gam);
+  assert.equal(belt.alliance_next, false);
+  assert.equal(belt.crowns.sean ?? 0, 0, 'no crowns for weeks nobody contested');
+});

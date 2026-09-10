@@ -121,8 +121,17 @@ function xpAvailableWeek(user, spec, gam, weekId) {
 export function resolveWeek(mine, theirs, spec, gam, weekId, progressMine, progressTheirs) {
   const cfg = gam.duel ?? {};
   const a = duelScore(mine, progressMine, spec, gam, weekId);
-  const b = theirs ? duelScore(theirs, progressTheirs, spec, gam, weekId) : null;
-  if (!b) return { week_id: weekId, status: 'solo', mine: a, theirs: null, winner: null };
+  // Somebody who has not joined yet is not a no-show. Scoring these weeks would
+  // write a permanent absence against a person who does not have the app, and
+  // count toward a losing streak they were never part of.
+  if (!hasJoined(theirs)) return { week_id: weekId, status: 'solo', mine: a, theirs: null, winner: null };
+  const b = duelScore(theirs, progressTheirs, spec, gam, weekId);
+
+  // Nor is the week someone joins in the middle of. Their first partial week is
+  // never scored against them.
+  if (joinedDuring(theirs, weekId)) {
+    return { week_id: weekId, status: 'no_contest', mine: a, theirs: b, winner: null, reason: 'partner joined this week' };
+  }
 
   const pausedA = pausedDays(mine, weekId), pausedB = pausedDays(theirs, weekId);
   const minSessions = cfg.min_sessions_contested ?? 2;
@@ -141,6 +150,16 @@ export function resolveWeek(mine, theirs, spec, gam, weekId, progressMine, progr
     pb_star_mine: isPersonalBest(mine, a.S, weekId, gam),
     margin: Math.abs(a.S - b.S),
   };
+}
+
+/** Has this person actually set the app up, or logged anything at all? */
+export const hasJoined = (user) => !!(user && (user.quizDone || user.sessions?.length));
+
+/** Did they join part-way through this week? */
+function joinedDuring(user, weekId) {
+  const first = user?.placedOn ?? user?.sessions?.[0]?.day;
+  if (!first) return true;
+  return isoWeekKey(first) === weekId;
 }
 
 const PAUSED = new Set(['recovery', 'away', 'shield']);
@@ -248,6 +267,8 @@ export function weeksDueForLock(mine, theirs, spec, gam, today, progressMine, pr
     if (daysBetween(lockDay, today) < 0) break;              // not resolvable yet
     if (!seen.has(weekId)) {
       const result = resolveWeek(mine, theirs, spec, gam, weekId, progressMine, progressTheirs);
+      // A solo week is not a result, so it is never written down. Nothing about
+      // training alone should end up in a shared record.
       if (result.status !== 'solo') due.push(result);
     }
     cursor = addDays(cursor, 7);

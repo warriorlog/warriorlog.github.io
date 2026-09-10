@@ -189,11 +189,14 @@ export function battleState(mine, theirs, spec, gam, day) {
 
   const bothBell = !!(atOrPast(mine.ladders, 'swing', 'swing.deadstop_53', spec)
     && theirs && atOrPast(theirs.ladders, 'swing', 'swing.deadstop_53', spec));
-  // Solo means there is genuinely nobody else, not that the partner has yet to
-  // take the tests. A partner who is set up keeps the boss at full strength and
-  // contributes zero until they test; halving it here would quietly rewrite the
-  // battle the moment they logged their first result.
-  const solo = !theirs || (!theirs.quizDone && !theirs.sessions?.length);
+  // Solo means the partner cannot contribute to THIS battle: either they have
+  // not joined, or they have not trained at all inside its window. Someone who
+  // installs the app two days before a battle cannot be expected to test, and
+  // leaving the boss at full strength would make it unwinnable for the person
+  // who did the work.
+  const trainedInWindow = (theirs?.sessions ?? []).some(s =>
+    daysBetween(windowStart, s.day) >= 0 && daysBetween(s.day, windowEnd) >= 0 && s.sets?.length);
+  const solo = !theirs || (!theirs.quizDone && !theirs.sessions?.length) || !trainedInWindow;
   const hp = Math.round(hpFor(boss, gam, { bothBellGate: bothBell }) * (solo ? (gam.boss_damage?.solo_hp_multiplier ?? 0.5) : 1));
   const damage = solo ? a.damage : coopDamage(a.damage, b?.damage ?? 0);
 

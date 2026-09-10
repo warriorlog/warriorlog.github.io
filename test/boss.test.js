@@ -115,14 +115,27 @@ test('training alone halves the boss rather than making it unwinnable', () => {
   assert.equal(solo.hp, Math.round(boss.hp * gam.boss_damage.solo_hp_multiplier));
 });
 
-test('a partner who has set up but not yet tested keeps the boss at full strength', () => {
-  // Halving it here and doubling it back the moment they log would rewrite the
-  // battle underneath both of them.
-  const partner = userAt({}, { quizDone: true, sessions: [] });
-  const s = B.battleState(userAt({}), partner, spec, gam, '2026-10-10');
+test('a partner training in the window keeps the boss at full strength until they test', () => {
+  // They are clearly going to take the tests. Halving it now and doubling it
+  // back the moment they log would rewrite the battle underneath both of them.
+  const training = userAt({}, {
+    quizDone: true,
+    sessions: [{ day: '2026-10-06', sets: [{ exercise_id: 'push_up' }] },
+               { day: '2026-10-08', sets: [{ exercise_id: 'db_row' }] }],
+  });
+  const s = B.battleState(userAt({}), training, spec, gam, '2026-10-10');
   assert.equal(s.solo, false);
   assert.equal(s.hp, B.bossFor(gam, 1).hp);
-  assert.equal(s.theirs.damage, 0, 'they simply contribute nothing until they test');
+  assert.equal(s.theirs.damage, 0, 'they contribute nothing until they actually test');
+});
+
+test('a partner who installed the app but has not trained leaves the boss at half strength', () => {
+  // Someone who joins days before a battle cannot be expected to test, and a
+  // full-strength boss would be unwinnable for the person who did the work.
+  const justSignedUp = userAt({}, { quizDone: true, sessions: [] });
+  const s = B.battleState(userAt({}), justSignedUp, spec, gam, '2026-10-10');
+  assert.equal(s.solo, true);
+  assert.equal(s.hp, Math.round(B.bossFor(gam, 1).hp * gam.boss_damage.solo_hp_multiplier));
 });
 
 test('the battle lands on the right week, with a two-week window', () => {
