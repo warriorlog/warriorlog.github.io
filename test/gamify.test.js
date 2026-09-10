@@ -184,8 +184,10 @@ test('today is pending and can never break the flame while it is still today', (
 // ---------------------------------------------------------------- armour and regions
 test('armour comes from benchmarks and named rungs, never from XP alone', () => {
   const { state } = trained(CAT, WEEK);
-  const before = G.gearTiers(state, spec, gam);
-  assert.equal(Math.max(...Object.values(before).map(g => g.tier)), 0, 'a week of work buys no armour by itself');
+  // A pile of XP with no rung climbed and no test taken buys nothing.
+  const xpOnly = { ...state, ladders: Object.fromEntries(program.exercises.map(e => [e.id, { step_id: e.ladder[0].id }])), benchmarks: {} };
+  assert.equal(Math.max(...Object.values(G.gearTiers(xpOnly, spec, gam)).map(g => g.tier)), 0,
+    'XP alone must never put armour on anyone');
 
   const withBenchmark = { ...state, benchmarks: { bb_pushups_2min: { tier: 2, value: 31 } } };
   const after = G.gearTiers(withBenchmark, spec, gam);

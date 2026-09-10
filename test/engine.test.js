@@ -323,3 +323,50 @@ test('an injury ceiling stops a ladder climbing, however well it goes', () => {
   assert.ok(ord(state.ladders.push_up.step_id) <= ord('push_up.incline'),
     `climbed to ${state.ladders.push_up.step_id}, past the wrist-injury ceiling`);
 });
+
+test('the on-ramp lightens the work without freezing progress', () => {
+  // Both an on-ramp week and a deload week prescribe fewer sets, but only a
+  // deload freezes the ladders. Conflating them meant a beginner could not climb
+  // a single rung until week four, while the home screen promised them one.
+  const onRamp = E.scheduleFor(spec, '2026-09-14', '2026-09-14');
+  assert.equal(onRamp.onRamp, true);
+  assert.equal(onRamp.deload, false, 'week 1 is a build-up, not a recovery week');
+  assert.equal(onRamp.boss, false);
+
+  const muster = E.scheduleFor(spec, '2026-09-09', '2026-09-14');
+  assert.equal(muster.week, 0);
+  assert.equal(muster.deload, false, 'the setup week is not a deload either');
+
+  for (const day of ['2026-10-05', '2026-11-07', '2026-12-05']) {
+    const s = E.scheduleFor(spec, day, '2026-09-14');
+    assert.equal(s.deload, true, `${day} is a real deload week`);
+    assert.equal(s.onRamp, false);
+  }
+});
+
+test('a ladder can actually climb during the on-ramp', () => {
+  let state = userWith(CAT);
+  const events = [
+    makeEvent(TYPES.PROFILE, { name: 'X', program_start: '2026-09-14', rest_dow: 0, session_minutes: 50, bodyweight_lb: 128 }, { user: 'cat', dev: 'd1', ts: '2026-09-13T18:00:00Z' }),
+    makeEvent(TYPES.EQUIPMENT, EQ, { user: 'cat', dev: 'd1', ts: '2026-09-13T18:00:01Z' }),
+    makeEvent(TYPES.ASSESSMENT, { start_steps: CAT }, { user: 'cat', dev: 'd1', ts: '2026-09-13T18:00:02Z' }),
+  ];
+  let n = 0;
+  for (const day of ['2026-09-14', '2026-09-15', '2026-09-16', '2026-09-17', '2026-09-18', '2026-09-19']) {
+    const plan = E.prescribe(spec, state, day, { equipment: EQ });
+    if (plan.rest) continue;
+    const id = `s${day}`;
+    const rows = plan.rows.filter(r => r.prescribed !== false);
+    events.push(makeEvent(TYPES.SESSION_START, { session_id: id, template_id: plan.template_id, type: 'full', date: day, deload: plan.deload, plan: { rows } }, { user: 'cat', dev: 'd1', ts: `${day}T13:00:00Z` }));
+    rows.forEach((r, i) => events.push(makeEvent(TYPES.SET, { session_id: id, exercise_id: r.exercise_id, step_id: r.step_id, set_index: r.set_index, side: r.side, part: r.part, unit: r.unit, value: r.unit === 'min' ? r.minutes : r.B, checklist_ok: true, talk_test_ok: true, done: true }, { user: 'cat', dev: 'd1', ts: `${day}T13:${String(5 + (n++ % 50)).padStart(2, '0')}:00Z` })));
+    events.push(makeEvent(TYPES.SESSION_END, { session_id: id, duration_min: 47 }, { user: 'cat', dev: 'd1', ts: `${day}T14:00:00Z` }));
+    state = reduce(events, spec, { equipment: EQ }).users.cat;
+  }
+  assert.ok(state.climbs.length > 0, 'a perfect first week must be able to move at least one rung');
+});
+
+test('a real deload week still holds the ladders still', () => {
+  const boss = E.prescribe(spec, userWith(CAT), '2026-10-05', { equipment: EQ });
+  assert.equal(boss.deload, true);
+  assert.equal(boss.rir, spec.deload.rir);
+});

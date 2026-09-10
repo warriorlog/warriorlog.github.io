@@ -272,12 +272,16 @@ export function templateFor(spec, day) {
 
 export function scheduleFor(spec, day, programStart) {
   const week = weekIndex(day, programStart);
+  // An on-ramp week is NOT a deload week. Both prescribe fewer sets, but a
+  // deload also freezes every ladder, and treating the first three weeks as a
+  // deload meant a beginner could not climb a single rung until week four while
+  // the home screen was promising them one.
   return {
     week,
     phase: phaseFor(spec, Math.max(1, week)),
-    deload: isBossWeek(spec, week) || week === 0 || (spec.on_ramp?.weeks || []).includes(week),
+    deload: isBossWeek(spec, week),
     boss: isBossWeek(spec, week),
-    onRamp: (spec.on_ramp?.weeks || []).includes(week),
+    onRamp: week === 0 || (spec.on_ramp?.weeks || []).includes(week),
     template: templateFor(spec, day),
   };
 }
@@ -451,7 +455,10 @@ export function prescribe(spec, user, day, opts = {}) {
 
   const plan = {
     day, week: sched.week, template_id: template.id, name: template.name,
-    phase_id: sched.phase?.id, rir: (sched.deload ? spec.deload?.rir : sched.phase?.rir) ?? 3,
+    phase_id: sched.phase?.id,
+    rir: (sched.deload ? spec.deload?.rir
+      : sched.onRamp ? spec.on_ramp?.rir
+      : sched.phase?.rir) ?? 3,
     deload: sched.deload, boss: sched.boss, on_ramp: sched.onRamp,
     est_minutes: template.minutes, blocks, rows,
     rest_dow: restDow, rules_version: spec.rulesVersion,

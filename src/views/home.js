@@ -47,7 +47,8 @@ function questCard(state, plan, p) {
     <div class="kicker">
       <span class="pill hot">Week ${plan.week === 0 ? 'Muster' : plan.week}</span>
       <span class="pill">${plan.name}</span>
-      ${plan.deload ? raw('<span class="pill cool">Lighter week</span>') : ''}
+      ${plan.onRamp ? raw('<span class="pill cool">Building up</span>')
+        : plan.deload ? raw('<span class="pill cool">Recovery week</span>') : ''}
       ${plan.boss ? raw('<span class="pill go">Boss week</span>') : ''}
     </div>
     <h1>${plan.name}</h1>
