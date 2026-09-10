@@ -3,6 +3,7 @@ import { html, raw, dayKey } from '../util.js';
 import { topbar, tabbar, page } from './chrome.js';
 import { dispatch, go, me, partner, t, newId } from '../app.js';
 import { skirmishPlan } from '../engine.js';
+import { stakeLines } from '../stakes.js';
 import { TYPES } from '../events.js';
 import { regionLevel } from '../gamify.js';
 
@@ -60,32 +61,15 @@ function questCard(state, plan, p) {
 
 /** Up to three concrete things today could move. Never vague encouragement. */
 function stakes(state, plan, p) {
-  if (!plan || plan.rest) return raw('');
-  const u = me(state);
-  const lines = [];
-  for (const item of plan.blocks.flatMap(b => b.items)) {
-    const l = u.ladders[item.exercise_id];
-    // Warm-up and cooldown flows have rungs too, but "your warm-up climbs a rung"
-    // is not something anyone cares about at 6am.
-    // Only movements that actually feed a ladder. Finisher walks and the warm-up
-    // flows earn XP but never progress, so promising a rung is simply untrue.
-    if (!l || !item.next_unlock) continue;
-    if (item.counts_for_progression === false) continue;
-    if (state.spec.byExercise[item.exercise_id]?.no_xp) continue;
-    const need = state.spec.byStep[item.step_id]?.advance?.consecutive ?? 2;
-    if (l.qualifying >= need - 1) {
-      lines.push(`${item.name} climbs a rung today: ${item.next_unlock.toLowerCase()}`);
-      if (lines.length >= 2) break;
-    }
-  }
-  const cold = Object.entries(p.regions).sort((a, b) => a[1].xp - b[1].xp)[0];
-  if (cold && lines.length < 3) lines.push(`${cold[0].replace('_', ' ')} is your coldest region`);
+  const lines = stakeLines(state.spec, me(state), plan, p.regions);
   if (!lines.length) return raw('');
   return html`<div class="card card-tight stack">
     <div class="tiny">At stake today</div>
-    ${raw(lines.map(l => `<div class="small">· ${l}</div>`).join(''))}
+    ${raw(lines.map(l => `<div class="small">· ${esc(l)}</div>`).join(''))}
   </div>`;
 }
+
+const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 function partnerCard(state) {
   const other = partner(state);

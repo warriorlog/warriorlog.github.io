@@ -5,7 +5,7 @@ const CACHE = 'warriorlog-shell-v1';
 const SHELL = [
   './', './index.html', './style.css', './config.js', './manifest.webmanifest',
   './src/app.js', './src/util.js', './src/events.js', './src/store.js',
-  './src/reduce.js', './src/engine.js', './src/placement.js', './src/gamify.js', './src/sync.js', './src/duo.js', './src/boss.js',
+  './src/reduce.js', './src/engine.js', './src/placement.js', './src/stakes.js', './src/gamify.js', './src/sync.js', './src/duo.js', './src/boss.js',
   './src/views/chrome.js', './src/views/setup.js', './src/views/home.js', './src/views/session.js',
   './src/views/complete.js', './src/views/journal.js', './src/views/body.js',
   './src/views/silhouette.js',
