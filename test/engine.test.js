@@ -370,3 +370,21 @@ test('a real deload week still holds the ladders still', () => {
   assert.equal(boss.deload, true);
   assert.equal(boss.rir, spec.deload.rir);
 });
+
+test('where every exercise stands shows only ladders the program can still move', () => {
+  // The Body screen listed every ladder placement had ever seeded, so the retired
+  // get-up and walks with a single rung sat there at "0 of 2" forever.
+  const ladders = Object.fromEntries(program.exercises.map(e => [e.id, { step_id: e.ladder[0].id, qualifying: 0 }]));
+  const ids = E.ladderStanding(spec, ladders).map(r => r.exercise_id);
+  assert.ok(!ids.includes('turkish_get_up'), 'a retired movement is never shown');
+  assert.ok(!ids.includes('zone2_finisher'), 'a single-rung walk has nothing to climb');
+  assert.ok(!ids.includes('warmup_flow'), 'warm-ups pay nothing and climb nothing');
+  assert.ok(ids.includes('push_up') && ids.includes('bird_dog'));
+  for (const id of ids) assert.ok(spec.scheduled.has(id), `${id} is shown but no template schedules it`);
+});
+
+test('a topped-out ladder says so instead of counting towards a rung that does not exist', () => {
+  const last = spec.byExercise.push_up.ladder.filter(s => !s.retired).at(-1);
+  const [row] = E.ladderStanding(spec, { push_up: { step_id: last.id, qualifying: 0 } });
+  assert.equal(row.top, true);
+});

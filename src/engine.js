@@ -65,7 +65,40 @@ export function indexSpec(program) {
   for (const t of program.templates || []) byTemplate[t.id] = t;
   const byBenchmark = Object.create(null);
   for (const b of program.benchmarks || []) byBenchmark[b.id] = b;
-  return { ...program, byExercise, byStep, byTemplate, byBenchmark };
+  // Every exercise some template, or its skirmish table, can actually prescribe.
+  const scheduled = new Set();
+  const walk = (o) => {
+    if (Array.isArray(o)) { for (const v of o) walk(v); return; }
+    if (!o || typeof o !== 'object') return;
+    if (typeof o.exercise_id === 'string') scheduled.add(o.exercise_id);
+    for (const v of Object.values(o)) walk(v);
+  };
+  walk(program.templates || []);
+  return { ...program, byExercise, byStep, byTemplate, byBenchmark, scheduled };
+}
+
+/**
+ * The rows for "where every exercise stands": only ladders the program can
+ * still move. Retired movements, ones no template schedules, and single-rung
+ * walks with nothing to climb are left out, and a topped-out ladder says so
+ * instead of counting towards a rung that does not exist.
+ */
+export function ladderStanding(spec, ladders) {
+  const out = [];
+  for (const [exId, l] of Object.entries(ladders ?? {})) {
+    const ex = spec.byExercise?.[exId];
+    const step = spec.byStep?.[l.step_id];
+    if (!ex || !step || ex.no_xp || ex.retired) continue;
+    if (spec.scheduled && !spec.scheduled.has(exId)) continue;
+    const live = (ex.ladder ?? []).filter(s => !s.retired);
+    if (live.length < 2) continue;
+    const top = !!step.terminal || !step.advance || live[live.length - 1].id === step.id;
+    out.push({
+      exercise_id: exId, name: ex.name, step_name: step.name, top,
+      qualifying: l.qualifying ?? 0, need: step.advance?.consecutive ?? 2,
+    });
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------- equipment

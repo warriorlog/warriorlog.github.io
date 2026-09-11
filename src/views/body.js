@@ -3,6 +3,7 @@ import { html, raw, dayKey, isoWeekKey } from '../util.js';
 import { topbar, tabbar, page } from './chrome.js';
 import { silhouette } from './silhouette.js';
 import { me, go, t } from '../app.js';
+import { ladderStanding } from '../engine.js';
 
 const MATERIAL = ['Iron', 'Bronze', 'Silver', 'Gold'];
 const ZONE2_WEEK_TARGET = 150;      // the AHA line; the head ring closes here
@@ -39,14 +40,9 @@ export function render(state) {
     </div>`;
   }).join('');
 
-  const ladders = Object.entries(u.ladders).map(([exId, l]) => {
-    const ex = state.spec.byExercise[exId];
-    const step = state.spec.byStep[l.step_id];
-    if (!ex || !step || ex.no_xp) return '';
-    const need = step.advance?.consecutive ?? 2;
-    return `<div class="xpline"><span>${esc(ex.name)}<br><span class="faint small">${esc(step.name)}</span></span>
-      <span class="small muted">${l.qualifying} of ${need}</span></div>`;
-  }).join('');
+  const ladders = ladderStanding(state.spec, u.ladders).map(r =>
+    `<div class="xpline"><span>${esc(r.name)}<br><span class="faint small">${esc(r.step_name)}</span></span>
+      <span class="small muted">${r.top ? esc(t('body.ladders.top')) : `${r.qualifying} of ${r.need}`}</span></div>`).join('');
 
   const zone2 = Math.round(p.zone2_by_week?.[isoWeekKey(dayKey())] ?? 0);
   const figure = silhouette({
