@@ -93,12 +93,26 @@ export function ladderStanding(spec, ladders) {
     const live = (ex.ladder ?? []).filter(s => !s.retired);
     if (live.length < 2) continue;
     const top = !!step.terminal || !step.advance || live[live.length - 1].id === step.id;
+    // A gated rung is not trained yet (its template fallback runs instead), so
+    // counting sessions towards it would be a promise nothing is keeping.
+    const locked = !entryOpen(step, { ladders, spec });
     out.push({
-      exercise_id: exId, name: ex.name, step_name: step.name, top,
+      exercise_id: exId, name: ex.name, step_name: step.name, top, locked,
       qualifying: l.qualifying ?? 0, need: step.advance?.consecutive ?? 2,
     });
   }
   return out;
+}
+
+/**
+ * What a template item actually hands a beginner: the item itself, or its
+ * fallback when even its first rung is gated (the vest walk runs the unweighted
+ * walk until the Zone-2 ladder opens it). Weekly Zone-2 targets count from this,
+ * so gating a walk behind another never inflates them.
+ */
+export function startingItems(spec, item) {
+  const gated = spec?.byExercise?.[item.exercise_id]?.ladder?.[0]?.entry_requires?.length;
+  return gated && item.fallback_when_locked?.length ? item.fallback_when_locked : [item];
 }
 
 // ---------------------------------------------------------------- equipment
@@ -499,23 +513,27 @@ export function prescribe(spec, user, day, opts = {}) {
   return fitToTime(plan, user.profile?.session_minutes ?? spec.defaults?.session_minutes ?? 50, spec);
 }
 
+// The two walks that climb Wednesday's Zone-2 ladder. A deload shortens and
+// flattens either one, so the vest walk never dodges a recovery week.
+const ZONE2_LADDERS = new Set(['treadmill_zone2', 'vest_walk']);
+
 /** One template item becomes one or more real exercise cards (or its fallback). */
 function expandItem(item, spec, user, ctx, sched, override, usedSets = {}) {
   const ex = spec.byExercise?.[item.exercise_id];
   if (!ex) return [];
   const steps = user.stepsByExercise?.[ex.id] ?? resolveSteps(ex, ctx.equipment);
   const cur = steps.find(s => s.id === user.ladders?.[ex.id]?.step_id) ?? steps[0];
-  if (!cur) return [];
 
   // A locked step runs the template's declared fallback instead — the user always
-  // has something legal to do, and it is never the gated movement.
-  if (!entryOpen(cur, ctx)) {
-    const blocked = blockedBy(cur, ctx);
+  // has something legal to do, and it is never the gated movement. A household
+  // with no usable step at all (no vest, for the vest walk) falls back the same way.
+  if (!cur || !entryOpen(cur, ctx)) {
+    const blocked = cur ? blockedBy(cur, ctx) : null;
     const out = [];
     for (const f of item.fallback_when_locked ?? []) {
       out.push(...expandItem({ ...f, fallback_when_locked: [] }, spec, user, ctx, sched, override, usedSets));
     }
-    if (out.length) out[0].locked_note = { exercise_id: ex.id, step_id: cur.id, blocked };
+    if (out.length) out[0].locked_note = { exercise_id: ex.id, step_id: cur?.id ?? null, blocked };
     return out;
   }
 
@@ -529,7 +547,7 @@ function expandItem(item, spec, user, ctx, sched, override, usedSets = {}) {
   const vestLb = cur.load?.vest_pct ? resolveVest(cur.load.vest_pct, bodyweight, ctx.equipment, cur.load.cap_lb ?? 30) : 0;
   let cardio = resolveCardio(cur.cardio, ctx.equipment);
   if (cardio && item.time_override_min) cardio = { ...cardio, minutes: item.time_override_min };
-  if (cardio && sched.deload && ex.id === 'treadmill_zone2') {
+  if (cardio && sched.deload && ZONE2_LADDERS.has(ex.id)) {
     cardio = { ...cardio, minutes: Math.round(cardio.minutes * (spec.deload.zone2_pct ?? 70) / 100),
                incline: Math.max(0, (cardio.incline ?? 0) + (spec.deload.zone2_incline_delta ?? 0)) };
   }

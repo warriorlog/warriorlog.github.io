@@ -296,16 +296,32 @@
           "minutes": 33,
           "items": [
             {
-              "exercise_id": "treadmill_zone2",
+              "exercise_id": "vest_walk",
               "sets": 1,
               "rest_sec": 0,
-              "note": "The ONLY block in the program that feeds the Zone-2 ladder. Phase 1 30 min, Phase 2 33 min, Phase 3 stays 33 min (not 36) so the day fits 50. Block budgeted at its longest, 33 min. vest_walk replaces this once unlocked. Change one variable per week.",
+              "note": "The ONLY block in the program that feeds the Zone-2 ladders. The vest walk runs here once the unweighted walk reaches treadmill_zone2.w33_8; until then, or in a house with no vest, the fallback below runs and keeps climbing towards that gate. Block budgeted at its longest, 33 min. Change one variable per week.",
               "counts_for_progression": true,
               "time_override_min": null,
               "substitutes": [
                 {
                   "exercise_id": "march_step_zone2",
                   "reason": "The treadmill is in use \u2014 march at the same talk-test pace."
+                }
+              ],
+              "fallback_when_locked": [
+                {
+                  "exercise_id": "treadmill_zone2",
+                  "sets": 1,
+                  "rest_sec": 0,
+                  "note": "The unweighted Zone-2 walk, until the vest walk opens. Phase 1 30 min, Phase 2 33 min, Phase 3 stays 33 min (not 36) so the day fits 50.",
+                  "counts_for_progression": true,
+                  "time_override_min": null,
+                  "substitutes": [
+                    {
+                      "exercise_id": "march_step_zone2",
+                      "reason": "The treadmill is in use \u2014 march at the same talk-test pace."
+                    }
+                  ]
                 }
               ]
             }

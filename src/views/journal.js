@@ -12,6 +12,7 @@ import { html, raw, esc, dayKey, addDays, weekStart, isoWeekKey, dow, weekIndex 
 import { topbar, tabbar, page } from './chrome.js';
 import { regionXpForSession, regionLevel } from '../gamify.js';
 import { duelScore } from '../duo.js';
+import { startingItems } from '../engine.js';
 
 const RARITIES = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
 const DAY_LETTERS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -83,10 +84,12 @@ export function zone2TargetMin(spec) {
   let total = 0;
   for (const t of spec?.templates ?? []) {
     for (const b of t.blocks ?? []) {
-      for (const it of b.items ?? []) {
-        if (!CARDIO.has(it.exercise_id)) continue;
-        const ex = spec.byExercise?.[it.exercise_id];
-        total += it.time_override_min ?? ex?.ladder?.[0]?.cardio?.minutes ?? 0;
+      for (const top of b.items ?? []) {
+        for (const it of startingItems(spec, top)) {
+          if (!CARDIO.has(it.exercise_id)) continue;
+          const ex = spec.byExercise?.[it.exercise_id];
+          total += it.time_override_min ?? ex?.ladder?.[0]?.cardio?.minutes ?? 0;
+        }
       }
     }
   }

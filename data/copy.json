@@ -34,6 +34,7 @@
   "body.armour.rung": "Reach {name}",
   "body.armour.top": "Gold, the top tier. Nothing more to earn here.",
   "body.ladders.top": "Top rung",
+  "body.ladders.locked": "Not open yet",
   "home.numbers.title": "Numbers to beat",
   "home.numbers.ladder": "{exercise} climbs to {step_name} with one more qualifying session",
   "home.numbers.cold": "{region} is cold {days} days — {exercise} warms it",

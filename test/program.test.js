@@ -199,22 +199,58 @@ test('every training day fits 40-50 minutes and its blocks add up', () => {
   }
 });
 
-test('the Zone-2 ladder is only driven by the day that actually trains it', () => {
+test('the Zone-2 ladders are only driven by the day that actually trains them', () => {
   // The finisher walks used to reuse treadmill_zone2's id against a 30-minute
   // target, which auto-advanced or auto-regressed the ladder every single week.
-  for (const t of program.templates) {
-    for (const b of t.blocks ?? []) {
-      for (const it of b.items ?? []) {
-        if (it.exercise_id !== 'treadmill_zone2') continue;
-        assert.ok(it.counts_for_progression !== false ? b.kind === 'conditioning' : true,
-          `${t.id}/${b.kind}: treadmill_zone2 counts for progression outside the main conditioning block`);
+  // A fallback is part of its block: the unweighted walk now runs as the vest
+  // walk's fallback until the vest gate opens.
+  const itemsOf = (b) => (b.items ?? []).flatMap(it => [it, ...(it.fallback_when_locked ?? [])]);
+  for (const id of ['treadmill_zone2', 'vest_walk']) {
+    for (const t of program.templates) {
+      for (const b of t.blocks ?? []) {
+        for (const it of itemsOf(b)) {
+          if (it.exercise_id !== id) continue;
+          assert.ok(it.counts_for_progression !== false ? b.kind === 'conditioning' : true,
+            `${t.id}/${b.kind}: ${id} counts for progression outside the main conditioning block`);
+        }
       }
     }
+    const counting = program.templates.flatMap(t => (t.blocks ?? []).flatMap(b => itemsOf(b)
+      .filter(it => it.exercise_id === id && it.counts_for_progression !== false)
+      .map(() => t.id)));
+    assert.deepEqual(counting, ['wed_heart'], `exactly one template may progress the ${id} ladder`);
   }
-  const counting = program.templates.flatMap(t => (t.blocks ?? []).flatMap(b => (b.items ?? [])
-    .filter(it => it.exercise_id === 'treadmill_zone2' && it.counts_for_progression !== false)
-    .map(() => t.id)));
-  assert.deepEqual(counting, ['wed_heart'], 'exactly one template may progress the Zone-2 ladder');
+});
+
+test('the vest walk takes over Wednesday once the unweighted walk reaches its gate', () => {
+  // No template named the vest walk, so the last hinge rung, which needs
+  // vest_walk.v10_8, could never be reached by anyone.
+  const { reached } = simulate({ weeks: 20 });
+  const gate = reached['treadmill_zone2.w33_8'];
+  assert.ok(gate, 'the unweighted walk never reaches the vest gate');
+  assert.ok(reached['vest_walk.v10_8'] > gate, 'the vest walk must climb, and only after its gate opens');
+  assert.ok(reached['hinge_deadlift.kb53_vest'], 'the 53 lb deadlift in the vest is still out of reach');
+});
+
+test('a house with no vest keeps climbing the unweighted walk past the vest gate', () => {
+  const { reached } = simulate({
+    weeks: 20,
+    equipment: {
+      vest_max_lb: 0, treadmill: true, treadmill_max_incline: 12, treadmill_max_mph: 10,
+      chair_height_in: 18, couch_edge: true,
+      dumbbells: { 8: 'pair', 10: 'pair', 12: 'pair', 20: 'pair', 35: 'pair' }, kb: [53],
+    },
+  });
+  assert.ok(reached['treadmill_zone2.w36_10'], 'with no vest to wear, Wednesday must still progress');
+});
+
+test('every exercise the program keeps is one some template can actually prescribe', () => {
+  // A movement nothing schedules is invisible in every test that replays the
+  // templates, which is how the vest walk sat unreachable for weeks.
+  for (const ex of program.exercises) {
+    if (ex.retired) continue;
+    assert.ok(spec.scheduled.has(ex.id), `${ex.id} is in the program but no template or fallback schedules it`);
+  }
 });
 
 test('calves and the hinge are each trained twice a week', () => {
@@ -301,16 +337,23 @@ function simulate({ weeks = 12, start = '2026-09-14', equipment } = {}) {
     if (!t || !t.minutes) continue;
     const deload = week % 4 === 0;
     const perfs = {};
+    const gateCtx = { day, ladders, spec, equipment: eq, weekIndex: week, painFlags: [], benchmarks: {} };
+    const open = (it) => {
+      const cur = (steps[it.exercise_id] ?? []).find(s => s.id === ladders[it.exercise_id]?.step_id);
+      return cur && spec.byExercise[it.exercise_id] && entryOpen(cur, gateCtx) ? cur : null;
+    };
     for (const b of t.blocks ?? []) {
-      for (const it of b.items ?? []) {
-        if (it.counts_for_progression === false) continue;
-        const ex = spec.byExercise[it.exercise_id];
-        const list = steps[it.exercise_id] ?? [];
-        const cur = list.find(s => s.id === ladders[it.exercise_id]?.step_id);
-        if (!ex || !cur) continue;
-        const ctx = { day, ladders, spec, equipment: eq, weekIndex: week, painFlags: [], benchmarks: {} };
-        if (!entryOpen(cur, ctx)) continue;                       // locked: the fallback runs instead
-        perfs[it.exercise_id] = perfectPerf(cur, it.sets ?? 3, deload);
+      for (const top of b.items ?? []) {
+        // A locked step, or one this household has no rung for, runs the
+        // template's fallback instead, exactly as prescribe() does. Skipping the
+        // fallback here is what hid the vest walk's gate from this simulation.
+        const cur = open(top);
+        const runs = cur ? [[top, cur]]
+          : (top.fallback_when_locked ?? []).map(f => [f, open(f)]).filter(([, c]) => c);
+        for (const [it, c] of runs) {
+          if (it.counts_for_progression === false) continue;
+          perfs[it.exercise_id] ??= perfectPerf(c, it.sets ?? 3, deload);
+        }
       }
     }
     const ctx = { day, spec, equipment: eq, steps, floor, weekIndex: week, painFlags: [], benchmarks: {} };

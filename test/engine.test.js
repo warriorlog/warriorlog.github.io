@@ -388,3 +388,42 @@ test('a topped-out ladder says so instead of counting towards a rung that does n
   const [row] = E.ladderStanding(spec, { push_up: { step_id: last.id, qualifying: 0 } });
   assert.equal(row.top, true);
 });
+
+// ---------------------------------------------------------------- vest walk
+const wedZone2 = (u, day = '2026-09-16', equipment = EQ) =>
+  E.prescribe(spec, u, day, { equipment }).blocks.find(b => b.kind === 'conditioning').items;
+
+test('Wednesday runs the unweighted walk until the vest gate opens, then the vest walk', () => {
+  // The vest walk was written but no template ever named it, so the last hinge
+  // rung (which needs vest_walk.v10_8) could never be reached by anyone.
+  const before = wedZone2(userWith(SEAN));
+  assert.deepEqual(before.map(i => i.exercise_id), ['treadmill_zone2']);
+  assert.equal(before[0].counts_for_progression, true, 'the fallback walk still climbs towards the gate');
+  assert.equal(before[0].locked_note?.exercise_id, 'vest_walk');
+
+  const after = wedZone2(userWith({ ...SEAN, treadmill_zone2: 'treadmill_zone2.w33_8' }));
+  assert.deepEqual(after.map(i => i.exercise_id), ['vest_walk']);
+  assert.ok(after[0].load.vest_lb > 0, 'the vest walk carries a vest');
+  assert.ok(after[0].substitutes?.some(s => s.exercise_id === 'march_step_zone2'), 'a busy treadmill still has an answer');
+});
+
+test('a house with no vest keeps the unweighted walk, even past the vest gate', () => {
+  const NOVEST = { ...EQ, vest_max_lb: 0 };
+  const ts = '2026-09-13T18:00:00Z';
+  const u = reduce([
+    makeEvent(TYPES.PROFILE, { name: 'X', program_start: '2026-09-14', rest_dow: 0, session_minutes: 50, bodyweight_lb: 128 }, { user: 'cat', dev: 'd1', ts }),
+    makeEvent(TYPES.EQUIPMENT, NOVEST, { user: 'cat', dev: 'd1', ts }),
+    makeEvent(TYPES.ASSESSMENT, { start_steps: { ...SEAN, treadmill_zone2: 'treadmill_zone2.w33_8' } }, { user: 'cat', dev: 'd1', ts }),
+  ], spec, { equipment: NOVEST }).users.cat;
+  assert.deepEqual(wedZone2(u, '2026-09-16', NOVEST).map(i => i.exercise_id), ['treadmill_zone2'],
+    'Wednesday must never go empty for want of a vest');
+});
+
+test('a deload week shortens the vest walk just as it shortens the unweighted one', () => {
+  const u = userWith({ ...SEAN, treadmill_zone2: 'treadmill_zone2.w33_8' });
+  const normal = wedZone2(u, '2026-09-30')[0];          // week 3
+  const deload = wedZone2(u, '2026-10-07')[0];          // week 4, a boss week
+  assert.equal(deload.exercise_id, 'vest_walk');
+  assert.ok(deload.cardio.minutes < normal.cardio.minutes,
+    `deload vest walk ran ${deload.cardio.minutes} min against ${normal.cardio.minutes}`);
+});

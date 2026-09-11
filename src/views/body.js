@@ -42,7 +42,7 @@ export function render(state) {
 
   const ladders = ladderStanding(state.spec, u.ladders).map(r =>
     `<div class="xpline"><span>${esc(r.name)}<br><span class="faint small">${esc(r.step_name)}</span></span>
-      <span class="small muted">${r.top ? esc(t('body.ladders.top')) : `${r.qualifying} of ${r.need}`}</span></div>`).join('');
+      <span class="small muted">${r.locked ? esc(t('body.ladders.locked')) : r.top ? esc(t('body.ladders.top')) : `${r.qualifying} of ${r.need}`}</span></div>`).join('');
 
   const zone2 = Math.round(p.zone2_by_week?.[isoWeekKey(dayKey())] ?? 0);
   const figure = silhouette({

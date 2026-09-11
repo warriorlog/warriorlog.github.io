@@ -3,6 +3,7 @@
 // and no formula anywhere compares loads, reps or speeds between the two.
 import { isoWeekKey, weekStart, addDays, daysBetween, clamp } from './util.js';
 import { fidelity, flame } from './gamify.js';
+import { startingItems } from './engine.js';
 
 /** Did the partner train today? Read from their synced sessions, nothing else. */
 export const trainedOn = (user, day) =>
@@ -86,7 +87,9 @@ function zone2Prescribed(user, spec, weekId) {
   let total = 0;
   for (const t of spec.templates ?? []) {
     for (const b of t.blocks ?? []) {
-      for (const it of b.items ?? []) {
+      // The vest walk is gated from its first rung, so the walk a beginner is
+      // actually prescribed is its fallback; count that, as the journal does.
+      for (const it of (b.items ?? []).flatMap(top => startingItems(spec, top))) {
         const ex = spec.byExercise?.[it.exercise_id];
         if (!ex || !['treadmill_zone2', 'zone2_finisher', 'vest_walk', 'march_step_zone2'].includes(ex.id)) continue;
         total += it.time_override_min ?? ex.ladder?.[0]?.cardio?.minutes ?? 0;
