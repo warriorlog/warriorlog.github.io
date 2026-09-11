@@ -161,6 +161,7 @@ export function perfFor(session, spec) {
     p.drops = p.sets.reduce((n, s) => n + (s.drops || 0), 0);
     p.counts_for_progression = planned.length ? planned[0].counts_for_progression !== false : true;
     p.zone2Min = p.sets.filter(s => s.unit === 'min' && s.talk_test_ok !== false).reduce((n, s) => n + (s.value || 0), 0);
+    p.talkOk = p.sets.filter(s => s.unit === 'min').every(s => s.talk_test_ok !== false);
   }
   return byEx;
 }

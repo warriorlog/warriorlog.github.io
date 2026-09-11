@@ -427,3 +427,41 @@ test('a deload week shortens the vest walk just as it shortens the unweighted on
   assert.ok(deload.cardio.minutes < normal.cardio.minutes,
     `deload vest walk ran ${deload.cardio.minutes} min against ${normal.cardio.minutes}`);
 });
+
+// ---------------------------------------------------------------- walk effort
+test('a walk qualifies on the talk test when no RPE was logged', () => {
+  // Nothing in the app records an RPE for a walk, and a missing one read as 99,
+  // so no Zone-2 or vest-walk rung could ever be climbed.
+  const rule = { rule: 'cardio_done', rpe_max: 4 };
+  assert.equal(E.evalRule(rule, { cardioDone: true, talkOk: true, sets: [] }, {}), true);
+  assert.equal(E.evalRule(rule, { cardioDone: true, talkOk: false, sets: [] }, {}), false, 'too breathless is not Zone 2');
+  assert.equal(E.evalRule(rule, { cardioDone: true, talkOk: true, rpeBlock: 6, sets: [] }, {}), false, 'a logged RPE still decides');
+  assert.equal(E.evalRule(rule, { cardioDone: false, talkOk: true, sets: [] }, {}), false, 'a walk not done is not done');
+});
+
+test('two Wednesday walks logged the way the app logs them climb the Zone-2 ladder', () => {
+  const walkWeeks = (talkOk) => {
+    const ts = '2026-09-13T18:00:00Z';
+    const events = [
+      makeEvent(TYPES.PROFILE, { name: 'X', program_start: '2026-09-14', rest_dow: 0, session_minutes: 50, bodyweight_lb: 128 }, { user: 'cat', dev: 'd1', ts }),
+      makeEvent(TYPES.EQUIPMENT, EQ, { user: 'cat', dev: 'd1', ts }),
+      makeEvent(TYPES.ASSESSMENT, { start_steps: SEAN }, { user: 'cat', dev: 'd1', ts }),
+    ];
+    let u = reduce(events, spec, { equipment: EQ }).users.cat;
+    for (const day of ['2026-09-16', '2026-09-23']) {
+      const plan = E.prescribe(spec, u, day, { equipment: EQ });
+      const id = `walk_${day}`;
+      events.push(makeEvent(TYPES.SESSION_START, { session_id: id, template_id: plan.template_id, type: 'full', date: day, plan: { rows: plan.rows } }, { user: 'cat', dev: 'd1', ts: `${day}T13:00:00Z` }));
+      plan.rows.forEach((r, i) => events.push(makeEvent(TYPES.SET, {
+        session_id: id, exercise_id: r.exercise_id, step_id: r.step_id, set_index: r.set_index, side: r.side, part: r.part,
+        unit: r.unit, value: r.unit === 'min' ? r.minutes : r.B, checklist_ok: r.unit === 'reps' ? true : undefined,
+        talk_test_ok: r.unit === 'min' ? talkOk : undefined, done: true,             // exactly what logSet writes: no RPE
+      }, { user: 'cat', dev: 'd1', ts: `${day}T13:${String(10 + i).padStart(2, '0')}:00Z` })));
+      events.push(makeEvent(TYPES.SESSION_END, { session_id: id, duration_min: 50 }, { user: 'cat', dev: 'd1', ts: `${day}T14:30:00Z` }));
+      u = reduce(events, spec, { equipment: EQ }).users.cat;
+    }
+    return u.ladders.treadmill_zone2.step_id;
+  };
+  assert.equal(walkWeeks(true), 'treadmill_zone2.w30_4', 'two passed talk tests in a row are a climb');
+  assert.equal(walkWeeks(false), 'treadmill_zone2.w30_2', 'breathless walks still count as work, but do not climb');
+});

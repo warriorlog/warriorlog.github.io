@@ -2,7 +2,7 @@
 // is pre-filled with what you did last time, so tapping DONE means "match it"
 // and the only reason to open the stepper is to beat it or fall short.
 import { html, raw } from '../util.js';
-import { dispatch, go, me, beep, render as rerender } from '../app.js';
+import { dispatch, go, me, beep, render as rerender, t } from '../app.js';
 import { TYPES } from '../events.js';
 import { resolveVest, resolveCardio } from '../engine.js';
 
@@ -199,17 +199,31 @@ function stepper(sh, state) {
       </div>
       <div class="small muted center">Target ${sh.A}${sh.A !== sh.B ? ` to ${sh.B}` : ''}${sh.last != null ? ` · last time ${sh.last}` : ''}</div>
       <div style="height:14px"></div>
-      <div class="tiny">How hard was that?</div>
+      ${sh.unit === 'min' ? talkTest(sh) : `<div class="tiny">How hard was that?</div>
       <div class="chips">
         ${[['4', 'Easy'], ['2', 'Solid'], ['0', 'All out']].map(([v, l]) =>
           `<button class="chip" data-action="rir" data-key="rir-${v}" data-v="${v}" aria-pressed="${String(sh.rir) === v}">${l}</button>`).join('')}
-      </div>
+      </div>`}
       <div style="height:10px"></div>
       <button class="btn" data-action="save-set" data-key="save">Log it</button>
       <div style="height:8px"></div>
       <button class="btn ghost" data-action="pain" data-key="pain">Something hurt</button>
     </div>
   </div>`;
+}
+
+/**
+ * A walk's effort is the talk test, not reps in reserve. It decides whether the
+ * walk climbs its ladder, so the stepper has to be able to say "too breathless";
+ * the one-tap DONE records a pass, the same way DONE on a set means "matched it".
+ */
+function talkTest(sh) {
+  return `<div class="tiny">Talk test</div>
+      <div class="chips">
+        ${[['ok', t('quest.cardio.talk_ok')], ['hard', t('quest.cardio.talk_hard')]].map(([v, l]) =>
+          `<button class="chip" data-action="talk" data-key="talk-${v}" data-v="${v}" aria-pressed="${(sh.talk ? 'ok' : 'hard') === v}">${escape(l)}</button>`).join('')}
+      </div>
+      ${sh.talk ? '' : `<p class="faint small">${escape(t('quest.cardio.talk_hard_note'))}</p>`}`;
 }
 
 const escape = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -244,6 +258,7 @@ export async function act(action, data, state) {
       sheet = {
         rowKey: data.row, value: hit?.value ?? (r.unit === 'min' ? extras(r, state).minutes : r.A),
         A: r.A, B: r.B, unit: r.unit, last: r.last ?? null, rir: hit?.rir ?? null,
+        talk: hit ? hit.talk_test_ok !== false : true,
         name: `${state.spec.byExercise[r.exercise_id]?.name ?? r.exercise_id} · set ${r.set_index}`,
       };
       rerender(); return;
@@ -259,13 +274,15 @@ export async function act(action, data, state) {
     }
 
     case 'rir': { if (sheet) { sheet.rir = Number(data.v); rerender(); } return; }
+    case 'talk': { if (sheet) { sheet.talk = data.v === 'ok'; rerender(); } return; }
 
     case 'save-set': {
       if (!sheet) return;
       const r = find(sheet.rowKey);
       const value = sheet.value, rir = sheet.rir;
+      const extra = sheet.unit === 'min' ? { talk_test_ok: sheet.talk } : { rir };
       sheet = null;
-      if (r) { await logSet(state, s, r, value, { rir }); startRest(r, state); }
+      if (r) { await logSet(state, s, r, value, extra); startRest(r, state); }
       return;
     }
 

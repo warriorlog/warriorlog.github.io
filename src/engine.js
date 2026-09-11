@@ -18,7 +18,11 @@ export const RULES = {
   all_sets_time_gte: (p, a) => p.allDone && p.sets.length > 0 && p.sets.every(s => (s.value ?? 0) >= a.value),
   rounds_gte: (p, a) => (p.rounds ?? 0) >= a.value,
   clock_lte: (p, a) => p.clockSec != null && p.clockSec <= a.value,
-  cardio_done: (p, a) => !!p.cardioDone && (a.rpe_max == null || (p.rpeBlock ?? 99) <= a.rpe_max),
+  // Zone-2 effort is judged by the talk test, which is what the logging screen
+  // records; nothing in the app asks for an RPE. A logged RPE still decides where
+  // one exists. Reading a missing RPE as 99 made every walk ladder unclimbable.
+  cardio_done: (p, a) => !!p.cardioDone && (a.rpe_max == null
+    || (p.rpeBlock != null ? p.rpeBlock <= a.rpe_max : p.talkOk !== false)),
   checklist_all_ok: (p) => p.sets.length > 0 && p.sets.every(s => s.checklist_ok !== false),
   drops_lte: (p, a) => (p.drops ?? 0) <= a.value,
   rpe_min: (p, a) => (p.rpeBlock ?? 0) >= a.value,
@@ -648,7 +652,7 @@ function describeRule(a, times = '', spec = null) {
     case 'all_sets_time_gte': return `Every set at ${a.value}s${suffix}`;
     case 'rounds_gte': return `All ${a.value} rounds${suffix}`;
     case 'clock_lte': return `Finish inside ${Math.floor(a.value / 60)}:${String(a.value % 60).padStart(2, '0')}${suffix}`;
-    case 'cardio_done': return `Complete it at an easy effort${suffix}`;
+    case 'cardio_done': return `Complete it at a pace you can still talk at${suffix}`;
     case 'checklist_all_ok': return times ? `Every form cue ticked${suffix}` : 'every form cue ticked';
     case 'drops_lte': return a.value === 0
       ? (times ? `No drops${suffix}` : 'no drops')

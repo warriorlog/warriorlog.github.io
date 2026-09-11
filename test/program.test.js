@@ -309,10 +309,12 @@ test('placement seeds real steps and never hands out the bell on day one', () =>
 /** A session record for a user who hits every target perfectly. */
 function perfectPerf(step, sets, deload) {
   const target = step.B ?? step.parts?.[0]?.B ?? 1;
-  const base = { sessionType: 'full', deload, allDone: true, drops: 0, rpeBlock: 4, cardioDone: true, rounds: 99, clockSec: 1 };
+  // No RPE: the app never records one. This used to hand every walk rpeBlock 4,
+  // which is how the simulation kept climbing a Zone-2 ladder no real user could.
+  const base = { sessionType: 'full', deload, allDone: true, drops: 0, cardioDone: true, rounds: 99, clockSec: 1 };
   if (step.unit === 'clock_sec') return { ...base, clockSec: (step.B ?? 600), sets: [{ value: step.B, checklist_ok: true }] };
   if (step.unit === 'rounds') return { ...base, rounds: target, sets: [{ value: target, checklist_ok: true }] };
-  if (step.unit === 'min') return { ...base, cardioMinutes: target, sets: [{ value: target, checklist_ok: true }] };
+  if (step.unit === 'min') return { ...base, cardioMinutes: target, talkOk: true, sets: [{ value: target, unit: 'min', talk_test_ok: true }] };
   return { ...base, sets: Array.from({ length: sets }, () => ({ value: target, checklist_ok: true })) };
 }
 
