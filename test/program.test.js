@@ -474,3 +474,21 @@ test('a retired movement is kept, not deleted, so no logged rung dangles', () =>
     assert.ok(ex.ladder.length, `${ex.id}: its rungs must survive for anything already logged`);
   }
 });
+
+test('the intervals ladder can be climbed all the way to its top rung', () => {
+  // run_10 used to advance only on a logged RPE of 9+, which the app never
+  // records (and which would never sync if it did), so nobody could reach 5 x 2.
+  const { reached } = simulate({ weeks: 30 });
+  assert.ok(reached['treadmill_intervals.run_5x2'], 'the 5 x (2 min / 2 min) top rung is never reached');
+});
+
+test('no rung climbs on a field that never leaves the phone', () => {
+  // RPE and reps in reserve are redacted before sync, so a climb that read them
+  // would happen on one phone and never on the partner's, and the two would
+  // disagree about XP and the duel. The talk test syncs; effort does not.
+  for (const s of allSteps) {
+    for (const r of [...collectRules(s.advance), ...(s.entry_requires ?? []).flatMap(r => collectRules(r))]) {
+      assert.notEqual(r.rule, 'rpe_min', `${s.id}: climbs on an RPE, which never syncs`);
+    }
+  }
+});

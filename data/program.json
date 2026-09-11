@@ -2,7 +2,7 @@
   "id": "warrior_forge_12",
   "title": "Warrior Forge 12: Duo Edition",
   "schemaVersion": 1,
-  "rulesVersion": 2,
+  "rulesVersion": 3,
   "defaults": {
     "program_start_dow": 1,
     "rest_dow": 0,
@@ -9300,7 +9300,7 @@
           "id": "treadmill_intervals.run_10",
           "ord": 5,
           "name": "Run/walk 10 x (1 min / 1 min) at RPE 9 - 10 hard min",
-          "how": "2 min easy walk in. Then 10 rounds of 1 min hard run (5.5-6.5 mph, 1%) and 1 min walk. 2 min easy walk out. The rung is not the speed, it is the effort: this only counts when the block RPE comes in at 9 or above - genuinely hard, a couple of words at a time, and you are glad when the last round ends. Pick the belt speed that makes that true for you, and keep all 10 rounds honest rather than blowing up on round 4. If your treadmill tops out below the target speed, hold max speed and add 1% incline.",
+          "how": "2 min easy walk in. Then 10 rounds of 1 min hard run (5.5-6.5 mph, 1%) and 1 min walk. 2 min easy walk out. The rung is not the speed, it is the effort: make the block RPE 9 - genuinely hard, a couple of words at a time, and you are glad when the last round ends. Pick the belt speed that makes that true for you, and keep all 10 rounds honest rather than blowing up on round 4. If your treadmill tops out below the target speed, hold max speed and add 1% incline.",
           "unit": "rounds",
           "sides": "both",
           "A": 10,
@@ -9327,14 +9327,10 @@
             "hard_min": 10
           },
           "advance": {
-            "rule": "rpe_min",
-            "value": 9,
+            "rule": "rounds_gte",
+            "value": 10,
             "consecutive": 2,
             "requires": [
-              {
-                "rule": "rounds_gte",
-                "value": 10
-              },
               {
                 "rule": "no_pain_flag_days",
                 "region": "shin",
