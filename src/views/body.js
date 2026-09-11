@@ -2,7 +2,7 @@
 import { html, raw, dayKey, isoWeekKey } from '../util.js';
 import { topbar, tabbar, page } from './chrome.js';
 import { silhouette } from './silhouette.js';
-import { me, go } from '../app.js';
+import { me, go, t } from '../app.js';
 
 const MATERIAL = ['Iron', 'Bronze', 'Silver', 'Gold'];
 const ZONE2_WEEK_TARGET = 150;      // the AHA line; the head ring closes here
@@ -24,11 +24,19 @@ export function render(state) {
       <span class="lvl">${lvl}</span></div>`;
   }).join('');
 
+  // Two lines per piece: what you wear now, then the one thing that upgrades it.
+  // The tier you wear and the tier you are working towards are both named, so
+  // the pill can never be misread as the goal.
   const slots = (g.gear_slots ?? []).map(slot => {
     const tier = p.gear[slot.id]?.tier ?? 0;
-    const need = nextRequirement(slot, tier, state);
-    return `<div class="xpline"><span>${esc(slot.name)} <span class="faint small">${esc(slot.region.replace('_', ' '))}</span></span>
-      <span><span class="pill">${MATERIAL[tier]}</span> <span class="faint small">${esc(need)}</span></span></div>`;
+    const pips = MATERIAL.map((_, i) => `<i data-tier="${i}"${i <= tier ? ' class="on"' : ''}></i>`).join('');
+    return `<div class="gear-row">
+      <div class="gear-head">
+        <div><div class="gear-name">${esc(slot.name)}</div><div class="tiny">${esc(slot.region.replace(/_/g, ' '))}</div></div>
+        <div class="gear-tier" data-tier="${tier}"><span class="gear-pips">${pips}</span>${MATERIAL[tier]}</div>
+      </div>
+      <div class="gear-next small">${nextLine(slot, tier, state)}</div>
+    </div>`;
   }).join('');
 
   const ladders = Object.entries(u.ladders).map(([exId, l]) => {
@@ -64,7 +72,7 @@ export function render(state) {
       <div class="regions">${raw(regions)}</div></div>
 
     <div class="card stack"><h3>Armour</h3>
-      <p class="faint small">One piece per body part. It is never bought with XP: each piece is earned by passing a benchmark test or reaching a named rung, so it is always a claim you could prove.</p>
+      <p class="faint small">${t('body.armour.intro')}</p>
       ${raw(slots)}</div>
 
     <div class="card stack"><h3>Where every exercise stands</h3>
@@ -96,17 +104,22 @@ function explainer(totalXp, earned, zone2) {
   </div>`;
 }
 
-/** In plain words, what would put the next piece of this armour on. */
-function nextRequirement(slot, tier, state) {
-  if (tier >= 3) return 'complete';
+/** In plain words, the next tier of this piece and the one thing that earns it. Returns HTML. */
+function nextLine(slot, tier, state) {
+  if (tier >= MATERIAL.length - 1) return esc(t('body.armour.top'));
   const src = slot.source ?? {};
-  if (src.kind === 'benchmark') return `earn it at ${shortBenchmark(state, src.id)}`;
-  if (src.kind === 'benchmark_max') {
+  let how = '';
+  if (src.kind === 'benchmark') how = t('body.armour.test', { name: shortBenchmark(state, src.id) });
+  else if (src.kind === 'benchmark_max') {
     const names = (src.ids ?? []).map(id => shortBenchmark(state, id));
-    return names.length ? `earn it at ${names.join(' or ')}` : '';
+    if (names.length) how = t('body.armour.test', { name: names.join(' or ') });
+  } else {
+    const stepId = src.steps?.[tier];
+    if (stepId) how = t('body.armour.rung', { name: state.spec.byStep[stepId]?.name ?? stepId });
   }
-  const stepId = src.steps?.[tier];
-  return stepId ? `reach ${state.spec.byStep[stepId]?.name ?? stepId}` : '';
+  if (!how) return '';
+  return `<span class="faint">${esc(t('body.armour.next'))}</span> <span class="gear-to" data-tier="${tier + 1}">${MATERIAL[tier + 1]}</span>`
+    + ` <span class="faint">·</span> ${esc(how)}`;
 }
 
 const shortBenchmark = (state, id) =>
