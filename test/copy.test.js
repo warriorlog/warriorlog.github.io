@@ -61,3 +61,22 @@ test('every string the copy file holds is actually a string', () => {
   assert.deepEqual(bad, []);
   assert.ok(Object.keys(copy).length > 10, 'the copy file should not be near-empty');
 });
+
+test('every copy key the code asks for exists', () => {
+  // t() falls back to printing the key, so a missing one ships as raw
+  // "sync.update_ready" on screen instead of failing loudly.
+  const missing = [];
+  const walk = (dir) => {
+    for (const name of readdirSync(join(root, dir))) {
+      const rel = join(dir, name);
+      if (statSync(join(root, rel)).isDirectory()) { walk(rel); continue; }
+      if (!name.endsWith('.js')) continue;
+      const src = readFileSync(join(root, rel), 'utf8');
+      for (const m of src.matchAll(/\bt\(['"]([\w.]+)['"]/g)) {
+        if (!(m[1] in copy)) missing.push(`${rel}: ${m[1]}`);
+      }
+    }
+  };
+  walk('src');
+  assert.deepEqual(missing, [], 'add these keys to data/copy.json');
+});

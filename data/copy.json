@@ -196,6 +196,8 @@
   "sync.stale": "{name}'s data is {hours} h old",
   "sync.conflict": "Two versions of week {week}. Keeping the later one; your sets are all intact.",
   "sync.contract": "This phone writes only your own files and reads {name}'s.",
+  "sync.update_ready": "A new version is ready.",
+  "sync.reload": "Reload",
   "nudge.sync_delta": "New from {name}: {summary}",
   "nudge.duo_flame_risk": "Duo Flame {duo_flame} — a session tonight keeps it. {template} is about {minutes} min.",
   "nudge.ember_live": "Rekindle window: {n} more shared days restores your flame to {flame}.",
