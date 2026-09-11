@@ -109,6 +109,24 @@ export function ladderStanding(spec, ladders) {
 }
 
 /**
+ * What the logging screen says about climbing, for one exercise card: the rule
+ * in words, the number every set has to reach when the rule has one, and how
+ * many qualifying sessions this rung already has. Tapping DONE logs the bottom
+ * of the range, so without this a set that matched the target and a set that
+ * moves a ladder looked exactly alike.
+ */
+export function climbInfo(spec, stepId, ladder) {
+  const step = spec?.byStep?.[stepId];
+  if (!step) return null;
+  if (step.terminal || !step.advance) return { top: true };
+  const a = step.advance;
+  const bar = a.rule === 'all_sets_reps_gte' || a.rule === 'all_sets_time_gte' ? a.value : null;
+  const need = a.consecutive ?? 2;
+  const done = ladder?.step_id === stepId ? Math.min(ladder.qualifying ?? 0, need) : 0;
+  return { top: false, text: describeAdvance(step, spec), bar, need, done };
+}
+
+/**
  * What a template item actually hands a beginner: the item itself, or its
  * fallback when even its first rung is gated (the vest walk runs the unweighted
  * walk until the Zone-2 ladder opens it). Weekly Zone-2 targets count from this,
@@ -653,7 +671,9 @@ function describeRule(a, times = '', spec = null) {
     case 'rounds_gte': return `All ${a.value} rounds${suffix}`;
     case 'clock_lte': return `Finish inside ${Math.floor(a.value / 60)}:${String(a.value % 60).padStart(2, '0')}${suffix}`;
     case 'cardio_done': return `Complete it at a pace you can still talk at${suffix}`;
-    case 'checklist_all_ok': return times ? `Every form cue ticked${suffix}` : 'every form cue ticked';
+    // The card asks you to tick the cues you did NOT hit, so "ticked" said the
+    // opposite of what counts.
+    case 'checklist_all_ok': return times ? `Every form cue hit${suffix}` : 'every form cue hit';
     case 'drops_lte': return a.value === 0
       ? (times ? `No drops${suffix}` : 'no drops')
       : (times ? `At most ${a.value} drops${suffix}` : `at most ${a.value} drops`);

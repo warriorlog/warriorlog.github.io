@@ -149,6 +149,18 @@ button { border: 0; background: none; cursor: pointer; touch-action: manipulatio
 .setrow.logged .target { border-color: rgba(53,192,122,.4); color: var(--go); }
 .setrow.dropped { opacity: .4; }
 
+/* What a set has to reach to count towards the next rung, said where you log it. */
+.exercise > .climb {
+  margin: 0 var(--pad) 12px; padding: 8px 10px; border-radius: 10px;
+  background: var(--bg-raised); border: 1px solid var(--line);
+  font-size: 13px; line-height: 1.45; color: var(--ink-dim);
+}
+.climb .climb-head { font-weight: 700; color: var(--ember); }
+.target { flex-wrap: wrap; }
+.target .aim { font-size: 12px; font-weight: 700; color: var(--ember); }
+.target .aim.on { color: var(--go); }
+.climb-sheet { color: var(--ember); margin-top: 4px; }
+
 .cues { padding: 0 var(--pad) 12px; }
 .cues li { color: var(--ink-dim); font-size: 14px; margin: 3px 0; }
 .checklist { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 var(--pad) 12px; }

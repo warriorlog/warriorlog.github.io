@@ -4,7 +4,7 @@
 import { html, raw } from '../util.js';
 import { dispatch, go, me, beep, render as rerender, t } from '../app.js';
 import { TYPES } from '../events.js';
-import { resolveVest, resolveCardio } from '../engine.js';
+import { resolveVest, resolveCardio, climbInfo } from '../engine.js';
 
 let sheet = null;          // the open ± stepper, if any
 let rest = null;           // { until, label } for the rest timer
@@ -24,7 +24,7 @@ function view(state) {
   const byExercise = groupRows(rows);
 
   const doneCount = rows.filter(r => logged.has(key(r))).length;
-  const cards = byExercise.map(g => exerciseCard(g, spec, logged, state)).join('');
+  const cards = byExercise.map(g => exerciseCard(g, spec, logged, state, s)).join('');
 
   return html`<div class="stack">
     <header class="topbar">
@@ -84,11 +84,39 @@ function groupRows(rows) {
   return out;
 }
 
-function exerciseCard(g, spec, logged, state) {
+/**
+ * What this card's sets have to reach to count towards the next rung, said on
+ * the card itself, so the requirement is in front of you while you log.
+ */
+function climbFor(g, session, state) {
+  if (g.rows.every(r => r.counts_for_progression === false)) {
+    const why = session.type === 'skirmish' ? 'session.climb.skirmish' : 'session.climb.practice';
+    return { bar: null, html: `<p class="climb">${escape(t(why))}</p>` };
+  }
+  const info = climbInfo(state.spec, g.step_id, me(state).ladders?.[g.exercise_id]);
+  if (!info) return null;
+  if (info.top) return { bar: null, html: `<p class="climb">${escape(t('session.climb.top'))}</p>` };
+  return {
+    bar: info.bar,
+    html: `<p class="climb"><span class="climb-head">${escape(t('session.climb.head'))}</span> ${escape(info.text)}
+      <span class="faint">· ${escape(t('session.climb.progress', { done: info.done, need: info.need }))}</span></p>`,
+  };
+}
+
+/** "aim 15" on a set that has not reached the climb number yet; "on track" once it has. */
+function aimHint(r, hit, bar, shown) {
+  if (bar == null || r.unit === 'min' || r.unit === 'rounds') return '';
+  const aim = `<span class="aim">${escape(t('session.climb.aim', { value: `${bar}${r.unit === 'sec' ? 's' : ''}` }))}</span>`;
+  if (hit) return hit.value >= bar ? `<span class="aim on">${escape(t('session.climb.on_track'))}</span>` : aim;
+  return shown != null && shown >= bar ? '' : aim;
+}
+
+function exerciseCard(g, spec, logged, state, session) {
   const ex = spec.byExercise[g.exercise_id];
   const step = spec.byStep[g.step_id];
   const allDone = g.rows.every(r => logged.has(key(r)));
-  const rowsHtml = g.rows.map(r => setRow(r, logged.get(key(r)), step, state)).join('');
+  const climb = climbFor(g, session, state);
+  const rowsHtml = g.rows.map(r => setRow(r, logged.get(key(r)), step, state, climb?.bar ?? null)).join('');
 
   // Have they ever logged this exact rung before? If not, the instructions open
   // themselves: nobody should have to hunt for how to do a movement they have
@@ -121,6 +149,7 @@ function exerciseCard(g, spec, logged, state) {
       <div class="small muted">${escape(step?.name ?? '')}</div>
       ${firstTime ? '<span class="pill hot" style="margin-top:6px">First time on this rung</span>' : ''}
     </header>
+    ${climb?.html ?? ''}
     ${how}
     ${stop}
     ${checklist}
@@ -136,10 +165,11 @@ function implementLabel(step) {
   return 'bodyweight';
 }
 
-function setRow(r, hit, step, state) {
+function setRow(r, hit, step, state, bar = null) {
   const x = extras(r, state);
   const unit = r.unit === 'sec' ? 's' : r.unit === 'min' ? 'min' : r.unit === 'rounds' ? 'rounds' : '';
   const shown = hit ? hit.value : (r.unit === 'min' ? x.minutes : r.A);
+  const aim = aimHint(r, hit, bar, shown);
   const sideLabel = r.side ? ` ${r.side}` : r.part ? ` ${r.part.toUpperCase()}` : '';
   const cardio = x.mph ? `${x.mph} mph · ${x.incline}%` : '';
   return `<div class="setrow${hit ? ' logged' : ''}" data-row="${escape(key(r))}">
@@ -147,6 +177,7 @@ function setRow(r, hit, step, state) {
     <button class="target" data-action="edit" data-key="edit-${escape(key(r))}" data-row="${escape(key(r))}">
       <span>${shown ?? ''}</span><span class="unit">${unit}</span>
       ${cardio ? `<span class="last">${cardio}</span>` : (hit ? '' : (r.last != null ? `<span class="last">last ${r.last}</span>` : ''))}
+      ${aim}
     </button>
     <button class="done-btn" data-action="done" data-key="done-${escape(key(r))}" data-row="${escape(key(r))}">${hit ? '✓' : 'DONE'}</button>
   </div>`;
@@ -198,6 +229,7 @@ function stepper(sh, state) {
         <button data-action="inc" data-key="inc">+</button>
       </div>
       <div class="small muted center">Target ${sh.A}${sh.A !== sh.B ? ` to ${sh.B}` : ''}${sh.last != null ? ` · last time ${sh.last}` : ''}</div>
+      ${sh.bar != null ? `<div class="small center climb-sheet">${escape(t('session.climb.sheet', { value: `${sh.bar}${sh.unit === 'sec' ? 's' : ''}` }))}</div>` : ''}
       <div style="height:14px"></div>
       ${sh.unit === 'min' ? talkTest(sh) : `<div class="tiny">How hard was that?</div>
       <div class="chips">
@@ -259,6 +291,8 @@ export async function act(action, data, state) {
         rowKey: data.row, value: hit?.value ?? (r.unit === 'min' ? extras(r, state).minutes : r.A),
         A: r.A, B: r.B, unit: r.unit, last: r.last ?? null, rir: hit?.rir ?? null,
         talk: hit ? hit.talk_test_ok !== false : true,
+        bar: r.counts_for_progression === false || r.unit === 'min' || r.unit === 'rounds' ? null
+          : (climbInfo(state.spec, r.step_id, u.ladders?.[r.exercise_id])?.bar ?? null),
         name: `${state.spec.byExercise[r.exercise_id]?.name ?? r.exercise_id} · set ${r.set_index}`,
       };
       rerender(); return;

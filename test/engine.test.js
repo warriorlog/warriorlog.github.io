@@ -465,3 +465,27 @@ test('two Wednesday walks logged the way the app logs them climb the Zone-2 ladd
   assert.equal(walkWeeks(true), 'treadmill_zone2.w30_4', 'two passed talk tests in a row are a climb');
   assert.equal(walkWeeks(false), 'treadmill_zone2.w30_2', 'breathless walks still count as work, but do not climb');
 });
+
+// ---------------------------------------------------------------- climb, on the card
+test('the logging screen can say what a set needs to count towards the climb', () => {
+  // DONE logs the bottom of the range, so a whole session could match every
+  // target and still move nothing, with no word anywhere about why.
+  const info = E.climbInfo(spec, 'calf_raise.two_leg', { step_id: 'calf_raise.two_leg', qualifying: 1 });
+  assert.equal(info.bar, 20);
+  assert.equal(info.need, 2);
+  assert.equal(info.done, 1);
+  assert.equal(info.text, 'Every set at 20 reps, 2 sessions in a row');
+  assert.equal(E.climbInfo(spec, 'calf_raise.two_leg', { step_id: 'calf_raise.single', qualifying: 1 }).done, 0,
+    "a count banked on another rung is not this rung's");
+  assert.equal(E.climbInfo(spec, 'hollow_hold.tuck_extend', null).bar, 30, 'a timed hold has a number too');
+  assert.equal(E.climbInfo(spec, 'treadmill_zone2.w30_2', null).bar, null, 'a walk climbs on the talk test, not a number');
+  assert.equal(E.climbInfo(spec, spec.byExercise.push_up.ladder.at(-1).id, null).top, true);
+});
+
+test('the form checklist requirement says what the card actually asks for', () => {
+  // The card says "tick anything you did not hit", so "every form cue ticked"
+  // described the one thing that stops a climb.
+  const text = E.describeAdvance(spec.byStep['hinge_deadlift.rdl_12'], spec);
+  assert.match(text, /every form cue hit/);
+  assert.doesNotMatch(text, /ticked/);
+});
