@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { coldRegionLine, climbLines, stakeLines } from '../src/stakes.js';
+import { coldRegionLine, climbLines, stakeLines, finishedToday } from '../src/stakes.js';
 import { indexSpec, prescribe } from '../src/engine.js';
 
 const program = JSON.parse(readFileSync(new URL('../data/program.json', import.meta.url), 'utf8'));
@@ -65,6 +65,17 @@ test('the line explains itself without a glossary', () => {
   for (const w of ['lost', 'failed', 'missed', 'behind', 'lazy']) {
     assert.ok(!new RegExp(`\\b${w}\\b`, 'i').test(line), `"${w}" scolds`);
   }
+});
+
+test('a quest finished today takes the place of the start button', () => {
+  // The home card only knew about an open session, so after finishing it went
+  // straight back to offering the same quest.
+  const s = { session_id: 'a', day: '2026-09-10', type: 'full', sets: [{ exercise_id: 'push_up' }] };
+  assert.equal(finishedToday({ sessions: [s] }, '2026-09-10'), s);
+  assert.equal(finishedToday({ sessions: [s] }, '2026-09-11'), null, 'the next day brings a new quest');
+  assert.equal(finishedToday({ sessions: [{ ...s, sets: [] }] }, '2026-09-10'), null, 'a session with no sets is not a finished quest');
+  const later = { ...s, session_id: 'b', type: 'skirmish' };
+  assert.equal(finishedToday({ sessions: [s, later] }, '2026-09-10'), later, 'the latest session of the day is the one shown');
 });
 
 test('a rest day has nothing at stake', () => {

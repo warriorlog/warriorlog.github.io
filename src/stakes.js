@@ -71,6 +71,11 @@ function nextDayTraining(spec, region, fromDay) {
   return null;
 }
 
+/** Today's finished session, if it logged anything. The home card shows it in place of the quest. */
+export function finishedToday(user, today = dayKey()) {
+  return (user.sessions ?? []).filter(s => s.day === today && s.sets?.length).at(-1) ?? null;
+}
+
 /** Every line worth showing under "At stake today", best first. */
 export function stakeLines(spec, user, plan, regions) {
   if (!plan || plan.rest) return [];

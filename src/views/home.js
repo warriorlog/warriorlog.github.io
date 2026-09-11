@@ -3,7 +3,7 @@ import { html, raw, dayKey } from '../util.js';
 import { topbar, tabbar, page } from './chrome.js';
 import { dispatch, go, me, partner, t, newId } from '../app.js';
 import { skirmishPlan } from '../engine.js';
-import { stakeLines } from '../stakes.js';
+import { stakeLines, finishedToday } from '../stakes.js';
 import { TYPES } from '../events.js';
 import { regionLevel } from '../gamify.js';
 
@@ -12,10 +12,13 @@ export function render(state) {
   const p = state.progress;
   const plan = state.plan;
   const open = u.openSession;
+  // Once today's quest is done, offering it again would only invite a second,
+  // double-paid session.
+  const done = open ? null : finishedToday(u, dayKey());
 
   return page(topbar(state), html`<div class="stack">
-    ${open ? resume(open) : plan?.rest ? restCard(state, plan) : questCard(state, plan, p)}
-    ${stakes(state, plan, p)}
+    ${open ? resume(open) : done ? doneCard(state, done) : plan?.rest ? restCard(state, plan) : questCard(state, plan, p)}
+    ${done ? raw('') : stakes(state, plan, p)}
     ${partnerCard(state)}
     ${regions(state, p)}
   </div>`, tabbar(state));
@@ -27,6 +30,19 @@ function resume(open) {
     <h1>Pick up where you left off</h1>
     <p class="muted small">${open.sets.length} sets already logged.</p>
     <button class="btn" data-action="resume" data-key="resume">Back to the quest</button>
+  </div>`;
+}
+
+function doneCard(state, s) {
+  const gained = state.progress.sessions.find(x => x.session_id === s.session_id);
+  const f = gained?.fidelity;
+  const title = s.type === 'kindle' ? 'home.done.kindle' : s.type === 'skirmish' ? 'home.done.skirmish' : 'home.done.full';
+  return html`<div class="card quest stack">
+    <div class="kicker"><span class="pill go">${t('home.done.pill')}</span></div>
+    <h1>${t(title)}</h1>
+    <p class="muted small">+${(gained?.xp ?? 0).toLocaleString()} XP · ${s.duration_min ?? '—'} min${f?.prescribed ? ` · ${f.hit} of ${f.prescribed} targets` : ''}</p>
+    <p class="muted small">${t('home.done.body')}</p>
+    <button class="btn secondary" data-action="nav" data-href="#/complete/${s.session_id}">${t('home.done.summary')}</button>
   </div>`;
 }
 
