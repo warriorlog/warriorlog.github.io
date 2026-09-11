@@ -244,6 +244,9 @@ export function flame(user, g, today) {
 /**
  * Perfect weeks: every prescribed quest done, enough of them full, and no shield
  * spent. Counted here rather than in a view because a badge depends on it.
+ * Days still to come count as prescribed, so a week in progress is never perfect
+ * yet and a paid week can never be taken back. Must agree with the journal's
+ * `isPerfectWeek`, or the halo and the XP would disagree.
  */
 export function perfectWeeks(user, spec, gam, statuses, today = dayKey()) {
   const cfg = gam.perfect_week ?? {};
@@ -262,25 +265,23 @@ export function perfectWeeks(user, spec, gam, statuses, today = dayKey()) {
   for (const [weekId, sessions] of byWeek) {
     const start = weekStart(sessions[0].day);
     const programStart = user.profile?.program_start;
+    const programWeek = programStart ? Math.floor(daysBetween(programStart, start) / 7) + 1 : 1;
     let prescribed = 0;
     let shields = 0;
     for (let i = 0; i < 7; i++) {
       const day = addDays(start, i);
       if (day < first) continue;                       // the week they joined is only counted from day one
-      if (daysBetween(day, today) < 0) continue;        // days that have not happened yet
       const template = (spec.templates ?? []).find(t => t.dow === dow(day));
       if (!template?.minutes) continue;
       // A taper week can switch a training day off.
-      if (programStart) {
-        const week = Math.floor(daysBetween(programStart, day) / 7) + 1;
-        if (spec.week_overrides?.[String(week)]?.days?.[String(dow(day))] === 'off') continue;
-      }
+      if (spec.week_overrides?.[String(programWeek)]?.days?.[String(dow(day))] === 'off') continue;
       prescribed++;
       if (statuses?.get(day) === 'shield') shields++;
     }
     const done = sessions.filter(s => s.sets.length).length;
     const full = sessions.filter(s => s.type === 'full' && isComplete(s, spec)).length;
-    const minFull = Math.min(cfg.min_full ?? 4, prescribed);
+    // The partial setup week asks for fewer full quests, never for fewer than three.
+    const minFull = programWeek <= 0 ? (cfg.muster_min_full ?? 3) : (cfg.min_full ?? 4);
     const perfect = prescribed > 0 && done >= prescribed && full >= minFull && shields === 0;
     weeks.push({ week_id: weekId, prescribed, done, full, shields, perfect });
   }

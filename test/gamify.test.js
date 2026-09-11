@@ -272,6 +272,27 @@ test('a week with a quest still to come is not perfect', () => {
   assert.equal(p.badges.find(b => b.id === 'perfect_week')?.earned, false);
 });
 
+test('one quest on the day you join is not a perfect week', () => {
+  // Days still to come were skipped and the full-quest bar shrank to fit, so a
+  // single Thursday in the setup week was paid 300 XP as a "perfect" week.
+  const { state } = trained(CAT, ['2026-09-10']);
+  const p = G.progress(state, spec, gam, '2026-09-10');
+  assert.equal(p.perfect_weeks.count, 0, 'Friday and Saturday have not happened yet');
+  assert.equal(p.by_source.perfect_weeks, undefined);
+});
+
+test('the setup week is perfect once every quest from arrival to Saturday is done', () => {
+  const { state } = trained(CAT, ['2026-09-10', '2026-09-11', '2026-09-12']);
+  const p = G.progress(state, spec, gam, '2026-09-12');
+  assert.equal(p.perfect_weeks.count, 1, 'three quests, three full');
+});
+
+test('the setup week still needs three full quests', () => {
+  const { state } = trained(CAT, ['2026-09-11', '2026-09-12']);
+  const p = G.progress(state, spec, gam, '2026-09-13');
+  assert.equal(p.perfect_weeks.count, 0, 'two full quests is short of the setup-week bar');
+});
+
 test('a week carried by a shield is not perfect, but is not a defeat either', () => {
   // Missing Wednesday spends the starting shield: the flame survives, the
   // perfect week does not.
