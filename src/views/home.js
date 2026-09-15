@@ -2,10 +2,11 @@
 import { html, raw, dayKey } from '../util.js';
 import { topbar, tabbar, page } from './chrome.js';
 import { dispatch, go, me, partner, t, newId } from '../app.js';
-import { skirmishPlan } from '../engine.js';
+import { skirmishPlan, describeGate } from '../engine.js';
 import { stakeLines, finishedToday } from '../stakes.js';
 import { TYPES } from '../events.js';
-import { regionLevel } from '../gamify.js';
+import { duoState, hasJoined } from '../duo.js';
+import { regionsCard } from './regions.js';
 
 export function render(state) {
   const u = me(state);
@@ -20,7 +21,7 @@ export function render(state) {
     ${open ? resume(open) : done ? doneCard(state, done) : plan?.rest ? restCard(state, plan) : questCard(state, plan, p)}
     ${done ? raw('') : stakes(state, plan, p)}
     ${partnerCard(state)}
-    ${regions(state, p)}
+    ${regionsCard(state, p)}
   </div>`, tabbar(state));
 }
 
@@ -58,21 +59,39 @@ function restCard(state, plan) {
 function questCard(state, plan, p) {
   if (!plan) return html`<div class="card"><p>Finish setup to see today's quest.</p></div>`;
   const phase = state.spec.phases.find(x => x.id === plan.phase_id);
-  const strength = plan.blocks.filter(b => b.kind.startsWith('strength')).flatMap(b => b.items);
-  const headline = strength[0]?.name ?? plan.name;
+  const sets = plan.rows.filter(r => r.prescribed !== false).length;
   return html`<div class="card quest stack">
     <div class="kicker">
       <span class="pill hot">Week ${plan.week === 0 ? 'Muster' : plan.week}</span>
       <span class="pill">${plan.name}</span>
-      ${plan.onRamp ? raw('<span class="pill cool">Building up</span>')
+      ${plan.on_ramp ? raw('<span class="pill cool">Building up</span>')
         : plan.deload ? raw('<span class="pill cool">Recovery week</span>') : ''}
       ${plan.boss ? raw('<span class="pill go">Boss week</span>') : ''}
     </div>
     <h1>${plan.name}</h1>
-    <p class="muted small">${plan.est_minutes} min · ${plan.rows.filter(r => r.prescribed !== false).length} sets · leave ${plan.rir} in reserve${phase ? ` · ${phase.name}` : ''}</p>
+    <p class="muted small">${plan.est_minutes} min · ${sets} sets${phase ? ` · ${phase.name}` : ''}</p>
+    <p class="faint small">${t('home.quest.rir', { rir: plan.rir })}${plan.on_ramp ? ` ${t('home.quest.on_ramp')}` : plan.deload ? ` ${t('home.quest.deload')}` : ''}</p>
+    ${raw(substitutions(state, plan))}
     <button class="btn" data-action="start" data-key="start">Start quest</button>
     <button class="btn ghost" data-action="skirmish" data-key="skirmish">Short on time? Skirmish</button>
   </div>`;
+}
+
+/**
+ * Where the plan swapped a locked movement for its fallback, say so, and say
+ * what opens it. Thursday quietly ran extra hinge work in place of the swing
+ * for two weeks with no word of why anywhere on screen.
+ */
+function substitutions(state, plan) {
+  const lines = [];
+  for (const it of (plan.blocks ?? []).flatMap(b => b.items ?? [])) {
+    const n = it.locked_note;
+    if (!n?.exercise_id) continue;
+    const locked = state.spec.byExercise?.[n.exercise_id]?.name ?? n.exercise_id;
+    const gate = describeGate(n.blocked, state.spec);
+    lines.push(`<div class="small">· ${esc(t('home.quest.locked', { locked, instead: it.name }))}${gate ? ` ${esc(t('home.quest.opens', { gate }))}` : ''}</div>`);
+  }
+  return lines.length ? `<div class="card-tight quest-subs">${lines.join('')}</div>` : '';
 }
 
 /** Up to three concrete things today could move. Never vague encouragement. */
@@ -87,10 +106,18 @@ function stakes(state, plan, p) {
 
 const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+/** "as of 3 hours ago" / "as of 4 days ago": how old the partner's last sync is. */
+export function staleLabel(hours) {
+  if (hours == null) return null;
+  if (hours < 48) return `as of ${Math.max(1, Math.round(hours))} hour${Math.round(hours) === 1 ? '' : 's'} ago`;
+  const days = Math.round(hours / 24);
+  return `as of ${days} day${days === 1 ? '' : 's'} ago`;
+}
+
 function partnerCard(state) {
   const other = partner(state);
   const name = other?.profile?.name ?? (state.me === 'sean' ? 'Cat' : 'Sean');
-  if (!other?.sessions.length && !other?.quizDone) {
+  if (!hasJoined(other)) {
     return html`<div class="card card-tight row">
       <div class="avatar partner">${name[0]}</div>
       <div class="grow"><div>${name} has not joined yet</div>
@@ -98,7 +125,7 @@ function partnerCard(state) {
     </div>`;
   }
   const today = dayKey();
-  const todays = other.sessions.filter(s => s.day === today);
+  const todays = other.sessions.filter(s => s.day === today && s.sets.length);
   // Only ever claim what the synced data can actually support.
   const presence = state.presence?.[state.me === 'sean' ? 'cat' : 'sean'];
   const hours = presence?.lastOpen ? (Date.now() - Date.parse(presence.lastOpen)) / 3600000 : null;
@@ -107,33 +134,19 @@ function partnerCard(state) {
     ? `${name} trained today · ${todays[0].duration_min ?? '—'} min`
     : stale ? `No session from ${name} yet`
     : `${name} has not trained yet today`;
-  const sub = stale ? `as of ${Math.round(hours)} hours ago` : 'Duo';
+  // The line under it is the live week, so the card is worth a glance: who is
+  // ahead, and by how much, against each person's own plan.
+  let week = '';
+  try {
+    const d = duoState(me(state), other, state.spec, state.gam, today, state.progress, state.partnerProgress);
+    week = d.status === 'solo' ? '' : `This week: you ${d.week.mine.S} · ${name} ${d.week.theirs.S}`;
+  } catch { week = ''; }
+  const sub = [stale ? staleLabel(hours) : null, week].filter(Boolean).join(' · ') || 'Duo';
   return html`<div class="card card-tight row">
     <div class="avatar partner">${name[0]}</div>
     <div class="grow"><div>${line}</div>
       <div class="tiny">${sub}</div></div>
     <button class="btn ghost" style="width:auto;padding:0 14px" data-action="nav" data-href="#/duo">Open</button>
-  </div>`;
-}
-
-function regions(state, p) {
-  const g = state.gam;
-  const rows = (g.regions ?? []).map(r => {
-    const region = p.regions[r] ?? { xp: 0, level: 0 };
-    const lvl = region.level;
-    const floor = (g.region_level?.divisor ?? 40) * lvl * lvl;
-    const next = (g.region_level?.divisor ?? 40) * (lvl + 1) * (lvl + 1);
-    const pct = next > floor ? Math.round(((region.xp - floor) / (next - floor)) * 100) : 0;
-    const hue = 220 - Math.min(10, lvl) * 19.5;
-    return `<div class="region">
-      <span class="name">${r.replace('_', ' ')}</span>
-      <span class="bar"><i style="width:${Math.max(3, pct)}%;background:hsl(${hue} 70% 52%)"></i></span>
-      <span class="lvl">${lvl}</span>
-    </div>`;
-  }).join('');
-  return html`<div class="card stack">
-    <div class="row-between"><h3>Head to toe</h3><span class="tiny">${p.xp_total.toLocaleString()} XP</span></div>
-    <div class="regions">${raw(rows)}</div>
   </div>`;
 }
 
@@ -173,13 +186,19 @@ export async function act(action, data, state) {
 /**
  * Freeze only what reproducibility needs. Names, cues and unlock text are
  * resolved from the program data at render time, which keeps an event near
- * 150 bytes instead of several kilobytes.
+ * 150 bytes instead of several kilobytes. The prefill (`target`, what you did
+ * here last time) and the rest between sets ride along: they are what the
+ * logging screen shows, and without them every set opened at the bottom of the
+ * range and "beat last time" was never on the card.
  */
 export function slim(r) {
   return {
     exercise_id: r.exercise_id, step_id: r.step_id, set_index: r.set_index,
     side: r.side ?? null, part: r.part ?? null, unit: r.unit,
     A: r.A, B: r.B,
+    target: r.target !== r.A && r.target != null ? r.target : undefined,
+    last: r.last ?? undefined,
+    rest_sec: r.rest_sec,
     minutes: r.minutes,
     prescribed: r.prescribed === false ? false : undefined,
     counts_for_progression: r.counts_for_progression === false ? false : undefined,

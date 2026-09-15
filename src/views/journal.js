@@ -13,14 +13,21 @@ import { topbar, tabbar, page } from './chrome.js';
 import { regionXpForSession, regionLevel } from '../gamify.js';
 import { duelScore } from '../duo.js';
 import { startingItems } from '../engine.js';
+import { regionLabel } from './regions.js';
 
 const RARITIES = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
 const DAY_LETTERS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const SOURCE_LABELS = {
   sets: 'Sets', quest: 'Quests', zone2: 'Zone-2', cardio: 'Cardio',
   intervals: 'Intervals', records: 'Records', climbs: 'Ladder climbs',
-  armour: 'Armour', setup: 'Placement',
+  armour: 'Armour', setup: 'Placement', perfect_weeks: 'Perfect week bonus',
+  gates: 'Gates opened', flame: 'Flame milestones', boss: 'Boss battles', duel: 'Duel',
 };
+const DAY_WORDS = {
+  trained: 'trained', rest: 'rest link', shield: 'shield spent', pending: 'today, still open',
+  recovery: 'recovery mode', away: 'travelling', none: 'no session', future: 'still to come', before: 'before you started',
+};
+const SESSION_TYPE = { full: 'Full quest', skirmish: 'Skirmish', kindle: 'Easy walk', ember: 'Ended early' };
 const GATE_NAMES = { hinge: 'hinge', bell: '53 lb bell', run: 'run' };
 
 // ==================================================================== helpers
@@ -173,6 +180,10 @@ export function buildWeeks(user, spec, g, prog, today = dayKey()) {
   const z2Target = zone2TargetMin(spec);
   const gained = new Map((prog.sessions ?? []).map(s => [s.session_id, s]));
   const statuses = prog.flame?.statuses ?? new Map();
+  // The Perfect Week verdict is the gamification layer's: it is what pays the
+  // bonus, so the halo on this screen reads the same record rather than judging
+  // the week a second time and risking a halo the XP disagrees with.
+  const perfectBy = new Map((prog.perfect_weeks?.weeks ?? []).map(w => [w.week_id, w]));
 
   const weeks = [];
   const from = weekStart(first);
@@ -185,18 +196,20 @@ export function buildWeeks(user, spec, g, prog, today = dayKey()) {
     const weekId = isoWeekKey(start);
     const programWeek = weekIndex(start, programStart);
     const override = spec?.week_overrides?.[String(programWeek)] ?? null;
+    const pw = perfectBy.get(weekId);
 
     const sessions = (user.sessions ?? []).filter(s => s.day >= start && s.day <= end);
-    const counted = sessions.filter(s => s.type !== 'kindle');
+    const counted = sessions.filter(s => s.type !== 'kindle' && s.sets.length);
     const bySource = {};
     let xp = 0, prs = [];
-    for (const s of counted) {
+    for (const s of sessions) {
       const gd = gained.get(s.session_id);
       if (!gd) continue;
       xp += gd.xp;
       for (const [k, v] of Object.entries(gd.by_source ?? {})) bySource[k] = (bySource[k] ?? 0) + v;
       for (const pr of gd.prs ?? []) prs.push({ ...pr, day: s.day });
     }
+    if (pw?.perfect && pw.xp) { xp += pw.xp; bySource.perfect_weeks = (bySource.perfect_weeks ?? 0) + pw.xp; }
 
     const days = Array.from({ length: 7 }, (_, i) => {
       const d = addDays(start, i);
@@ -213,17 +226,17 @@ export function buildWeeks(user, spec, g, prog, today = dayKey()) {
     const w = {
       week_id: weekId, start, end, programWeek,
       current: start === stop,
-      done: counted.length,
-      full: counted.filter(s => s.type === 'full').length,
+      done: pw?.done ?? counted.length,
+      full: pw?.full ?? counted.filter(s => s.type === 'full').length,
       skirmish: counted.filter(s => s.type === 'skirmish').length,
-      prescribed: weekPrescribedQuests(spec, start, { firstDay: first, override }),
+      prescribed: pw?.prescribed ?? weekPrescribedQuests(spec, start, { firstDay: first, override }),
       shields: days.filter(d => d.status === 'shield').length,
       xp, by_source: bySource, prs,
       climbs: (user.climbs ?? []).filter(c => c.day >= start && c.day <= end),
       zone2: { done: Math.round(prog.zone2_by_week?.[weekId] ?? 0), target: z2Target },
       regionChanges, days, sessions,
     };
-    w.perfect = isPerfectWeek(w, g);
+    w.perfect = pw ? !!pw.perfect : isPerfectWeek(w, g);
     w.held = !w.perfect && w.prescribed > 0 && w.done >= w.prescribed - 1 && w.done > 0;
     w.remaining = Math.max(0, w.prescribed - w.done);
     weeks.push(w);
@@ -357,20 +370,26 @@ export function render(state) {
   const u = state.users[state.me];
   const p = state.progress;
   const g = state.gam;
-  const today = dayKey();
+  // The app never sets `state.today`; it is the seam a test uses to stand on a
+  // particular weekday without touching the clock.
+  const today = state.today ?? dayKey();
   const weeks = buildWeeks(u, state.spec, g, p, today);
   const empty = !(u.sessions ?? []).length;
   const metrics = badgeMetrics(u, p, weeks);
 
-  // The Monday moment: while the new week is young, the report that matters is
-  // the one that just closed. Later in the week the live one is more use.
-  const featuredIx = (!empty && dow(today) >= 1 && dow(today) <= 3 && weeks[1]?.done > 0) ? 1 : 0;
-  const featured = weeks[featuredIx];
-  const rest = weeks.filter((_, i) => i !== featuredIx);
+  // The week being lived is always the first card: it is the one a person just
+  // logged into. The week that just closed sits directly under it — open from
+  // Monday to Wednesday, the moment its report is worth reading, folded away
+  // after that — and everything older is the archive. An earlier version swapped
+  // the closed week into the top slot on those days and filed the live week
+  // under "Past reports", which read as the app being a week behind.
+  const [current, last, ...older] = weeks;
+  const mondayMoment = dow(today) >= 1 && dow(today) <= 3;
 
   return page(topbar(state), html`<div class="stack jr">
-    ${empty ? emptyHero(state) : reportCard(state, featured, { featured: featuredIx === 1 })}
-    ${empty || rest.length === 0 ? raw('') : pastReports(state, rest)}
+    ${empty ? emptyHero(state) : reportCard(state, current)}
+    ${!empty && last ? lastWeekCard(state, last, { open: mondayMoment }) : raw('')}
+    ${!empty && older.length ? pastReports(state, older) : raw('')}
     ${calendar(weeks, today)}
     ${sessionList(state, u, p)}
     ${prBoard(state, p)}
@@ -391,17 +410,23 @@ function emptyHero(state) {
 }
 
 // ------------------------------------------------------------ weekly report
-function reportCard(state, w, { featured = false } = {}) {
-  if (!w) return raw('');
-  const cls = `card stack jr-report${w.perfect ? ' jr-perfect' : ''}`;
-  const kicker = w.perfect ? '<span class="pill jr-halo-pill">Perfect Week</span>'
+const weekLabel = (w) => (w.programWeek === 0 ? 'Muster week' : `Week ${w.programWeek}`);
+
+function statusPill(w) {
+  return w.perfect ? '<span class="pill jr-halo-pill">Perfect Week</span>'
     : w.held ? '<span class="pill go">Held the line</span>'
     : w.current ? '<span class="pill hot">In progress</span>' : '';
+}
+
+/** The live week: the card at the top of the screen. */
+function reportCard(state, w) {
+  if (!w) return raw('');
+  const cls = `card stack jr-report${w.perfect ? ' jr-perfect' : ''}`;
   return html`<section class="${raw(cls)}">
     <div class="kicker">
-      <span class="pill">${w.programWeek === 0 ? 'Muster week' : `Week ${w.programWeek}`}</span>
-      ${raw(kicker)}
-      ${featured ? raw('<span class="pill cool">New week</span>') : ''}
+      <span class="pill cool">${tr(state, 'journal.report.this_week', 'This week')}</span>
+      <span class="pill">${weekLabel(w)}</span>
+      ${raw(statusPill(w))}
     </div>
     <div class="row-between">
       <h3>${tr(state, 'journal.report.title', 'Weekly Report').replace(/ · .*$/, '')}</h3>
@@ -409,6 +434,21 @@ function reportCard(state, w, { featured = false } = {}) {
     </div>
     ${raw(reportBody(state, w))}
   </section>`;
+}
+
+/** The week that just closed, folded under the live one. */
+function lastWeekCard(state, w, { open = false } = {}) {
+  const cls = `card stack jr-report jr-last${w.perfect ? ' jr-perfect' : ''}`;
+  return html`<details class="${raw(cls)}"${open ? raw(' open') : ''}>
+    <summary>
+      <span class="jr-past-label">
+        <span class="row" style="gap:8px"><strong>${tr(state, 'journal.report.last_week', 'Last week')}</strong>
+          <span class="pill">${weekLabel(w)}</span>${raw(statusPill(w))}</span>
+        <span class="faint small">${dateRange(w.start)} · ${w.done} of ${w.prescribed} quests · +${w.xp.toLocaleString()} XP</span>
+      </span>
+    </summary>
+    <div class="stack jr-past-body">${raw(reportBody(state, w))}</div>
+  </details>`;
 }
 
 function reportBody(state, w) {
@@ -453,7 +493,7 @@ function reportBody(state, w) {
   if (w.regionChanges.length) {
     parts.push(`<div class="jr-block">
       <div class="tiny">Body map</div>
-      ${w.regionChanges.map(r => `<div class="row-between jr-row"><span class="small">${esc(r.region.replace(/_/g, ' '))}</span>
+      ${w.regionChanges.map(r => `<div class="row-between jr-row"><span class="small">${esc(regionLabel(r.region))}</span>
         <span class="small muted">level ${r.from} → <strong>${r.to}</strong></span></div>`).join('')}
     </div>`);
   }
@@ -469,16 +509,19 @@ function reportBody(state, w) {
   const duel = duelLine(state, w);
   if (duel) parts.push(`<div class="jr-block"><div class="tiny">Your week, scored against your own plan</div>${duel}</div>`);
 
-  // Perfect Week halo note, then next week -----------------------------
+  // Perfect Week halo note, then (for the live week only) the week ahead ----
   if (w.perfect) {
+    const bonus = w.by_source.perfect_weeks ?? state.gam.xp?.perfect_week ?? 300;
     parts.push(`<div class="jr-block jr-halo">
       <div class="jr-halo-title">PERFECT WEEK</div>
-      <div class="small muted">${esc(state.copy?.['flame.perfect_week']?.replace('{xp}', String(state.gam.xp?.perfect_week ?? 300))
+      <div class="small muted">${esc(state.copy?.['flame.perfect_week']?.replace('{xp}', String(bonus))
         ?? 'Every prescribed quest, four of them full, and the shield untouched.')}</div>
     </div>`);
   }
-  parts.push(`<div class="jr-block jr-next"><div class="tiny">Next</div>
-    <div class="small">${esc(nextWeekLine(state.spec, w.programWeek))}</div></div>`);
+  if (w.current) {
+    parts.push(`<div class="jr-block jr-next"><div class="tiny">Next</div>
+      <div class="small">${esc(nextWeekLine(state.spec, w.programWeek))}</div></div>`);
+  }
 
   return parts.join('');
 }
@@ -498,7 +541,7 @@ function duelLine(state, w) {
   if (S == null) {
     try { S = duelScore(u, state.progress, state.spec, state.gam, w.week_id).S; } catch { return ''; }
   }
-  const status = lock ? String(lock.status ?? '').replace(/_/g, ' ') : 'provisional';
+  const status = lock ? String(lock.status ?? '').replace(/_/g, ' ') : w.current ? 'so far' : 'provisional';
   return `<div class="row-between jr-row"><span class="small muted">Duel score</span>
     <span><strong>${Number(S) || 0}</strong> <span class="faint small">/ 100 · ${esc(status)}</span></span></div>`;
 }
@@ -506,7 +549,7 @@ function duelLine(state, w) {
 function pastReports(state, weeks) {
   const rows = weeks.map(w => `<details class="jr-past">
     <summary>
-      <span class="jr-past-label">${w.programWeek === 0 ? 'Muster' : `Week ${w.programWeek}`}
+      <span class="jr-past-label">${weekLabel(w)}
         <span class="faint small">${esc(dateRange(w.start))}</span></span>
       <span class="jr-past-meta">${w.perfect ? '<span class="pill jr-halo-pill">Perfect</span>' : ''}
         <span class="tiny">${w.done}/${w.prescribed}</span><span class="xpfloat">+${w.xp.toLocaleString()}</span></span>
@@ -525,7 +568,7 @@ function calendar(weeks, today) {
     const cells = w.days.map(d => {
       const letter = DAY_LETTERS[(dow(d.day) + 6) % 7];
       const s = d.session;
-      const title = `${shortDate(d.day)} · ${d.status === 'before' ? 'before you started' : d.status}`;
+      const title = `${shortDate(d.day)} · ${DAY_WORDS[d.status] ?? d.status}`;
       if (s) {
         return `<button data-status="${esc(d.status)}" data-action="day" data-key="day-${esc(d.day)}"
           data-session="${esc(s.session_id)}" title="${esc(title)}" aria-label="${esc(title)}">${letter}</button>`;
@@ -557,14 +600,14 @@ function sessionList(state, u, p) {
     const gd = gained.get(s.session_id);
     const f = gd?.fidelity ?? { hit: 0, prescribed: 0 };
     const name = state.spec.byTemplate?.[s.template_id]?.name ?? s.template_id;
-    const type = s.type === 'skirmish' ? tr(state, 'journal.marker.skirmish', 'Skirmish')
-      : s.type === 'kindle' ? 'Easy walk' : tr(state, 'journal.marker.full', 'Full quest');
+    const type = SESSION_TYPE[s.type] ?? SESSION_TYPE.full;
+    const targets = f.prescribed ? ` · ${f.hit} of ${f.prescribed} targets` : '';
     return `<details class="jr-sess" id="s-${esc(s.session_id)}">
       <summary>
         <span class="grow">
           <span class="jr-sess-day">${esc(shortDate(s.day))}</span>
           <span class="muted small truncate"> · ${esc(name)}</span>
-          <div class="faint small">${esc(type)} · ${s.duration_min ?? '—'} min · ${f.hit} of ${f.prescribed} targets</div>
+          <div class="faint small">${esc(type)} · ${s.duration_min ?? '—'} min${targets}</div>
         </span>
         <span class="xpfloat">+${(gd?.xp ?? 0).toLocaleString()}</span>
       </summary>
@@ -578,13 +621,24 @@ function sessionList(state, u, p) {
   </div>`;
 }
 
-function setsOf(state, s) {
+/** A session's sets grouped by movement, in the order they were actually done. */
+export function setGroups(sets) {
   const groups = [];
-  for (const set of s.sets) {
+  for (const set of sets ?? []) {
     let gr = groups.find(x => x.exercise_id === set.exercise_id && x.step_id === set.step_id);
-    if (!gr) groups.push(gr = { exercise_id: set.exercise_id, step_id: set.step_id, sets: [] });
+    if (!gr) groups.push(gr = { exercise_id: set.exercise_id, step_id: set.step_id, sets: [], first: set.ts ?? '' });
     gr.sets.push(set);
+    if ((set.ts ?? '') < gr.first) gr.first = set.ts ?? '';
   }
+  // The reducer files sets alphabetically by movement, which put the cooldown
+  // second and the warm-up last. The log should read the way the session ran.
+  groups.sort((a, b) => (a.first < b.first ? -1 : a.first > b.first ? 1 : 0));
+  for (const gr of groups) gr.sets.sort((a, b) => (a.set_index - b.set_index) || String(a.side ?? '').localeCompare(String(b.side ?? '')));
+  return groups;
+}
+
+function setsOf(state, s) {
+  const groups = setGroups(s.sets);
   if (!groups.length) return '<div class="faint small">No sets were logged on this one.</div>';
   return groups.map(gr => {
     const name = state.spec.byExercise?.[gr.exercise_id]?.name ?? gr.exercise_id;

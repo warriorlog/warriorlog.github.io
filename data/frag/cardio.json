@@ -370,7 +370,8 @@
     },
     {
       "id": "march_step_zone2",
-      "name": "March / step Zone-2 (no treadmill)",
+      "name": "Zone-2 march",
+      "ladder_note": "March / step Zone-2 (no treadmill)",
       "region": "heart",
       "pattern": "locomotion",
       "equipment": "bodyweight, couch cushion, floor",
@@ -417,7 +418,8 @@
     },
     {
       "id": "treadmill_intervals",
-      "name": "Treadmill intervals (walk to jog to run)",
+      "name": "Treadmill intervals",
+      "ladder_note": "Treadmill intervals (walk to jog to run)",
       "region": "heart",
       "pattern": "locomotion",
       "equipment": "treadmill",
@@ -732,7 +734,8 @@
     },
     {
       "id": "vest_walk",
-      "name": "Weighted-vest incline walk (ruck)",
+      "name": "Weighted-vest walk",
+      "ladder_note": "Weighted-vest incline walk (ruck)",
       "region": "heart",
       "pattern": "locomotion",
       "equipment": "treadmill, vest",
@@ -1005,7 +1008,8 @@
     },
     {
       "id": "warmup_flow",
-      "name": "Warm-up Flow (walk, hinge rehearsal, pattern rehearsal)",
+      "name": "Warm-up flow",
+      "ladder_note": "Warm-up Flow (walk, hinge rehearsal, pattern rehearsal)",
       "region": "full_body",
       "pattern": "locomotion",
       "equipment": "treadmill, wall, chair, bodyweight",
@@ -1053,7 +1057,8 @@
     },
     {
       "id": "cooldown_flow",
-      "name": "Cooldown Flow (static stretch and breathing)",
+      "name": "Cooldown flow",
+      "ladder_note": "Cooldown Flow (static stretch and breathing)",
       "region": "full_body",
       "pattern": "locomotion",
       "equipment": "floor, wall, couch",

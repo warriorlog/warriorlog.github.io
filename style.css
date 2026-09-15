@@ -566,3 +566,16 @@ button { border: 0; background: none; cursor: pointer; touch-action: manipulatio
 }
 .stopif strong { color: #e5766b; }
 .checklist-head { padding: 0 var(--pad) 6px; }
+
+/* ---------------------------------------------------------------- audit pass
+   Head-to-toe bars carry a level label, the top bar carries its XP line, the
+   quest card lists what ran in place of a locked movement, and a control drawn
+   as disabled looks disabled. */
+.region { grid-template-columns: 78px 1fr 42px; }
+.regions-card .regions { margin-top: 2px; }
+.topbar-xp { margin-top: 4px; text-transform: none; letter-spacing: 0; }
+.quest-subs { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 8px 0; }
+.quest-subs .small { color: var(--ink-dim); }
+.btn[aria-disabled="true"] { opacity: .45; }
+.jr-last > summary { align-items: flex-start; }
+.jr-last .jr-past-label { gap: 3px; }

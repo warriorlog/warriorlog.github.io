@@ -231,5 +231,16 @@
   "nudge.partner_done": "{name} is done for today ({template}, {minutes} min). Yours: {my_template}, about {my_minutes} min.",
   "nudge.belt_defence": "{name} is {n} points up — the Belt is on the line tomorrow.",
   "nudge.alliance": "Alliance Week: 150 combined wins it for both — you are at {total}.",
-  "nudge.dismiss": "Not now"
+  "nudge.dismiss": "Not now",
+  "home.quest.rir": "Stop every set with {rir} reps still in you.",
+  "home.quest.on_ramp": "Sets are reduced while you build up; the full plan starts in week 3.",
+  "home.quest.deload": "A recovery week: lighter sets on purpose, and the ladders hold their rung.",
+  "home.quest.locked": "{locked} is not open yet, so {instead} runs in its place.",
+  "home.quest.opens": "It opens at {gate}.",
+  "regions.scope": "all time",
+  "regions.body": "Every set you log colours the body part it works. Each part has its own level; its bar shows how close it is to the next one.",
+  "regions.note": "Counted over everything you have ever logged, not just this week. When a bar fills, that part goes up a level and the bar starts again from empty.",
+  "regions.empty": "Nothing counted yet. Your first set colours the parts it works, and each part goes up a level as its bar fills.",
+  "journal.report.this_week": "This week",
+  "journal.report.last_week": "Last week"
 }

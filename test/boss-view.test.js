@@ -13,9 +13,10 @@ globalThis.document ??= { getElementById: () => el, addEventListener() {}, creat
 globalThis.location ??= { hash: '#/boss' };
 globalThis.navigator ??= {};
 const realError = console.error;
-console.error = () => {};                       // app.js boot() cannot fetch under node
+// app.js boots on import and its fetch cannot succeed under node; that one
+// rejection is expected noise, everything else must still be heard.
+console.error = (...args) => { if (!String(args[0]?.message ?? args[0]).includes('fetch failed')) realError(...args); };                       // app.js boot() cannot fetch under node
 const V = await import('../src/views/boss.js');
-console.error = realError;
 
 const program = JSON.parse(readFileSync(new URL('../data/program.json', import.meta.url), 'utf8'));
 const spec = indexSpec(program);

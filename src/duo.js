@@ -1,8 +1,8 @@
 // The two-player layer. Every score is a ratio against that person's OWN
 // prescription, so a smaller beginner can win any week by executing their plan,
 // and no formula anywhere compares loads, reps or speeds between the two.
-import { isoWeekKey, weekStart, addDays, daysBetween, clamp } from './util.js';
-import { fidelity, flame } from './gamify.js';
+import { isoWeekKey, weekStart, weekIndex, addDays, daysBetween, clamp } from './util.js';
+import { fidelity, flame, xpAvailableWeek } from './gamify.js';
 import { startingItems } from './engine.js';
 
 /** Did the partner train today? Read from their synced sessions, nothing else. */
@@ -14,19 +14,25 @@ export const trainedOn = (user, day) =>
  * link keeps it, and a freeze day is neutral rather than a break.
  */
 export function duoFlame(a, b, gA, gB, today) {
+  return duoFlameRun(a, b, gA, gB, today).count;
+}
+
+/** The duo flame with its history: the current run, the best, and relights. */
+export function duoFlameRun(a, b, gA, gB, today) {
   const first = firstCommonDay(a, b);
-  if (!first) return 0;
-  let count = 0;
+  if (!first) return { count: 0, best: 0, rekindles: 0 };
+  let count = 0, best = 0, rekindles = 0, wasOut = false;
+  const kept = (s) => s === 'trained' || s === 'rest' || s === 'shield';
+  const neutral = (s) => s === 'recovery' || s === 'away' || s === 'pending' || s == null;
   for (let d = first; daysBetween(d, today) > 0; d = addDays(d, 1)) {
     const sa = gA.get(d), sb = gB.get(d);
-    const kept = (s) => s === 'trained' || s === 'rest' || s === 'shield';
-    const neutral = (s) => s === 'recovery' || s === 'away' || s === 'pending' || s == null;
-    if (sa === 'trained' && sb === 'trained') { count++; continue; }
+    const both = (sa === 'trained' && sb === 'trained') || (kept(sa) && kept(sb));   // a rest day either side still counts
+    if (both) { if (count === 0 && wasOut) { rekindles++; wasOut = false; } count++; best = Math.max(best, count); continue; }
     if (neutral(sa) || neutral(sb)) continue;              // one of them is paused: no change
-    if (kept(sa) && kept(sb)) { count++; continue; }        // a rest day either side still counts
+    if (count > 0) wasOut = true;
     count = 0;
   }
-  return count;
+  return { count, best, rekindles };
 }
 
 function firstCommonDay(a, b) {
@@ -67,7 +73,7 @@ export function duelScore(user, progress, spec, gam, weekId) {
   const prog = Math.min(100, steps * (gam.duel?.progress?.per_step ?? 34) + tiers * (gam.duel?.progress?.per_tier ?? 50));
 
   const xpWeek = (progress?.sessions ?? []).filter(s => isoWeekKey(s.day) === weekId).reduce((n, s) => n + s.xp, 0);
-  const xpAvailable = xpAvailableWeek(user, spec, gam, weekId);
+  const xpAvailable = xpAvailableWeek(spec, gam);
   const xpPct = pct(xpWeek, xpAvailable);
 
   const parts = { sessions, fidelity: fidelityPct, zone2, progress: prog, xp: xpPct };
@@ -83,7 +89,8 @@ function sessionsPrescribed(user, spec, weekId) {
   return training || 6;
 }
 
-function zone2Prescribed(user, spec, weekId) {
+/** The Zone-2 minutes one full week of the plan asks for, read off the templates. */
+export function zone2Prescribed(user, spec, weekId) {
   let total = 0;
   for (const t of spec.templates ?? []) {
     for (const b of t.blocks ?? []) {
@@ -97,23 +104,6 @@ function zone2Prescribed(user, spec, weekId) {
     }
   }
   return total || 1;
-}
-
-function xpAvailableWeek(user, spec, gam, weekId) {
-  const xp = gam.xp ?? {};
-  let total = 0;
-  for (const t of spec.templates ?? []) {
-    if (!t.minutes) continue;
-    let rows = 0, minutes = 0;
-    for (const b of t.blocks ?? []) for (const it of b.items ?? []) {
-      const ex = spec.byExercise?.[it.exercise_id];
-      if (!ex || ex.no_xp) continue;
-      if (['treadmill_zone2', 'zone2_finisher', 'vest_walk', 'march_step_zone2'].includes(ex.id)) minutes += it.time_override_min ?? 30;
-      else rows += it.sets ?? 1;
-    }
-    total += rows * ((xp.set_logged ?? 10) + (xp.set_met ?? 5)) + minutes * (xp.zone2_per_min ?? 3) + (xp.quest_full ?? 50);
-  }
-  return Math.max(1, total);
 }
 
 /**
@@ -130,10 +120,13 @@ export function resolveWeek(mine, theirs, spec, gam, weekId, progressMine, progr
   if (!hasJoined(theirs)) return { week_id: weekId, status: 'solo', mine: a, theirs: null, winner: null };
   const b = duelScore(theirs, progressTheirs, spec, gam, weekId);
 
-  // Nor is the week someone joins in the middle of. Their first partial week is
-  // never scored against them.
+  // Nor is the week someone joins in the middle of. A first partial week is
+  // never scored against whoever it belongs to — the partner's, or mine.
   if (joinedDuring(theirs, weekId)) {
     return { week_id: weekId, status: 'no_contest', mine: a, theirs: b, winner: null, reason: 'partner joined this week' };
+  }
+  if (joinedDuring(mine, weekId)) {
+    return { week_id: weekId, status: 'no_contest', mine: a, theirs: b, winner: null, reason: 'you joined this week' };
   }
 
   const pausedA = pausedDays(mine, weekId), pausedB = pausedDays(theirs, weekId);
@@ -230,21 +223,81 @@ export function duoState(mine, theirs, spec, gam, today, progressMine = null, pr
   const week = resolveWeek(mine, theirs, spec, gam, weekId, progressMine, progressTheirs);
   const belt = beltState(mine, theirs, gam);
   const alliance = belt.alliance_next;
+  const mineS = week.mine.S, theirS = week.theirs?.S ?? 0;
 
+  // The week on screen is always the one still being played, so its verdict is
+  // not in yet. "No contest" on a Monday morning reads as a ruling on a week
+  // that has barely begun; what is true today is only who is ahead.
   const status = week.status === 'solo' ? 'solo'
     : alliance ? 'alliance'
-    : week.status === 'dead_heat' ? 'dead heat'
-    : week.status !== 'contested' ? week.status.replace('_', ' ')
-    : week.mine.S > (week.theirs?.S ?? 0) ? 'you lead' : 'they lead';
+    : Math.abs(mineS - theirS) < (gam.duel?.dead_heat_margin ?? 2) ? 'level'
+    : mineS > theirS ? 'you lead' : 'they lead';
 
   return {
     weekId, status, alliance,
     alliance_target: gam.duel?.alliance_target ?? 150,
-    combined: week.mine.S + (week.theirs?.S ?? 0),
+    combined: mineS + theirS,
     partnerTrainedToday: trainedOn(theirs, today),
     duoFlame: theirs ? duoFlame(mine, theirs, gA, gB, today) : 0,
     belt,
-    week: { status, mine: week.mine, theirs: week.theirs ?? { S: 0, parts: { sessions: 0, fidelity: 0, zone2: 0, progress: 0, xp: 0 } }, pb: week.pb_star_mine },
+    lock_day: addDays(weekStart(today), 7 + ((gam.duel?.lock_dow ?? 2) - 1)),
+    week: {
+      status, verdict: week.status, mine: week.mine,
+      theirs: week.theirs ?? { S: 0, parts: { sessions: 0, fidelity: 0, zone2: 0, progress: 0, xp: 0 } },
+      pb: week.pb_star_mine,
+    },
+  };
+}
+
+/**
+ * The numbers the duo badges read, for one pair. Everything here needs both
+ * logs, which is why `progress` cannot compute it alone.
+ */
+export function duoBadgeMetrics(mine, theirs, spec, gam, today, progressMine, progressTheirs) {
+  if (!mine || !theirs || !hasJoined(theirs)) return null;
+  const gA = flame(mine, gam, today).statuses;
+  const gB = flame(theirs, gam, today).statuses;
+  const run = duoFlameRun(mine, theirs, gA, gB, today);
+
+  // Sessions started within N minutes of each other, one per day at most.
+  const within = (gam.badges ?? []).find(b => b.criterion?.metric === 'duo_same_day_sessions')?.criterion?.within_minutes ?? 15;
+  let sameDayCount = 0;
+  for (const s of mine.sessions) {
+    if (!s.sets.length || s.type === 'kindle') continue;
+    const hit = theirs.sessions.some(t => t.day === s.day && t.sets.length && t.type !== 'kindle'
+      && Math.abs(Date.parse(t.started_at) - Date.parse(s.started_at)) <= within * 60_000);
+    if (hit) sameDayCount++;
+  }
+
+  // A week both of them made perfect.
+  const mineWeeks = new Set((progressMine?.perfect_weeks?.weeks ?? []).filter(w => w.perfect).map(w => w.week_id));
+  const perfectWeekTogether = (progressTheirs?.perfect_weeks?.weeks ?? []).some(w => w.perfect && mineWeeks.has(w.week_id));
+
+  // Quests between the two of them inside one four-week block of the program.
+  const start = mine.profile?.program_start ?? mine.sessions[0]?.day;
+  const blocks = new Map();
+  for (const s of [...mine.sessions, ...theirs.sessions]) {
+    if (!s.sets.length || s.type === 'kindle' || !start) continue;
+    const block = Math.max(1, Math.ceil(weekIndex(s.day, start) / 4));
+    blocks.set(block, (blocks.get(block) ?? 0) + 1);
+  }
+
+  // Weeks running where both hit the Zone-2 target.
+  const target = zone2Prescribed(mine, spec, null);
+  const weeks = new Set([...Object.keys(progressMine?.zone2_by_week ?? {}), ...Object.keys(progressTheirs?.zone2_by_week ?? {})]);
+  let zone2Run = 0, zone2Best = 0;
+  for (const w of [...weeks].sort()) {
+    const ok = (progressMine?.zone2_by_week?.[w] ?? 0) >= target && (progressTheirs?.zone2_by_week?.[w] ?? 0) >= target;
+    zone2Run = ok ? zone2Run + 1 : 0;
+    zone2Best = Math.max(zone2Best, zone2Run);
+  }
+
+  return {
+    flame: run.count, bestFlame: run.best, rekindles: run.rekindles,
+    partnerGates: progressTheirs?.gates ?? {},
+    sameDayCount, perfectWeekTogether,
+    blockSessionsMax: Math.max(0, ...blocks.values()),
+    zone2WeeksRun: zone2Best,
   };
 }
 

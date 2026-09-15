@@ -4,6 +4,7 @@ import { topbar, tabbar, page } from './chrome.js';
 import { silhouette } from './silhouette.js';
 import { me, go, t } from '../app.js';
 import { ladderStanding } from '../engine.js';
+import { regionRows } from './regions.js';
 
 const MATERIAL = ['Iron', 'Bronze', 'Silver', 'Gold'];
 const ZONE2_WEEK_TARGET = 150;      // the AHA line; the head ring closes here
@@ -13,17 +14,7 @@ export function render(state) {
   const p = state.progress;
   const g = state.gam;
 
-  const regions = (g.regions ?? []).map(r => {
-    const reg = p.regions[r] ?? { xp: 0, level: 0 };
-    const lvl = reg.level;
-    const div = g.region_level?.divisor ?? 40;
-    const floor = div * lvl * lvl, next = div * (lvl + 1) * (lvl + 1);
-    const pct = Math.max(3, Math.round(((reg.xp - floor) / (next - floor)) * 100));
-    const hue = 220 - Math.min(10, lvl) * 19.5;
-    return `<div class="region"><span class="name">${r.replace('_', ' ')}</span>
-      <span class="bar"><i style="width:${pct}%;background:hsl(${hue} 70% 52%)"></i></span>
-      <span class="lvl">${lvl}</span></div>`;
-  }).join('');
+  const regions = regionRows(p.regions, g);
 
   // Two lines per piece: what you wear now, then the one thing that upgrades it.
   // The tier you wear and the tier you are working towards are both named, so
@@ -58,21 +49,22 @@ export function render(state) {
   return page(topbar(state), html`<div class="stack">
     ${explainer(totalXp, earned, zone2)}
 
-    <div class="card stack"><h3>Head to toe</h3>
+    <div class="card stack"><div class="row-between"><h3>Head to toe</h3><span class="tiny">${t('regions.scope')}</span></div>
       ${figure}
       <p class="small faint center">${totalXp > 0
-        ? `Colour shows how much work each part has taken. Outlines are armour. The ring around the head is ${zone2} of ${ZONE2_WEEK_TARGET} Zone-2 minutes this week.`
+        ? `Colour shows how much work each part has taken, over everything you have logged. Outlines are armour. The ring around the head is ${zone2} of ${ZONE2_WEEK_TARGET} Zone-2 minutes this week.`
         : `Nothing filled in yet. The ring around the head tracks Zone-2 minutes: ${zone2} of ${ZONE2_WEEK_TARGET} this week.`}</p>
       <div class="wl-legend">${raw(MATERIAL.map((m, i) =>
         `<span><i data-tier="${i}"></i>${m}</span>`).join(''))}</div>
-      <div class="regions">${raw(regions)}</div></div>
+      <div class="regions">${raw(regions)}</div>
+      <p class="faint small">${t('regions.note')}</p></div>
 
     <div class="card stack"><h3>Armour</h3>
       <p class="faint small">${t('body.armour.intro')}</p>
       ${raw(slots)}</div>
 
     <div class="card stack"><h3>Where every exercise stands</h3>
-      <p class="faint small">Your current rung, and how many good sessions are left before the next one.</p>
+      <p class="faint small">Your current rung, and how many qualifying sessions it has banked towards the next one. A session qualifies when every set reaches the climb number on its card.</p>
       ${raw(ladders)}</div>
   </div>`, tabbar(state));
 }

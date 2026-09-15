@@ -5,6 +5,7 @@ import { topbar, tabbar, page } from './chrome.js';
 import { me, partner, partnerId, go } from '../app.js';
 import { duoState } from '../duo.js';
 import { battleState } from '../boss.js';
+import { staleLabel } from './home.js';
 
 const CATEGORY = {
   sessions: 'Sessions done', fidelity: 'Targets hit', zone2: 'Zone-2 minutes',
@@ -43,9 +44,13 @@ function waiting(name) {
 
 function partnerCard(state, other, name, d) {
   const stale = staleHours(state);
-  const line = d.partnerTrainedToday ? `${name} trained today` : `${name} has not trained yet today`;
-  const sub = stale != null && stale > 6
-    ? `as of ${Math.round(stale)} hours ago`
+  const isStale = stale != null && stale > 6;
+  // Only ever claim what the synced data can actually support: a phone that
+  // has not synced since Friday cannot say what happened today.
+  const line = d.partnerTrainedToday ? `${name} trained today`
+    : isStale ? `No session from ${name} yet` : `${name} has not trained yet today`;
+  const sub = isStale
+    ? staleLabel(stale)
     : `${d.duoFlame} day${d.duoFlame === 1 ? '' : 's'} in a row together`;
   return html`<div class="card row">
     <div class="avatar partner">${name[0]}</div>
@@ -85,8 +90,9 @@ function duelCard(state, d, name) {
     </div>`;
   }).join('');
 
+  const lockDay = d.lock_day ? fmtDay(d.lock_day) : 'Tuesday';
   return html`<div class="card stack">
-    <div class="row-between"><h3>This week</h3><span class="pill">${esc(d.status)}</span></div>
+    <div class="row-between"><h3>This week</h3><span class="pill ${d.status === 'you lead' ? 'go' : d.status === 'they lead' ? 'cool' : ''}">${esc(d.status === 'level' ? 'level' : d.status)}</span></div>
     <div class="row-between">
       <div><div class="tiny">You</div><strong style="font-size:28px">${mine.S}</strong></div>
       <div class="faint">vs</div>
@@ -95,8 +101,16 @@ function duelCard(state, d, name) {
     ${d.week.pb ? raw('<span class="pill hot">Personal best week</span>') : ''}
     ${raw(bars)}
     <p class="faint small">Each line is what you did against what your own plan asked of you. Loads and reps are never compared.</p>
+    <p class="faint small">Still in play. The week is settled on ${esc(lockDay)}, once both phones have synced the weekend; a week with fewer than two sessions on either side is a no-contest, never a defeat.</p>
   </div>`;
 }
+
+const fmtDay = (day) => {
+  const [y, m, dd] = String(day).split('-').map(Number);
+  if (!y) return String(day);
+  const dt = new Date(y, m - 1, dd, 12);
+  return `${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dt.getDay()]} ${dd} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][m - 1]}`;
+};
 
 function bossCard(battle, name) {
   const pct = Math.min(100, Math.round((battle.damage / Math.max(1, battle.hp)) * 100));

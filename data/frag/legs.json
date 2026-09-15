@@ -177,7 +177,8 @@
     },
     {
       "id": "split_squat",
-      "name": "Split squat to reverse lunge to Bulgarian split squat",
+      "name": "Split squat",
+      "ladder_note": "Split squat to reverse lunge to Bulgarian split squat",
       "region": "thighs",
       "pattern": "lunge",
       "equipment": "wall, couch cushion, chair, dumbbells 12/20/35, 53 lb kettlebell",

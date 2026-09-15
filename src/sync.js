@@ -37,7 +37,10 @@ export async function flush(state) {
   running = true;
   try {
     const all = await state.store.allEvents();
-    const pending = all.filter(e => !e.synced && isSyncable(e, { syncMetrics: state.settings.syncMetrics }));
+    // One writer per file (invariant 2): this phone pushes only its own user's
+    // events, however they arrived here. A partner's events restored from a
+    // backup are already in the repository and must never be re-written by us.
+    const pending = all.filter(e => !e.synced && e.user === state.me && isSyncable(e, { syncMetrics: state.settings.syncMetrics }));
     state.sync.pending = pending.length;
     if (!pending.length) { state.sync.status = 'idle'; return; }
 
@@ -178,13 +181,16 @@ export async function pull(state, { full = false } = {}) {
 
     // Presence is a plain JSON file, not an event log.
     state.presence ??= {};
+    let presenceChanged = false;
     for (const f of all.filter(x => x.path.endsWith('presence.json'))) {
       const [, user] = f.path.split('/');
       const res2 = await api(state, `/contents/${f.path}?ref=${state.config.dataBranch}`);
       if (!res2.ok) continue;
       try {
         const json2 = await res2.json();
-        state.presence[user] = JSON.parse(b64decode(json2.content ?? ''));
+        const next = JSON.parse(b64decode(json2.content ?? ''));
+        if (next?.lastOpen !== state.presence[user]?.lastOpen) presenceChanged = true;
+        state.presence[user] = next;
       } catch { /* a torn heartbeat is not worth failing a pull over */ }
     }
 
@@ -217,7 +223,11 @@ export async function pull(state, { full = false } = {}) {
       state.events = await state.store.allEvents();
       const app = await import('./app.js');
       app.recompute();
-      // Never redraw the screen out from under a set in progress.
+    }
+    // The partner card reads the heartbeat, so a fresh one is worth a redraw
+    // even when no event came with it — but never out from under a set in progress.
+    if (added || presenceChanged) {
+      const app = await import('./app.js');
       const inSession = state.route.name === 'session';
       if (!inSession) app.render(); else state.dirty = true;
     }
@@ -227,4 +237,22 @@ export async function pull(state, { full = false } = {}) {
 /** Settings → Pull everything: rebuild this phone from the public branch. */
 export async function pullAll(state) {
   await pull(state, { full: true });
+}
+
+/**
+ * The rows of a backup file that belong in this phone's store, stamped for it.
+ * Only this user's events go back into the push queue; a partner's events in
+ * the export came from the public branch and are marked as already synced, so
+ * the flush never writes to a file another phone owns.
+ */
+export function prepareImport(rows, me, knownIds = new Set()) {
+  const seen = new Set(knownIds);
+  const out = [];
+  for (const e of Array.isArray(rows) ? rows : []) {
+    if (!e || typeof e !== 'object' || !e.id || seen.has(e.id)) continue;
+    if (validate(migrateEvent(e))) continue;                 // a torn or foreign row is not restored
+    seen.add(e.id);
+    out.push({ ...e, part: partOf(e), synced: e.user === me ? 0 : 1 });
+  }
+  return out;
 }

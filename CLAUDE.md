@@ -37,6 +37,15 @@ is the set of invariants that must survive every future change.
     missed, behind or lazy.
 12. **Bump `rulesVersion`** when XP or ladder rules change. XP, levels, regions,
     badges and the flame re-derive; locked weeks and resolved bosses stay frozen.
+13. **Everything in the XP table is paid, and everything paid is in the table.**
+    `gamify.progress` derives every line of `gamification.json → xp` (gates,
+    boss tests, duel wins, flame milestones, rekindles, boss loot included) and
+    Settings → How XP works labels each one in words. `test/home-view.test.js`
+    fails on an unlabelled key.
+14. **The frozen plan carries the prefill.** `slim()` keeps `target`, `last` and
+    `rest_sec` so DONE means "match last time" and the rest timer knows its
+    length; the engine's own week (`weekIndex`) is derived from `program_start`
+    inside the reducer, never read off the session.
 
 ## The safety chain, and why it is shaped this way
 
@@ -70,7 +79,8 @@ data/       program, gamification, copy — the app's behaviour lives here
 data/frag/  provenance: the per-group fragments program.json was assembled from
 design/     the full design outputs and the reviews that shaped them
 src/        reduce, engine, placement, gamify, boss, duo, sync, store, util
-src/views/  one file per screen, plus chrome.js (topbar/tabbar) and silhouette.js
+src/views/  one file per screen, plus chrome.js (topbar/tabbar), silhouette.js
+            and regions.js (the head-to-toe bars shared by Today and Body)
 test/       node:test, zero dependencies
 scripts/    assemble.mjs — an authoring aid, NOT a build step
 ```
@@ -89,9 +99,26 @@ registry in `engine.js` and a case to the linter — not special-casing a view.
 
 ## Things that look like bugs but are deliberate
 
-- **A partner who has set up but never trained does not make the boss solo.**
-  Halving its strength and doubling it back on their first log would rewrite the
-  battle underneath both users.
+- **A partner who has not trained inside the battle window makes the boss solo
+  (half strength).** Someone who installs the app two days before a battle cannot
+  be expected to test, and a full-strength boss would be unwinnable for the one
+  who did the work. Once the partner trains inside the window the boss is at full
+  strength, whether or not they have tested yet. `test/boss.test.js` pins both.
+- **A rest-day walk pays the walk (20 XP), never a full-quest bonus.** It is a
+  kindling, and paying it like a quest made Sunday the best-paid day of the week.
+- **A personal record is one per movement per session.** Two sets of twenty after
+  a best of twelve is one new best; the record is the best set of the session.
+- **A twinge never moves a ladder.** The pain sheet says a level 1-2 flag is only
+  noted, so only level 3+ flags on two different days step a ladder back, and
+  one such pair steps it back once, however many sessions follow.
+- **Recovery and Away days are not an absence.** The two-week gap regression
+  skips days spent in either mode; Settings promises nothing is taken away.
+- **A rung climbs on the session that earned it**, and its 100 XP is shown on
+  that session everywhere (completion screen, home card, journal) rather than
+  appearing only in the total.
+- **Progression judges only the rows that count.** A warm-up set marked
+  `counts_for_progression: false` (Tuesday's Y-T-W) never decides whether the
+  working sets of the same movement qualify.
 - **A changed benchmark variant scores zero improvement, not a regression.**
   Sixty swings with the bell after ninety with a dumbbell is progress.
 - **Armour is granted at placement but pays no XP.** It reflects what you can

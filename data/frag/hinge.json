@@ -2,7 +2,8 @@
   "exercises": [
     {
       "id": "hinge_deadlift",
-      "name": "Hinge drill to dumbbell RDL to kettlebell deadlift (HINGE GATE)",
+      "name": "Hinge and deadlift",
+      "ladder_note": "Hinge drill to dumbbell RDL to kettlebell deadlift (HINGE GATE)",
       "region": "glutes",
       "pattern": "hinge",
       "equipment": "wall, dumbbells 12/20/35, 53 lb kettlebell, vest",
@@ -195,7 +196,8 @@
     },
     {
       "id": "swing",
-      "name": "Swing ladder: two-hand dumbbell swing to 53 lb kettlebell swing to one-hand",
+      "name": "Swing",
+      "ladder_note": "Swing ladder: two-hand dumbbell swing to 53 lb kettlebell swing to one-hand",
       "region": "glutes",
       "pattern": "power",
       "equipment": "dumbbells 20/35 held by one end in both hands, 53 lb kettlebell",
@@ -444,7 +446,8 @@
     },
     {
       "id": "swing_density",
-      "name": "Saturday swing engine: EMOM to density clock",
+      "name": "Swing density",
+      "ladder_note": "Saturday swing engine: EMOM to density clock",
       "region": "glutes",
       "pattern": "power",
       "equipment": "wall, dumbbells 12/20/35, 53 lb kettlebell",

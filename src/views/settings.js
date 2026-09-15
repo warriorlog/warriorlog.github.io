@@ -17,7 +17,7 @@ export function render(state) {
     <div class="card stack">
       <h3>This phone</h3>
       <div class="xpline"><span class="muted">Logging as</span><strong>${u.profile?.name ?? state.me}</strong></div>
-      <div class="xpline"><span class="muted">Program starts</span><span>${u.profile?.program_start ?? '—'}</span></div>
+      <div class="xpline"><span class="muted">Week 1 began</span><span>${longDate(u.profile?.program_start)}</span></div>
       <div class="xpline"><span class="muted">Session length</span>
         <span class="chips">${raw([40, 45, 50].map(m =>
           `<button class="chip" data-action="minutes" data-key="min-${m}" data-v="${m}" aria-pressed="${(u.profile?.session_minutes ?? 50) === m}">${m} min</button>`).join(''))}</span></div>
@@ -72,10 +72,48 @@ export function render(state) {
     <div class="card stack">
       <h3>How XP works</h3>
       <p class="faint small">Every number in the app comes from this table. A set pays the same whatever the load, which is what keeps the weekly duel fair.</p>
-      ${raw(Object.entries(state.gam.xp).filter(([, v]) => typeof v === 'number')
-        .map(([k, v]) => `<div class="xpline"><span class="muted">${esc(k.replace(/_/g, ' '))}</span><strong>${v}</strong></div>`).join(''))}
+      ${raw(xpTable(state.gam))}
     </div>
   </div>`, tabbar(state));
+}
+
+/** The XP table in plain words. Only what the app actually pays is listed. */
+export const XP_LABELS = {
+  set_logged: 'Log a working set', set_met: 'Hit the set\'s target (on top)',
+  zone2_per_min: 'Zone-2 minute, talk test passed', zone2_talk_fail_per_min: 'Zone-2 minute, too breathless',
+  zone2_daily_cap_min: 'Zone-2 minutes paid per day, at most', interval_round: 'Interval round',
+  quest_full: 'Finish a full quest', quest_skirmish: 'Finish a skirmish', kindle_walk: 'Rest-day walk',
+  ember: 'Any session with a set in it', ladder_advance: 'Climb a rung', gate: 'Open a gate (hinge, bell, run)',
+  gear_tier: 'Armour tier earned above where you started', rep_pr: 'Personal record', pr_max_per_session: 'Records paid per session, at most',
+  placement: 'Finish the placement quiz', boss_per_benchmark: 'Boss test logged', boss_all_six: 'All six tests in one battle (on top)',
+  perfect_week: 'Perfect week', perfect_week_muster: 'Perfect setup week', rekindle: 'Relight the flame after it goes out',
+  duel_win: 'Win the week', duel_dead_heat: 'Dead heat',
+};
+const XP_PCT = { boss_defeated_pct: 'Boss defeated: share of a week\'s XP', boss_flawless_pct: 'Boss flawless: share of a week\'s XP' };
+
+export function xpTable(gam) {
+  const xp = gam.xp ?? {};
+  const rows = [];
+  for (const [k, label] of Object.entries(XP_LABELS)) {
+    if (typeof xp[k] !== 'number') continue;
+    rows.push(`<div class="xpline"><span class="muted">${esc(label)}</span><strong>${xp[k]}</strong></div>`);
+  }
+  for (const [k, label] of Object.entries(XP_PCT)) {
+    if (typeof xp[k] !== 'number') continue;
+    rows.push(`<div class="xpline"><span class="muted">${esc(label)}</span><strong>${Math.round(xp[k] * 100)}%</strong></div>`);
+  }
+  for (const [days, v] of Object.entries(xp.flame_milestones ?? {})) {
+    rows.push(`<div class="xpline"><span class="muted">Flame reaches ${esc(days)} days</span><strong>${v}</strong></div>`);
+  }
+  return rows.join('');
+}
+
+/** "2026-09-14" -> "Monday 14 September 2026", for the one place a full date is read. */
+function longDate(day) {
+  if (!day) return '—';
+  const [y, m, d] = String(day).split('-').map(Number);
+  if (!y) return String(day);
+  return new Date(y, m - 1, d, 12).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -186,9 +224,8 @@ export async function act(action, data, state) {
         try {
           const rows = JSON.parse(await file.text());
           if (!Array.isArray(rows)) throw new Error('not a Warriorlog export');
-          const have = new Set(state.events.map(e => e.id));
-          const fresh = rows.filter(e => e?.id && !have.has(e.id))
-            .map(e => ({ ...e, part: `${e.user}/${e.dev}/${String(e.day).slice(0, 7)}`, synced: 0 }));
+          const { prepareImport } = await import('../sync.js');
+          const fresh = prepareImport(rows, state.me, new Set(state.events.map(e => e.id)));
           if (fresh.length) await state.store.putEvents(fresh);
           state.events = await state.store.allEvents();
           recompute();

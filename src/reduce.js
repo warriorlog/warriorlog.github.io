@@ -3,7 +3,7 @@
 // stored — a rules change just re-runs this.
 import { TYPES, isFuture } from './events.js';
 import { indexSpec, resolveSteps, stepLadders, applyPainRegressions } from './engine.js';
-import { daysBetween } from './util.js';
+import { daysBetween, addDays, weekIndex } from './util.js';
 
 export const USERS = ['sean', 'cat'];
 
@@ -139,15 +139,31 @@ export function reduce(events, program, opts = {}) {
   return { users, spec };
 }
 
-/** Turn one session's logged sets into the per-exercise records the rules read. */
+const rowKey = (r) => `${r.exercise_id}|${r.set_index}|${r.side ?? ''}|${r.part ?? ''}`;
+
+/**
+ * Turn one session's logged sets into the per-exercise records the rules read.
+ *
+ * Only the sets that can move a ladder are judged: a row the time guard dropped,
+ * or one the template marked as practice, is logged and paid but never counted
+ * for or against the climb. Tuesday's Y-T-W is the case that matters — one
+ * warm-up set that never counts, then two working sets that do. Reading the
+ * whole exercise off its first planned row marked the working sets as practice
+ * too, and that ladder could never climb.
+ */
 export function perfFor(session, spec) {
   const byEx = {};
+  const plan = session.plan?.rows ?? [];
+  const planByKey = new Map(plan.map(r => [rowKey(r), r]));
+  const judged = (r) => r.prescribed !== false && r.counts_for_progression !== false;
+
   for (const set of session.sets) {
+    const row = planByKey.get(rowKey(set));
+    if (row && !judged(row)) continue;
     (byEx[set.exercise_id] ??= { sets: [], exercise_id: set.exercise_id, step_id: set.step_id }).sets.push(set);
   }
-  const plan = session.plan?.rows ?? [];
   for (const [exId, p] of Object.entries(byEx)) {
-    const planned = plan.filter(r => r.exercise_id === exId);
+    const planned = plan.filter(r => r.exercise_id === exId && judged(r));
     p.prescribed = planned.length || p.sets.length;
     p.allDone = p.sets.length >= p.prescribed;
     p.sessionType = session.type;
@@ -159,11 +175,21 @@ export function perfFor(session, spec) {
     p.cardioDone = p.cardioMinutes > 0;
     p.rpeBlock = p.sets.find(s => s.rpe_block != null)?.rpe_block ?? null;
     p.drops = p.sets.reduce((n, s) => n + (s.drops || 0), 0);
-    p.counts_for_progression = planned.length ? planned[0].counts_for_progression !== false : true;
+    p.counts_for_progression = true;
     p.zone2Min = p.sets.filter(s => s.unit === 'min' && s.talk_test_ok !== false).reduce((n, s) => n + (s.value || 0), 0);
     p.talkOk = p.sets.filter(s => s.unit === 'min').every(s => s.talk_test_ok !== false);
   }
   return byEx;
+}
+
+/** Days in (from, to] this user spent in Recovery or Away mode. */
+export function pausedDaysBetween(modes, from, to) {
+  if (!modes?.length) return 0;
+  let n = 0;
+  for (let d = addDays(from, 1); d <= to; d = addDays(d, 1)) {
+    if (modes.some(m => d >= m.from && (m.to ? d <= m.to : !m.closed))) n++;
+  }
+  return n;
 }
 
 /** Replay every finished session through the ladder stepper, in order. */
@@ -179,6 +205,9 @@ function deriveLadders(u, spec, opts = {}) {
     return [ex.id, { step_id: floorId, qualifying: 0, fails: 0, sessionsAtStep: 0, lastDay: null }];
   }));
 
+  const programStart = u.profile?.program_start ?? null;
+  const pausedDays = (from, to) => pausedDaysBetween(u.modes, from, to);
+
   for (const s of u.sessions) {
     const perfs = perfFor(s, spec);
     const painWindow = u.painFlags
@@ -186,7 +215,11 @@ function deriveLadders(u, spec, opts = {}) {
       .map(f => ({ ...f, daysAgo: daysBetween(f.day, s.day) }));
     const ctx = {
       day: s.day, spec, equipment: eq, steps, floor: u.floor, caps: u.caps,
-      weekIndex: s.week ?? 0, painFlags: painWindow,
+      // The calendar decides the program week (invariant 6). A session record
+      // carries no week of its own, and reading it as 0 held every rule that
+      // waits for a week — the interval ladder's opening rung — shut for ever.
+      weekIndex: weekIndex(s.day, programStart ?? s.day),
+      painFlags: painWindow, pausedDays,
       benchmarks: u.benchmarks, ladders: u.ladders,
     };
     const out = stepLadders(spec, u.ladders, perfs, ctx);

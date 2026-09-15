@@ -10,6 +10,8 @@ let sheet = null;          // the open ± stepper, if any
 let rest = null;           // { until, label } for the rest timer
 let ticker = null;
 
+let shownSession = null;   // which session the sheet, the timer and the ticked cues belong to
+
 export function render(state) { return view(state); }
 
 function view(state) {
@@ -17,6 +19,10 @@ function view(state) {
   const id = state.route.params.id;
   const s = u.openSession?.session_id === id ? u.openSession : u.sessions.find(x => x.session_id === id);
   if (!s) return html`<div class="empty">That quest is finished.<br><button class="btn ghost" data-action="nav" data-href="#/home">Home</button></div>`;
+
+  // A sheet, a rest timer or a ticked cue from an earlier quest has no business
+  // on this one.
+  if (shownSession !== s.session_id) { sheet = null; rest = null; stopTicker(); checklistState.clear(); shownSession = s.session_id; }
 
   const spec = state.spec;
   const rows = (s.plan?.rows ?? []).filter(r => r.prescribed !== false);
@@ -36,7 +42,7 @@ function view(state) {
       <button class="btn ghost" style="width:auto;padding:0 12px" data-action="finish" data-key="finish">Finish</button>
     </header>
     ${raw(cards)}
-    ${restTimer()}
+    ${raw(restTimer())}
     ${sheet ? raw(stepper(sheet, state)) : ''}
     <button class="btn ghost" data-action="end-early" data-key="end-early">End early and keep what I did</button>
   </div>`;
@@ -50,7 +56,7 @@ const key = (r) => `${r.exercise_id}|${r.set_index}|${r.side ?? ''}|${r.part ?? 
  * and this household's equipment at render time, so a stored session stays small
  * and still renders correctly.
  */
-function extras(r, state) {
+function extras(r, state, session = null) {
   const step = state.spec.byStep[r.step_id];
   const u = state.users[state.me];
   const eq = u.equipment ?? {};
@@ -59,19 +65,39 @@ function extras(r, state) {
     ? resolveVest(step.load.vest_pct, u.profile?.bodyweight_lb, eq, step.load.cap_lb ?? 30) : 0;
   return {
     mph: cardio?.mph, incline: cardio?.incline,
-    rest_sec: restFor(r, state) ?? 60,
+    // An interval block: rounds of hard work at one speed, easy at another.
+    interval: cardio?.rounds ? { rounds: cardio.rounds, work_sec: cardio.work_sec, rest_sec: cardio.rest_sec, mph_work: cardio.mph_work, mph: cardio.mph, incline: cardio.incline } : null,
+    rest_sec: r.rest_sec ?? restFor(r, state, session),
     implement_id: step?.implement_id, vest_lb: vest || undefined,
     minutes: r.minutes ?? cardio?.minutes,
   };
 }
 
-function restFor(r, state) {
-  for (const t of state.spec.templates ?? []) {
+/**
+ * The rest between sets for a row whose frozen plan predates `rest_sec`: the
+ * session's own template first (Tuesday's Y-T-W rests 45 s in the finisher and
+ * not at all in the warm-up), then any template that programs the movement.
+ */
+function restFor(r, state, session) {
+  const own = session ? [state.spec.byTemplate?.[session.template_id]].filter(Boolean) : [];
+  for (const t of [...own, ...(state.spec.templates ?? [])]) {
     for (const b of t.blocks ?? []) {
-      for (const it of b.items ?? []) if (it.exercise_id === r.exercise_id && it.rest_sec != null) return it.rest_sec;
+      for (const it of b.items ?? []) {
+        if (it.exercise_id === r.exercise_id && it.rest_sec != null && it.counts_for_progression !== false) return it.rest_sec;
+      }
     }
   }
   return 60;
+}
+
+/** Seconds as m:ss for the density clock rows. */
+const mmss = (sec) => `${Math.floor(sec / 60)}:${String(Math.round(sec) % 60).padStart(2, '0')}`;
+
+/** A logged or target value the way the row should print it. */
+function fmtRow(value, unit) {
+  if (value == null) return '';
+  if (unit === 'clock_sec') return mmss(Number(value));
+  return String(value);
 }
 
 function groupRows(rows) {
@@ -105,7 +131,7 @@ function climbFor(g, session, state) {
 
 /** "aim 15" on a set that has not reached the climb number yet; "on track" once it has. */
 function aimHint(r, hit, bar, shown) {
-  if (bar == null || r.unit === 'min' || r.unit === 'rounds') return '';
+  if (bar == null || r.unit === 'min' || r.unit === 'rounds' || r.unit === 'clock_sec') return '';
   const aim = `<span class="aim">${escape(t('session.climb.aim', { value: `${bar}${r.unit === 'sec' ? 's' : ''}` }))}</span>`;
   if (hit) return hit.value >= bar ? `<span class="aim on">${escape(t('session.climb.on_track'))}</span>` : aim;
   return shown != null && shown >= bar ? '' : aim;
@@ -116,7 +142,7 @@ function exerciseCard(g, spec, logged, state, session) {
   const step = spec.byStep[g.step_id];
   const allDone = g.rows.every(r => logged.has(key(r)));
   const climb = climbFor(g, session, state);
-  const rowsHtml = g.rows.map(r => setRow(r, logged.get(key(r)), step, state, climb?.bar ?? null)).join('');
+  const rowsHtml = g.rows.map(r => setRow(r, logged.get(key(r)), step, state, climb?.bar ?? null, session)).join('');
 
   // Have they ever logged this exact rung before? If not, the instructions open
   // themselves: nobody should have to hunt for how to do a movement they have
@@ -124,10 +150,12 @@ function exerciseCard(g, spec, logged, state, session) {
   const firstTime = !state.users[state.me].sessions.some(sess =>
     sess.sets.some(x => x.step_id === g.step_id));
 
+  // The cues are drawn from their state, so a re-render (every logged set is
+  // one) cannot show a cue as clear while the record still holds it as slipped.
   const checklist = step?.checklist_required && ex?.checklist
-    ? `<div class="checklist-head tiny">Tick anything you did not hit</div>
+    ? `<div class="checklist-head tiny">Tick anything you did not hit on the set you are about to log</div>
        <div class="checklist">${ex.checklist.cues.map((c, i) =>
-        `<button class="cue" data-action="cue" data-key="${g.exercise_id}-${i}" data-ex="${g.exercise_id}" data-i="${i}" aria-pressed="false">${escape(c)}</button>`).join('')}</div>`
+        `<button class="cue" data-action="cue" data-key="${g.exercise_id}-${i}" data-ex="${g.exercise_id}" data-i="${i}" aria-pressed="${checklistState.get(`${g.exercise_id}:${i}`) ? 'true' : 'false'}">${escape(c)}</button>`).join('')}</div>`
     : '';
 
   const cues = (ex?.cues ?? []).map(c => `<li>${escape(c)}</li>`).join('');
@@ -165,18 +193,27 @@ function implementLabel(step) {
   return 'bodyweight';
 }
 
-function setRow(r, hit, step, state, bar = null) {
-  const x = extras(r, state);
+/** What DONE logs for a row: last time's number inside the range, else the low end. */
+const prefill = (r, x) => (r.unit === 'min' ? x.minutes : (r.target ?? r.A));
+
+function setRow(r, hit, step, state, bar = null, session = null) {
+  const x = extras(r, state, session);
   const unit = r.unit === 'sec' ? 's' : r.unit === 'min' ? 'min' : r.unit === 'rounds' ? 'rounds' : '';
-  const shown = hit ? hit.value : (r.unit === 'min' ? x.minutes : r.A);
+  const shown = hit ? hit.value : prefill(r, x);
   const aim = aimHint(r, hit, bar, shown);
   const sideLabel = r.side ? ` ${r.side}` : r.part ? ` ${r.part.toUpperCase()}` : '';
-  const cardio = x.mph ? `${x.mph} mph · ${x.incline}%` : '';
+  // The treadmill settings this row wants. An interval row spells out its
+  // rounds; a flat "2.8 mph" beside "6 rounds" said nothing about the work.
+  const iv = x.interval;
+  const cardio = iv
+    ? `${iv.rounds} × ${mmss(iv.work_sec)} brisk at ${iv.mph_work} mph · ${mmss(iv.rest_sec)} easy at ${iv.mph} mph, ${iv.incline}%`
+    : x.mph ? `${x.mph} mph · ${x.incline}%` : '';
+  const last = !hit && r.last != null && r.unit !== 'min' ? `<span class="last">last ${escape(fmtRow(r.last, r.unit))}</span>` : '';
   return `<div class="setrow${hit ? ' logged' : ''}" data-row="${escape(key(r))}">
     <span class="setno">${r.set_index}${escape(sideLabel)}</span>
     <button class="target" data-action="edit" data-key="edit-${escape(key(r))}" data-row="${escape(key(r))}">
-      <span>${shown ?? ''}</span><span class="unit">${unit}</span>
-      ${cardio ? `<span class="last">${cardio}</span>` : (hit ? '' : (r.last != null ? `<span class="last">last ${r.last}</span>` : ''))}
+      <span>${escape(fmtRow(shown, r.unit))}</span><span class="unit">${unit}</span>
+      ${cardio ? `<span class="last">${escape(cardio)}</span>` : last}
       ${aim}
     </button>
     <button class="done-btn" data-action="done" data-key="done-${escape(key(r))}" data-row="${escape(key(r))}">${hit ? '✓' : 'DONE'}</button>
@@ -217,18 +254,21 @@ function painSheet(sh) {
   </div>`;
 }
 
+const UNIT_WORD = { sec: 'seconds', min: 'minutes', rounds: 'rounds', clock_sec: 'minutes : seconds', reps: 'reps' };
+
 function stepper(sh, state) {
   if (sh.mode === 'pain') return painSheet(sh);
-  const unit = sh.unit === 'sec' ? 'seconds' : sh.unit === 'min' ? 'minutes' : sh.unit === 'rounds' ? 'rounds' : 'reps';
+  const unit = UNIT_WORD[sh.unit] ?? 'reps';
+  const f = (v) => fmtRow(v, sh.unit);
   return `<div class="sheet-backdrop" data-action="close-sheet" data-key="close">
     <div class="sheet" data-stop>
       <div class="row-between"><h3>${escape(sh.name)}</h3><span class="tiny">${escape(unit)}</span></div>
       <div class="stepper">
-        <button data-action="dec" data-key="dec">−</button>
-        <span class="value" id="sheet-value">${sh.value}</span>
-        <button data-action="inc" data-key="inc">+</button>
+        <button data-action="dec" data-key="dec" aria-label="less">−</button>
+        <span class="value" id="sheet-value">${escape(f(sh.value))}</span>
+        <button data-action="inc" data-key="inc" aria-label="more">+</button>
       </div>
-      <div class="small muted center">Target ${sh.A}${sh.A !== sh.B ? ` to ${sh.B}` : ''}${sh.last != null ? ` · last time ${sh.last}` : ''}</div>
+      <div class="small muted center">Target ${escape(f(sh.A))}${sh.A !== sh.B ? ` to ${escape(f(sh.B))}` : ''}${sh.last != null ? ` · last time ${escape(f(sh.last))}` : ''}</div>
       ${sh.bar != null ? `<div class="small center climb-sheet">${escape(t('session.climb.sheet', { value: `${sh.bar}${sh.unit === 'sec' ? 's' : ''}` }))}</div>` : ''}
       <div style="height:14px"></div>
       ${sh.unit === 'min' ? talkTest(sh) : `<div class="tiny">How hard was that?</div>
@@ -277,8 +317,8 @@ export async function act(action, data, state) {
       if (!r) return;
       const already = s.sets.some(x => key(x) === data.row);
       if (already) return;                       // a second tap is not a second set
-      await logSet(state, s, r, r.unit === 'min' ? extras(r, state).minutes : r.A);
-      startRest(r, state);
+      await logSet(state, s, r, prefill(r, extras(r, state, s)));
+      startRest(r, state, s);
       return;
     }
 
@@ -286,9 +326,8 @@ export async function act(action, data, state) {
       const r = find(data.row);
       if (!r) return;
       const hit = s.sets.find(x => key(x) === data.row);
-      const step = state.spec.byStep[r.step_id];
       sheet = {
-        rowKey: data.row, value: hit?.value ?? (r.unit === 'min' ? extras(r, state).minutes : r.A),
+        rowKey: data.row, value: hit?.value ?? prefill(r, extras(r, state, s)),
         A: r.A, B: r.B, unit: r.unit, last: r.last ?? null, rir: hit?.rir ?? null,
         talk: hit ? hit.talk_test_ok !== false : true,
         bar: r.counts_for_progression === false || r.unit === 'min' || r.unit === 'rounds' ? null
@@ -300,10 +339,10 @@ export async function act(action, data, state) {
 
     case 'inc': case 'dec': {
       if (!sheet) return;
-      const stepBy = sheet.unit === 'sec' ? 5 : 1;
+      const stepBy = sheet.unit === 'sec' || sheet.unit === 'clock_sec' ? 5 : 1;
       sheet.value = Math.max(0, sheet.value + (action === 'inc' ? stepBy : -stepBy));
       const el = document.getElementById('sheet-value');
-      if (el) el.textContent = sheet.value;
+      if (el) el.textContent = fmtRow(sheet.value, sheet.unit);
       return;
     }
 
@@ -316,7 +355,7 @@ export async function act(action, data, state) {
       const value = sheet.value, rir = sheet.rir;
       const extra = sheet.unit === 'min' ? { talk_test_ok: sheet.talk } : { rir };
       sheet = null;
-      if (r) { await logSet(state, s, r, value, extra); startRest(r, state); }
+      if (r) { await logSet(state, s, r, value, extra); startRest(r, state, s); }
       return;
     }
 
@@ -342,15 +381,18 @@ export async function act(action, data, state) {
 
     case 'pain-save': {
       const r = find(sheet?.rowKey);
-      const region = sheet?.region ?? 'other';
-      const level = sheet?.level ?? 4;
+      // The button is drawn disabled until a region is chosen; a tap that gets
+      // through anyway must not file a flag against "somewhere".
+      if (!sheet?.region) return;
+      const region = sheet.region;
+      const level = sheet.level ?? 4;
       sheet = null;
       if (r) {
         await dispatch(TYPES.PAIN, { exercise_id: r.exercise_id, step_id: r.step_id, region, level });
         const { toast } = await import('../app.js');
         toast(level >= 3
-          ? 'Noted. Stop this exercise for today. Two of these in a week and the app steps you back a rung.'
-          : 'Noted. Keep an eye on it.');
+          ? 'Noted. Stop this exercise for today. Real pain on two different days in a week steps this ladder back a rung.'
+          : 'Noted. A twinge is kept on this phone and never moves a ladder.');
       }
       return;
     }
@@ -361,11 +403,13 @@ export async function act(action, data, state) {
       if (!s) return;
       const done = s.sets.length;
       const prescribed = rows.filter(r => r.prescribed !== false).length;
-      const type = action === 'end-early' && done < prescribed ? 'ember' : (s.type ?? 'full');
+      // Finishing with sets still open is the same as ending early: the quest
+      // is recorded as ended early, never as a full quest it was not.
+      const type = done < prescribed ? 'ember' : (s.type ?? 'full');
       await dispatch(TYPES.SESSION_END, {
         session_id: s.session_id, duration_min: minutesSince(s.started_at), type,
       }, { render: false });
-      rest = null; stopTicker(); sheet = null;
+      rest = null; stopTicker(); sheet = null; checklistState.clear();
       go(`#/complete/${s.session_id}`);
       return;
     }
@@ -373,22 +417,27 @@ export async function act(action, data, state) {
 }
 
 async function logSet(state, session, r, value, extra = {}) {
-  const x = extras(r, state);
-  const anyAmber = [...checklistState.entries()].some(([k, v]) => k.startsWith(`${r.exercise_id}:`) && v);
+  const x = extras(r, state, session);
+  const step = state.spec.byStep[r.step_id];
+  const cues = [...checklistState.keys()].filter(k => k.startsWith(`${r.exercise_id}:`));
+  const anyAmber = cues.some(k => checklistState.get(k));
   await dispatch(TYPES.SET, {
     session_id: session.session_id, exercise_id: r.exercise_id, step_id: r.step_id,
     set_index: r.set_index, side: r.side ?? null, part: r.part ?? null,
     unit: r.unit, value, A: r.A, B: r.B,
     implement_id: x.implement_id, vest_lb: x.vest_lb,
-    checklist_ok: r.unit === 'reps' ? !anyAmber : undefined,
+    checklist_ok: step?.checklist_required ? !anyAmber : undefined,
     talk_test_ok: r.unit === 'min' ? true : undefined,
     done: true, ...extra,
-  });
+  }, { render: false });
+  // The ticks described the set just logged; the next set starts clean.
+  for (const k of cues) checklistState.delete(k);
+  rerender();
   beep();
 }
 
-function startRest(r, state) {
-  const secs = extras(r, state).rest_sec;
+function startRest(r, state, session = null) {
+  const secs = extras(r, state, session).rest_sec;
   if (!secs) return;
   rest = { until: Date.now() + secs * 1000, label: 'Rest' };
   stopTicker();
@@ -402,6 +451,8 @@ function startRest(r, state) {
     }
     if (left <= 0) { rest = null; stopTicker(); beep(); rerender(); }
   }, 250);
+  // The set was drawn before the timer existed; draw it again so the clock shows.
+  rerender();
 }
 
 function stopTicker() { if (ticker) { clearInterval(ticker); ticker = null; } }

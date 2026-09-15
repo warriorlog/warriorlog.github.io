@@ -4,7 +4,8 @@ import { openStore, settings as settingsStore, deviceId } from './store.js';
 import { makeEvent, validate, TYPES } from './events.js';
 import { reduce } from './reduce.js';
 import { indexSpec, prescribe } from './engine.js';
-import { progress } from './gamify.js';
+import { progress, withDuo } from './gamify.js';
+import { duoBadgeMetrics } from './duo.js';
 import { dayKey, newId, html, raw } from './util.js';
 
 import * as setupView from './views/setup.js';
@@ -91,12 +92,16 @@ export function recompute() {
   state.users = out.users;
   for (const [id, u] of Object.entries(state.users)) u.id = id;
   const mine = state.users[state.me];
-  state.progress = progress(mine, state.spec, state.gam, dayKey());
+  const today = dayKey();
+  state.progress = progress(mine, state.spec, state.gam, today);
   // The partner's numbers come from the same reducer run over their events, so
   // both phones compute the duel identically.
   const other = state.users[partnerId()];
-  state.partnerProgress = other?.sessions.length ? progress(other, state.spec, state.gam, dayKey()) : null;
-  state.plan = mine.quizDone ? prescribe(state.spec, mine, dayKey(), {}) : null;
+  state.partnerProgress = other?.sessions.length ? progress(other, state.spec, state.gam, today) : null;
+  // The duo badges need both logs, so they are judged here, once both are in hand.
+  const duo = duoBadgeMetrics(mine, other, state.spec, state.gam, today, state.progress, state.partnerProgress);
+  if (duo) state.progress = withDuo(state.progress, duo, state.gam);
+  state.plan = mine.quizDone ? prescribe(state.spec, mine, today, {}) : null;
 }
 
 export const me = () => state.users[state.me];
@@ -185,6 +190,9 @@ function queueSync() {
 async function onClick(e) {
   const el = e.target.closest('[data-action]');
   if (!el) return;
+  // A control drawn as disabled must not act. The pain sheet's "Log it" waits
+  // for a region this way, and a tap that is still being handled is one tap.
+  if (el.getAttribute('aria-disabled') === 'true') return;
   const action = el.dataset.action;
 
   if (action === 'nav') { go(el.dataset.href); return; }

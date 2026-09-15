@@ -6,7 +6,7 @@
 // ordinal. A wall push-up pays exactly what a vest push-up pays. That is what
 // keeps the duel fair between two people of different strength, and it removes
 // any incentive to reach for the 53 lb bell before it has been earned.
-import { addDays, daysBetween, dayKey, isoWeekKey, weekStart, dow, clamp } from './util.js';
+import { addDays, daysBetween, dayKey, isoWeekKey, weekStart, weekIndex, dow, clamp } from './util.js';
 
 // ---------------------------------------------------------------- levels
 export function xpForLevel(level, g) {
@@ -58,8 +58,7 @@ export function xpForSession(session, spec, g, history = { best: {}, sessionsAtS
   const rowsByKey = new Map((session.plan?.rows ?? []).map(r => [`${r.exercise_id}|${r.set_index}|${r.side ?? ''}|${r.part ?? ''}`, r]));
 
   let zone2Paid = 0;
-  let prCount = 0;
-  const prs = [];
+  const bestHere = new Map();      // exercise:step -> the best set of THIS session
 
   for (const set of session.sets) {
     const row = rowsByKey.get(`${set.exercise_id}|${set.set_index}|${set.side ?? ''}|${set.part ?? ''}`);
@@ -78,30 +77,71 @@ export function xpForSession(session, spec, g, history = { best: {}, sessionsAtS
       add(set.talk_test_ok === false ? 'cardio' : 'zone2', Math.round(mins * rate));
       continue;
     }
-    if (set.unit === 'rounds') { add('intervals', (set.value ?? 0) * (xp.interval_round ?? 12)); continue; }
+    if (set.unit === 'rounds') {
+      // An interval block pays for the rounds in the block, never more: a row
+      // that once read its 19-minute length as 19 rounds must not pay for 19.
+      const step = spec.byStep?.[set.step_id];
+      const cap = step?.cardio?.rounds ?? step?.B ?? null;
+      const rounds = cap ? Math.min(set.value ?? 0, cap) : (set.value ?? 0);
+      add('intervals', rounds * (xp.interval_round ?? 12));
+      continue;
+    }
 
     if (!logged(row, set)) continue;
     add('sets', xp.set_logged ?? 10);
     if (met(row, set)) add('sets', xp.set_met ?? 5);
 
-    // A personal record needs prior history at this exact step, so day one is
-    // never a shower of records.
     const key = `${set.exercise_id}:${set.step_id}`;
+    const cur = bestHere.get(key);
+    const beats = (a, b) => (set.unit === 'clock_sec' ? a < b : a > b);
+    if (!cur || beats(set.value, cur.value)) bestHere.set(key, set);
+  }
+
+  // A personal record needs prior history at this exact step, so day one is
+  // never a shower of records — and it is one record per movement per session:
+  // two sets of twenty after a best of twelve is one new best, not two.
+  const prs = [];
+  for (const [key, set] of bestHere) {
     const prior = history.best?.[key];
     const seen = history.sessionsAtStep?.[key] ?? 0;
     const better = set.unit === 'clock_sec' ? (prior != null && set.value < prior) : (prior != null && set.value > prior);
-    if (seen >= 1 && better && prCount < (xp.pr_max_per_session ?? 3)) {
-      prCount++; prs.push({ ...set, previous: prior });
+    if (seen >= 1 && better && prs.length < (xp.pr_max_per_session ?? 3)) {
+      prs.push({ ...set, previous: prior });
       add('records', xp.rep_pr ?? 25);
     }
   }
 
   const type = session.type ?? 'full';
   const completed = isComplete(session, spec);
-  if (completed) add('quest', type === 'skirmish' ? (xp.quest_skirmish ?? 25) : (xp.quest_full ?? 50));
+  // A rest-day walk is a kindling, not a quest: it pays what the rest-day card
+  // promises (the kindle line in the XP table), never a full quest bonus.
+  if (completed) add('quest', type === 'kindle' ? (xp.kindle_walk ?? 20) : type === 'skirmish' ? (xp.quest_skirmish ?? 25) : (xp.quest_full ?? 50));
   else if (session.sets.length) add('quest', xp.ember ?? 5);
 
   return { total: Object.values(by).reduce((a, b) => a + b, 0), by_source: by, prs, zone2_min: zone2Paid };
+}
+
+/**
+ * The XP one full week of the plan can pay, read off the templates: every
+ * working set logged and met, every Zone-2 minute, every quest bonus. The duel's
+ * XP term and the boss loot are both measured against this number.
+ */
+export function xpAvailableWeek(spec, gam) {
+  const xp = gam.xp ?? {};
+  const Z2 = new Set(['treadmill_zone2', 'zone2_finisher', 'vest_walk', 'march_step_zone2']);
+  let total = 0;
+  for (const t of spec.templates ?? []) {
+    if (!t.minutes) continue;
+    let rows = 0, minutes = 0;
+    for (const b of t.blocks ?? []) for (const it of b.items ?? []) {
+      const ex = spec.byExercise?.[it.exercise_id];
+      if (!ex || ex.no_xp) continue;
+      if (Z2.has(ex.id)) minutes += it.time_override_min ?? 30;
+      else rows += it.sets ?? 1;
+    }
+    total += rows * ((xp.set_logged ?? 10) + (xp.set_met ?? 5)) + minutes * (xp.zone2_per_min ?? 3) + (xp.quest_full ?? 50);
+  }
+  return Math.max(1, Math.round(total));
 }
 
 /** Every prescribed row has a logged value. */
@@ -216,18 +256,21 @@ export function dayStatuses(user, g, today) {
 
 const firstDay = (user) => user.sessions[0]?.day ?? null;
 
-/** The flame count, its state, and the best it has ever been. */
+/** The flame count, its state, the best it has ever been, and how often it was relit. */
 export function flame(user, g, today) {
   const f = g.flame ?? {};
   const { statuses, shieldsLeft } = dayStatuses(user, g, today);
   const days = [...statuses.keys()];
 
-  let count = 0, best = 0, state = 'lit', emberFrom = null;
+  let count = 0, best = 0, state = 'lit', emberFrom = null, rekindles = 0, wasOut = false;
   for (const d of days) {
     const s = statuses.get(d);
-    if (s === 'trained' || s === 'rest' || s === 'shield') { count++; best = Math.max(best, count); state = 'lit'; }
+    if (s === 'trained' || s === 'rest' || s === 'shield') {
+      if (count === 0 && wasOut) { rekindles++; wasOut = false; }
+      count++; best = Math.max(best, count); state = 'lit';
+    }
     else if (s === 'recovery' || s === 'away' || s === 'pending') { /* frozen: no change */ }
-    else { if (count > 0) { state = 'ember'; emberFrom = d; } count = 0; }
+    else { if (count > 0) { state = 'ember'; emberFrom = d; wasOut = true; } count = 0; }
   }
   // An ember keeps showing the old count for a week, and two quests restore it.
   let emberCount = 0;
@@ -238,7 +281,7 @@ export function flame(user, g, today) {
       emberCount = [...statuses.entries()].reduce((n, [d, s]) => (d < emberFrom && (s === 'trained' || s === 'rest' || s === 'shield') ? n + 1 : d < emberFrom ? 0 : n), 0);
     }
   }
-  return { count, best, state, shields: shieldsLeft, ember_count: emberCount, statuses };
+  return { count, best, state, shields: shieldsLeft, ember_count: emberCount, rekindles, statuses };
 }
 
 /**
@@ -251,7 +294,7 @@ export function flame(user, g, today) {
 export function perfectWeeks(user, spec, gam, statuses, today = dayKey()) {
   const cfg = gam.perfect_week ?? {};
   const first = user.sessions[0]?.day;
-  if (!first) return { count: 0, weeks: [] };
+  if (!first) return { count: 0, weeks: [], xp: 0 };
 
   const byWeek = new Map();
   for (const s of user.sessions) {
@@ -262,10 +305,12 @@ export function perfectWeeks(user, spec, gam, statuses, today = dayKey()) {
   }
 
   const weeks = [];
+  const xp = gam.xp ?? {};
   for (const [weekId, sessions] of byWeek) {
     const start = weekStart(sessions[0].day);
     const programStart = user.profile?.program_start;
-    const programWeek = programStart ? Math.floor(daysBetween(programStart, start) / 7) + 1 : 1;
+    // Calendar-anchored, exactly as the engine counts weeks (invariant 6).
+    const programWeek = programStart ? weekIndex(start, programStart) : 1;
     let prescribed = 0;
     let shields = 0;
     for (let i = 0; i < 7; i++) {
@@ -280,12 +325,15 @@ export function perfectWeeks(user, spec, gam, statuses, today = dayKey()) {
     }
     const done = sessions.filter(s => s.sets.length).length;
     const full = sessions.filter(s => s.type === 'full' && isComplete(s, spec)).length;
-    // The partial setup week asks for fewer full quests, never for fewer than three.
-    const minFull = programWeek <= 0 ? (cfg.muster_min_full ?? 3) : (cfg.min_full ?? 4);
+    // The partial setup week asks for fewer full quests, never for fewer than
+    // three — and pays the smaller bonus the XP table lists for it.
+    const muster = programWeek <= 0;
+    const minFull = muster ? (cfg.muster_min_full ?? 3) : (cfg.min_full ?? 4);
     const perfect = prescribed > 0 && done >= prescribed && full >= minFull && shields === 0;
-    weeks.push({ week_id: weekId, prescribed, done, full, shields, perfect });
+    const bonus = perfect ? (muster ? (xp.perfect_week_muster ?? 150) : (xp.perfect_week ?? 300)) : 0;
+    weeks.push({ week_id: weekId, start, programWeek, prescribed, done, full, shields, perfect, xp: bonus });
   }
-  return { count: weeks.filter(w => w.perfect).length, weeks };
+  return { count: weeks.filter(w => w.perfect).length, weeks, xp: weeks.reduce((n, w) => n + w.xp, 0) };
 }
 
 // ---------------------------------------------------------------- gear
@@ -324,7 +372,12 @@ export function evalCriterion(c, m) {
     case 'duo_flame': return cmp(m.duo?.flame ?? 0, c.value, op);
     case 'level': return cmp(m.level.level, c.value, op);
     case 'xp_total': return cmp(m.xpTotal, c.value, op);
-    case 'sessions_completed': return cmp(m.sessions.filter(s => !c.type || s.type === c.type).length, c.value, op);
+    case 'sessions_completed':
+      // "Between the two of you inside one four-week block" needs the partner's
+      // log; until it is there the badge stays dark rather than lighting on one
+      // person's count alone.
+      if (c.both_users) return cmp(m.duo?.blockSessionsMax ?? 0, c.value, op);
+      return cmp(m.sessions.filter(s => !c.type || s.type === c.type).length, c.value, op);
     case 'skirmish_count': return cmp(m.sessions.filter(s => s.type === 'skirmish').length, c.value, op);
     case 'steps_gained': return cmp(m.user.climbs.length, c.value, op);
     case 'pr_count': return cmp(m.prCount, c.value, op);
@@ -335,7 +388,9 @@ export function evalCriterion(c, m) {
     case 'ladder_step': return atOrPastStep(m, c.exercise, c.step_id);
     case 'gate_passed': return !!m.gates?.[c.gate];
     case 'gear_min_tier': return cmp(Math.min(...Object.values(m.gear).map(x => x.tier)), c.value, op);
-    case 'zone2_week_minutes': return cmp(Math.max(0, ...Object.values(m.zone2ByWeek)), c.value, op);
+    case 'zone2_week_minutes':
+      if (c.as_pct_of_prescribed || c.both_users) return cmp(m.duo?.zone2WeeksRun ?? 0, c.consecutive_weeks ?? 1, op);
+      return cmp(Math.max(0, ...Object.values(m.zone2ByWeek)), c.value, op);
     case 'benchmark_value': {
       const v = m.user.benchmarks?.[c.id]?.value;
       return v != null && cmp(v, c.value, op);
@@ -355,24 +410,43 @@ export function evalCriterion(c, m) {
       });
     }
     case 'boss_benchmarks_logged': {
-      const battle = m.user.bossResolved?.[c.battle_n];
-      return (battle?.logged_benchmarks ?? 0) >= (c.value ?? 6);
+      // Counted from the tests actually logged, so the badge lights the moment
+      // the sixth result lands rather than waiting for the battle to be sealed.
+      const logged = new Set((m.user.benchmarkHistory ?? []).filter(r => r.battle_n === c.battle_n).map(r => r.benchmark_id)).size;
+      const sealed = m.user.bossResolved?.[c.battle_n]?.logged_benchmarks ?? 0;
+      return Math.max(logged, sealed) >= (c.value ?? 6);
     }
     case 'boss_outcome': return Object.values(m.user.bossResolved ?? {}).some(b =>
-      b.outcome === c.outcome && (c.battle_n == null || b.battle_n === c.battle_n));
+      b.outcome === c.outcome && (c.battle_n == null || b.battle_n === c.battle_n)
+      // "Neither of you could have alone": the two strikes each fall short of the
+      // boss, and only the synergy of the smaller one counted twice brings it down.
+      && (!c.synergy_required || (b.partner_damage != null && b.my_damage != null
+        && b.my_damage + b.partner_damage < b.hp && b.damage >= b.hp)));
     case 'duel_status': {
-      const locks = Object.values(m.user.weekLocks ?? {});
-      if (c.consecutive) return runOf(locks, l => l.status === c.status) >= c.consecutive;
+      const locks = sortedLocks(m.user);
+      if (c.status === 'belt_changed') {
+        // The belt changing hands n weeks running: contested weeks, alternating winners.
+        const contested = locks.filter(l => l.status === 'contested' && l.winner);
+        let run = 0, best = 0;
+        for (let i = 1; i < contested.length; i++) {
+          run = contested[i].winner !== contested[i - 1].winner ? run + 1 : 0;
+          best = Math.max(best, run);
+        }
+        return best >= (c.value ?? 1);
+      }
+      if (c.consecutive) return runOf(locks, l => l.status === c.status) >= (c.value ?? 1);
       return locks.filter(l => l.status === c.status).length >= (c.value ?? 1);
     }
     case 'duel_sum_s': return Object.values(m.user.weekLocks ?? {}).some(l => (l.S_me ?? 0) + (l.S_partner ?? 0) >= c.value);
     case 'both_gate_passed': return !!(m.gates?.[c.gate] && m.duo?.partnerGates?.[c.gate]);
     case 'duo_same_day_sessions': return cmp(m.duo?.sameDayCount ?? 0, c.value, op);
     case 'duo_perfect_week': return !!m.duo?.perfectWeekTogether;
-    case 'rekindled': return c.duo ? !!m.duo?.rekindled : !!m.rekindled;
+    case 'rekindled': return c.duo ? (m.duo?.rekindles ?? 0) >= 1 : (m.flame.rekindles ?? 0) >= 1;
     default: return false;
   }
 }
+
+const sortedLocks = (user) => Object.values(user.weekLocks ?? {}).sort((a, b) => (a.week_id < b.week_id ? -1 : a.week_id > b.week_id ? 1 : 0));
 
 const runOf = (list, fn) => list.reduce((acc, x) => fn(x) ? { cur: acc.cur + 1, max: Math.max(acc.max, acc.cur + 1) } : { cur: 0, max: acc.max }, { cur: 0, max: 0 }).max;
 
@@ -387,14 +461,27 @@ function atOrPastStepId(m, exercise, haveId, needId) {
   return ladder.findIndex(s => s.id === haveId) >= ladder.findIndex(s => s.id === needId);
 }
 
-/** Which badges are earned, and on what day each was first true. */
+/** Which badges are earned. */
 export function badges(metrics, g) {
   const out = [];
   for (const b of g.badges ?? []) {
-    const earned = evalCriterion(b.criterion, metrics);
-    out.push({ ...b, earned, earned_on: earned ? (metrics.earnedOn?.[b.id] ?? null) : null });
+    let earned = false;
+    try { earned = evalCriterion(b.criterion, metrics); } catch { earned = false; }
+    out.push({ ...b, earned });
   }
   return out;
+}
+
+/**
+ * Re-judge the badges with the partner's numbers in hand. `progress` itself
+ * knows one user; the duo badges (the shared flame, training in step, the boss
+ * brought down together) need both, so the app computes those metrics in duo.js
+ * and hands them in here. Nothing about XP changes — only which badges are lit.
+ */
+export function withDuo(prog, duo, g) {
+  if (!prog || !duo) return prog;
+  const metrics = { ...prog.metrics, duo };
+  return { ...prog, metrics, badges: badges(metrics, g) };
 }
 
 // ---------------------------------------------------------------- roll-up
@@ -405,17 +492,34 @@ export function progress(user, spec, g, today = dayKey()) {
   let xpTotal = 0, prCount = 0;
   const bySource = {};
   const perSession = [];
+  const xp = g.xp ?? {};
+
+  // A rung climbs on the session that earned it, so its XP belongs to that
+  // session: the completion screen, the home card and the weekly report all
+  // read one number and agree. Climbs only ever come from full sessions.
+  const climbsByDay = new Map();
+  for (const c of user.climbs) (climbsByDay.get(c.day) ?? climbsByDay.set(c.day, []).get(c.day)).push(c);
+  const attributed = new Set();
 
   for (const s of user.sessions) {
     const gained = xpForSession(s, spec, g, { best, sessionsAtStep });
-    xpTotal += gained.total;
+    const climbs = (s.type === 'full' || s.type == null) && !attributed.has(s.day) ? (climbsByDay.get(s.day) ?? []) : [];
+    if (climbs.length) attributed.add(s.day);
+    const climbXp = climbs.length * (xp.ladder_advance ?? 100);
+    const by = { ...gained.by_source };
+    if (climbXp) by.climbs = climbXp;
+
+    xpTotal += gained.total + climbXp;
     prCount += gained.prs.length;
-    for (const [k, v] of Object.entries(gained.by_source)) bySource[k] = (bySource[k] ?? 0) + v;
+    for (const [k, v] of Object.entries(by)) bySource[k] = (bySource[k] ?? 0) + v;
     const r = regionXpForSession(s, spec, g, gained);
     for (const [k, v] of Object.entries(r)) regions[k] += v;
     const wk = isoWeekKey(s.day);
     zone2ByWeek[wk] = (zone2ByWeek[wk] ?? 0) + gained.zone2_min;
-    perSession.push({ session_id: s.session_id, day: s.day, xp: gained.total, by_source: gained.by_source, prs: gained.prs, fidelity: fidelity(s, spec) });
+    perSession.push({
+      session_id: s.session_id, day: s.day, type: s.type ?? 'full',
+      xp: gained.total + climbXp, by_source: by, prs: gained.prs, climbs, fidelity: fidelity(s, spec),
+    });
 
     for (const set of s.sets) {
       const key = `${set.exercise_id}:${set.step_id}`;
@@ -426,11 +530,14 @@ export function progress(user, spec, g, today = dayKey()) {
       else best[key] = Math.max(prior, set.value);
     }
   }
+  // A climb whose day has no full session on record (an override, say) is still paid.
+  for (const [day, list] of climbsByDay) {
+    if (attributed.has(day)) continue;
+    const n = list.length * (xp.ladder_advance ?? 100);
+    xpTotal += n; bySource.climbs = (bySource.climbs ?? 0) + n;
+  }
 
-  const xp = g.xp ?? {};
   if (user.quizDone) { xpTotal += xp.placement ?? 150; bySource.setup = (bySource.setup ?? 0) + (xp.placement ?? 150); }
-  const climbXp = user.climbs.length * (xp.ladder_advance ?? 100);
-  xpTotal += climbXp; if (climbXp) bySource.climbs = climbXp;
 
   // Armour reflects what you can wear today, so a stronger starter is placed
   // straight into Bronze. XP is for what you EARN, though, so only tiers gained
@@ -442,29 +549,84 @@ export function progress(user, spec, g, today = dayKey()) {
   xpTotal += gearXp; if (gearXp) bySource.armour = gearXp;
 
   const fl = flame(user, g, today);
-  const level = levelFor(xpTotal, g);
   const gates = {
     hinge: atOrPastStep({ spec, user }, 'hinge_deadlift', 'hinge_deadlift.kb53_floor'),
     bell: atOrPastStep({ spec, user }, 'swing', 'swing.deadstop_53'),
     run: atOrPastStep({ spec, user }, 'treadmill_intervals', 'treadmill_intervals.jog_8'),
   };
+  // The three gates are the program's real milestones, and the XP table has
+  // always listed a price for opening one.
+  const gateXp = Object.values(gates).filter(Boolean).length * (xp.gate ?? 75);
+  xpTotal += gateXp; if (gateXp) bySource.gates = gateXp;
 
   const perfect = perfectWeeks(user, spec, g, fl.statuses, today);
-  const perfectXp = perfect.count * (xp.perfect_week ?? 300);
-  xpTotal += perfectXp; if (perfectXp) bySource.perfect_weeks = perfectXp;
+  xpTotal += perfect.xp; if (perfect.xp) bySource.perfect_weeks = perfect.xp;
 
+  // The flame: milestones as the best run passes each one, and a rekindle each
+  // time it is relit after going out.
+  const milestoneXp = Object.entries(xp.flame_milestones ?? {})
+    .reduce((n, [days, v]) => n + (fl.best >= Number(days) ? v : 0), 0);
+  xpTotal += milestoneXp; if (milestoneXp) bySource.flame = milestoneXp;
+  const rekindleXp = (fl.rekindles ?? 0) * (xp.rekindle ?? 50);
+  xpTotal += rekindleXp; if (rekindleXp) bySource.flame = (bySource.flame ?? 0) + rekindleXp;
+
+  // Boss battles: every test logged pays, all six in one battle pays a little
+  // more, and a boss brought down shares out its loot as a slice of the week.
+  const byBattle = new Map();
+  for (const r of user.benchmarkHistory ?? []) {
+    if (r.battle_n == null) continue;
+    (byBattle.get(r.battle_n) ?? byBattle.set(r.battle_n, new Set()).get(r.battle_n)).add(r.benchmark_id);
+  }
+  let bossXp = 0;
+  for (const tests of byBattle.values()) {
+    bossXp += tests.size * (xp.boss_per_benchmark ?? 30);
+    if (tests.size >= (g.boss_benchmarks?.length ?? 6)) bossXp += xp.boss_all_six ?? 20;
+  }
+  const weekXp = xpAvailableWeek(spec, g);
+  for (const b of Object.values(user.bossResolved ?? {})) {
+    const pct = b.outcome === 'flawless' ? (xp.boss_flawless_pct ?? 0.2) : b.outcome === 'defeated' ? (xp.boss_defeated_pct ?? 0.1) : 0;
+    bossXp += Math.round(weekXp * pct);
+  }
+  xpTotal += bossXp; if (bossXp) bySource.boss = bossXp;
+
+  // The duel: a week won, or shared, is paid once its record is locked.
+  let duelXp = 0;
+  for (const l of Object.values(user.weekLocks ?? {})) {
+    if (l.status === 'contested' && l.winner === user.id) duelXp += xp.duel_win ?? 100;
+    else if (l.status === 'dead_heat') duelXp += xp.duel_dead_heat ?? 50;
+  }
+  xpTotal += duelXp; if (duelXp) bySource.duel = duelXp;
+
+  const level = levelFor(xpTotal, g);
   const metrics = {
     user, spec, xpTotal, level, flame: fl, gear, gates, prCount,
     sessions: user.sessions, allSets: user.sessions.flatMap(s => s.sets),
     pledgesKept: user.pledges.filter(p => p.kept).length,
-    perfectWeeks: perfect.count, zone2ByWeek, rekindled: fl.state === 'lit' && fl.best > fl.count,
-    duo: null, earnedOn: {},
+    perfectWeeks: perfect.count, zone2ByWeek,
+    duo: null,
   };
 
   return {
     xp_total: xpTotal, by_source: bySource, level, flame: fl, gear, gates,
     regions: Object.fromEntries(Object.entries(regions).map(([k, v]) => [k, { xp: v, level: regionLevel(v, g) }])),
     zone2_by_week: zone2ByWeek, sessions: perSession, perfect_weeks: perfect,
+    xp_available_week: weekXp,
     badges: badges(metrics, g), metrics,
   };
+}
+
+// ---------------------------------------------------------------- regions, for the screens
+/**
+ * One body part's bar, the way both the home card and the body screen draw it:
+ * all-time XP for that part, and how far it sits between its current level and
+ * the next. `pct` is 0 at a fresh level so an empty bar reads as empty.
+ */
+export function regionBar(region, g) {
+  const div = g.region_level?.divisor ?? 40;
+  const xp = Math.max(0, region?.xp ?? 0);
+  const level = regionLevel(xp, g);
+  const floor = div * level * level;
+  const next = div * (level + 1) * (level + 1);
+  const pct = next > floor ? Math.round(((xp - floor) / (next - floor)) * 100) : 100;
+  return { xp: Math.round(xp), level, floor, next, to_next: Math.max(0, next - Math.round(xp)), pct: Math.min(100, Math.max(0, pct)) };
 }

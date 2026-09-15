@@ -212,9 +212,16 @@ function screenAnswers(state, answers) {
   return out;
 }
 
-function nextMonday() {
-  const d = new Date();
-  d.setDate(d.getDate() + ((8 - d.getDay()) % 7 || 7));
+/**
+ * Week 1 starts on the next Monday — or today, when today is a Monday. Setting
+ * up on a Monday used to push the start a full week out, which made that whole
+ * week a "Muster" week at reduced sets for someone ready to begin.
+ */
+export function programStartFor(today = new Date()) {
+  const d = new Date(today);
+  d.setDate(d.getDate() + ((8 - d.getDay()) % 7));
   const p = (n) => String(n).padStart(2, '0');
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
+
+const nextMonday = () => programStartFor(new Date());

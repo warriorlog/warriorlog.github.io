@@ -7,8 +7,9 @@ import { xpForSession, fidelity } from '../gamify.js';
 const LABELS = {
   sets: 'Sets', quest: 'Quest complete', zone2: 'Zone-2 minutes', cardio: 'Cardio',
   intervals: 'Intervals', records: 'Personal records', climbs: 'Ladder climbs',
-  armour: 'Armour', setup: 'Setup',
+  armour: 'Armour', setup: 'Setup', gates: 'Gate opened', flame: 'Flame', boss: 'Boss battle', duel: 'Duel',
 };
+const TITLE = { full: 'Quest complete', skirmish: 'Skirmish complete', kindle: 'Walk logged', ember: 'Session saved' };
 
 export function render(state) {
   const u = me(state);
@@ -23,9 +24,10 @@ export function render(state) {
 
   return page(topbar(state), html`<div class="stack">
     <div class="card center stack">
-      <div class="tiny">Quest complete</div>
+      <div class="tiny">${TITLE[s.type] ?? TITLE.full}</div>
       <div class="bigxp">+${gained.xp.toLocaleString()} XP</div>
-      <div class="muted small">${s.duration_min ?? '—'} min · ${f.hit} of ${f.prescribed} targets</div>
+      <div class="muted small">${s.duration_min ?? '—'} min${f.prescribed ? ` · ${f.hit} of ${f.prescribed} targets` : ''}</div>
+      ${s.type === 'ember' ? html`<div class="faint small">Ended with sets still open. Everything you logged counts; the full-quest bonus waits for a finished one.</div>` : ''}
     </div>
 
     ${climbs.length ? raw(`<div class="card stack">

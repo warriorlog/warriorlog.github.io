@@ -2,7 +2,7 @@
   "id": "warrior_forge_12",
   "title": "Warrior Forge 12: Duo Edition",
   "schemaVersion": 1,
-  "rulesVersion": 3,
+  "rulesVersion": 4,
   "defaults": {
     "program_start_dow": 1,
     "rest_dow": 0,
@@ -2597,7 +2597,8 @@
     },
     {
       "id": "db_row",
-      "name": "Single-arm row (chair supported)",
+      "name": "Single-arm row",
+      "ladder_note": "Single-arm row (chair supported)",
       "region": "back",
       "pattern": "pull",
       "equipment": "chair, dumbbells 12/20/35 (single is enough), 53 lb kettlebell",
@@ -3487,7 +3488,8 @@
     },
     {
       "id": "db_hammer_curl",
-      "name": "Hammer curl (brachialis + forearms)",
+      "name": "Hammer curl",
+      "ladder_note": "Hammer curl (brachialis + forearms)",
       "region": "arms",
       "pattern": "pull",
       "equipment": "dumbbells 8/10/12/20/35",
@@ -3687,7 +3689,8 @@
     },
     {
       "id": "db_shrug",
-      "name": "Dumbbell / kettlebell shrug",
+      "name": "Shrug",
+      "ladder_note": "Dumbbell / kettlebell shrug",
       "region": "neck_traps",
       "pattern": "pull",
       "equipment": "dumbbells 12/20/35, 53 lb kettlebell",
@@ -3898,7 +3901,8 @@
     },
     {
       "id": "neck_isometrics",
-      "name": "Neck strengthening (4-way)",
+      "name": "Neck strengthening",
+      "ladder_note": "Neck strengthening (4-way)",
       "region": "neck_traps",
       "pattern": "pull",
       "equipment": "bodyweight, own hand for resistance, folded towel",
@@ -4510,7 +4514,8 @@
     },
     {
       "id": "split_squat",
-      "name": "Split squat to reverse lunge to Bulgarian split squat",
+      "name": "Split squat",
+      "ladder_note": "Split squat to reverse lunge to Bulgarian split squat",
       "region": "thighs",
       "pattern": "lunge",
       "equipment": "wall, couch cushion, chair, dumbbells 12/20/35, 53 lb kettlebell",
@@ -5296,7 +5301,8 @@
     },
     {
       "id": "hinge_deadlift",
-      "name": "Hinge drill to dumbbell RDL to kettlebell deadlift (HINGE GATE)",
+      "name": "Hinge and deadlift",
+      "ladder_note": "Hinge drill to dumbbell RDL to kettlebell deadlift (HINGE GATE)",
       "region": "glutes",
       "pattern": "hinge",
       "equipment": "wall, dumbbells 12/20/35, 53 lb kettlebell, vest",
@@ -5616,7 +5622,8 @@
     },
     {
       "id": "swing",
-      "name": "Swing ladder: two-hand dumbbell swing to 53 lb kettlebell swing to one-hand",
+      "name": "Swing",
+      "ladder_note": "Swing ladder: two-hand dumbbell swing to 53 lb kettlebell swing to one-hand",
       "region": "glutes",
       "pattern": "power",
       "equipment": "dumbbells 20/35 held by one end in both hands, 53 lb kettlebell",
@@ -6020,7 +6027,8 @@
     },
     {
       "id": "swing_density",
-      "name": "Saturday swing engine: EMOM to density clock",
+      "name": "Swing density",
+      "ladder_note": "Saturday swing engine: EMOM to density clock",
       "region": "glutes",
       "pattern": "power",
       "equipment": "wall, dumbbells 12/20/35, 53 lb kettlebell",
@@ -9036,7 +9044,8 @@
     },
     {
       "id": "march_step_zone2",
-      "name": "March / step Zone-2 (no treadmill)",
+      "name": "Zone-2 march",
+      "ladder_note": "March / step Zone-2 (no treadmill)",
       "region": "heart",
       "pattern": "locomotion",
       "equipment": "bodyweight, couch cushion, floor",
@@ -9083,7 +9092,8 @@
     },
     {
       "id": "treadmill_intervals",
-      "name": "Treadmill intervals (walk to jog to run)",
+      "name": "Treadmill intervals",
+      "ladder_note": "Treadmill intervals (walk to jog to run)",
       "region": "heart",
       "pattern": "locomotion",
       "equipment": "treadmill",
@@ -9398,7 +9408,8 @@
     },
     {
       "id": "vest_walk",
-      "name": "Weighted-vest incline walk (ruck)",
+      "name": "Weighted-vest walk",
+      "ladder_note": "Weighted-vest incline walk (ruck)",
       "region": "heart",
       "pattern": "locomotion",
       "equipment": "treadmill, vest",
@@ -9671,7 +9682,8 @@
     },
     {
       "id": "warmup_flow",
-      "name": "Warm-up Flow (walk, hinge rehearsal, pattern rehearsal)",
+      "name": "Warm-up flow",
+      "ladder_note": "Warm-up Flow (walk, hinge rehearsal, pattern rehearsal)",
       "region": "full_body",
       "pattern": "locomotion",
       "equipment": "treadmill, wall, chair, bodyweight",
@@ -9719,7 +9731,8 @@
     },
     {
       "id": "cooldown_flow",
-      "name": "Cooldown Flow (static stretch and breathing)",
+      "name": "Cooldown flow",
+      "ladder_note": "Cooldown Flow (static stretch and breathing)",
       "region": "full_body",
       "pattern": "locomotion",
       "equipment": "floor, wall, couch",
@@ -9802,7 +9815,7 @@
         {
           "id": "walk",
           "when": [],
-          "how": "Fastest one-mile WALK. Belt capped at 4.5 mph, no jogging, no rails, 1% incline. This is the test until the interval ladder reaches treadmill_intervals.jog_8; it is a real test with its own tier table, not a consolation prize.",
+          "how": "Fastest one-mile WALK. Belt capped at 4.5 mph, no jogging, no rails, 1% incline. This is the test until the interval ladder reaches its walk/jog rung; it is a real test with its own tier table, not a consolation prize.",
           "multiplier": 1,
           "tiers": [
             3600,
@@ -9965,7 +9978,7 @@
           "when": [],
           "how": "Locked. You are still on hike-and-park or dead-stop swings, which are not continuous swings; a max continuous-swing test is not safe yet and there is no deadlift substitute.",
           "locked": true,
-          "lock_note": "Earn swing.cont_20 (continuous swings, 20 lb dumbbell) to unlock this boss.",
+          "lock_note": "Reach continuous swings with the 20 lb dumbbell on the swing ladder to open this test.",
           "multiplier": 0,
           "tier_points": 0,
           "tiers": [
@@ -9987,7 +10000,7 @@
       "region": "thighs",
       "parent_exercise": "goblet_squat",
       "every_weeks": 4,
-      "protocol": "Fifth test, 3 min rest after the swings. Max unbroken goblet squats, thighs below parallel, elbows inside the knees, no rest longer than 3 s standing at the top. The set ends at the first rest over 3 s or the first rep above parallel. The load is chosen by the app from your local profile (see load_rule) and is never picked by hand. 3 min rest before the last test.",
+      "protocol": "Fifth test, 3 min rest after the swings. Max unbroken goblet squats, thighs below parallel, elbows inside the knees, no rest longer than 3 s standing at the top. The set ends at the first rest over 3 s or the first rep above parallel. The app picks the load for you: the heaviest weight your goblet ladder has earned, up to 35% of your bodyweight. 3 min rest before the last test.",
       "load_rule": {
         "kind": "heaviest_allowed",
         "bodyweight_source": "local_profile",
@@ -10030,7 +10043,7 @@
               "step_id": "goblet_squat.db12"
             }
           ],
-          "how": "Goblet squats holding the implement resolved by load_rule. The 53 lb bell is deadlifted to the knees and curled to the chest with two hands, never swung up.",
+          "how": "Goblet squats with the heaviest weight your goblet ladder has earned, up to 35% of your bodyweight. The 53 lb bell is deadlifted to the knees and curled to the chest with two hands, never swung up.",
           "uses_load_rule": true,
           "multiplier": 1,
           "tiers": [
@@ -10098,7 +10111,7 @@
         {
           "id": "unweighted",
           "when": [],
-          "how": "Bodyweight step-ups, no vest. The vest is not worn until the step_up ladder reaches step_up.vest10.",
+          "how": "Bodyweight step-ups, no vest. The vest is not worn until the step-up ladder reaches its vest rung.",
           "load": {
             "kind": "bw",
             "lb": 0,

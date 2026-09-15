@@ -123,11 +123,23 @@ test('a personal record needs history, so day one is not a shower of records', (
   assert.equal(withHistory.by_source.records, gam.xp.rep_pr);
 });
 
-test('records are capped per session', () => {
+test('a record is one per movement per session, and records are capped per session', () => {
+  // Two sets of thirty after a best of fifteen is one new best, not two.
   const rows = Array.from({ length: 6 }, (_, i) => ({ exercise_id: 'push_up', step_id: 'push_up.wall', set_index: i + 1, A: 10, B: 15 }));
-  const s = { type: 'full', plan: { rows }, sets: rows.map(r => ({ ...r, unit: 'reps', value: 30 })) };
-  const out = G.xpForSession(s, spec, gam, { best: { 'push_up:push_up.wall': 15 }, sessionsAtStep: { 'push_up:push_up.wall': 3 } });
-  assert.equal(out.prs.length, gam.xp.pr_max_per_session);
+  const s = { type: 'full', plan: { rows }, sets: rows.map((r, i) => ({ ...r, unit: 'reps', value: 30 + i })) };
+  const one = G.xpForSession(s, spec, gam, { best: { 'push_up:push_up.wall': 15 }, sessionsAtStep: { 'push_up:push_up.wall': 3 } });
+  assert.equal(one.prs.length, 1);
+  assert.equal(one.prs[0].value, 35, 'the record is the best set of the session');
+  assert.equal(one.by_source.records, gam.xp.rep_pr);
+
+  // Four movements all beaten: only three are paid.
+  const steps = ['push_up.wall', 'goblet_squat.chair', 'db_row.db12', 'calf_raise.two_leg'];
+  const exs = ['push_up', 'goblet_squat', 'db_row', 'calf_raise'];
+  const rows4 = steps.map((st, i) => ({ exercise_id: exs[i], step_id: st, set_index: 1, A: 10, B: 15 }));
+  const best = Object.fromEntries(steps.map((st, i) => [`${exs[i]}:${st}`, 15]));
+  const seen = Object.fromEntries(steps.map((st, i) => [`${exs[i]}:${st}`, 2]));
+  const many = G.xpForSession({ type: 'full', plan: { rows: rows4 }, sets: rows4.map(r => ({ ...r, unit: 'reps', value: 30 })) }, spec, gam, { best, sessionsAtStep: seen });
+  assert.equal(many.prs.length, gam.xp.pr_max_per_session);
 });
 
 test('a finished quest pays its completion bonus; a short one pays less; an abandoned one still pays something', () => {

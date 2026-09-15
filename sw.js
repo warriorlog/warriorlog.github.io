@@ -8,7 +8,7 @@ const SHELL = [
   './src/reduce.js', './src/engine.js', './src/placement.js', './src/stakes.js', './src/gamify.js', './src/sync.js', './src/duo.js', './src/boss.js',
   './src/views/chrome.js', './src/views/setup.js', './src/views/home.js', './src/views/session.js',
   './src/views/complete.js', './src/views/journal.js', './src/views/body.js',
-  './src/views/silhouette.js',
+  './src/views/silhouette.js', './src/views/regions.js',
   './src/views/duo.js', './src/views/boss.js', './src/views/settings.js',
   './data/program.json', './data/gamification.json', './data/copy.json',
   './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png',

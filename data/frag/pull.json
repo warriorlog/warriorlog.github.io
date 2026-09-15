@@ -2,7 +2,8 @@
   "exercises": [
     {
       "id": "db_row",
-      "name": "Single-arm row (chair supported)",
+      "name": "Single-arm row",
+      "ladder_note": "Single-arm row (chair supported)",
       "region": "back",
       "pattern": "pull",
       "equipment": "chair, dumbbells 12/20/35 (single is enough), 53 lb kettlebell",
@@ -892,7 +893,8 @@
     },
     {
       "id": "db_hammer_curl",
-      "name": "Hammer curl (brachialis + forearms)",
+      "name": "Hammer curl",
+      "ladder_note": "Hammer curl (brachialis + forearms)",
       "region": "arms",
       "pattern": "pull",
       "equipment": "dumbbells 8/10/12/20/35",
@@ -1092,7 +1094,8 @@
     },
     {
       "id": "db_shrug",
-      "name": "Dumbbell / kettlebell shrug",
+      "name": "Shrug",
+      "ladder_note": "Dumbbell / kettlebell shrug",
       "region": "neck_traps",
       "pattern": "pull",
       "equipment": "dumbbells 12/20/35, 53 lb kettlebell",
@@ -1303,7 +1306,8 @@
     },
     {
       "id": "neck_isometrics",
-      "name": "Neck strengthening (4-way)",
+      "name": "Neck strengthening",
+      "ladder_note": "Neck strengthening (4-way)",
       "region": "neck_traps",
       "pattern": "pull",
       "equipment": "bodyweight, own hand for resistance, folded towel",

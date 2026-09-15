@@ -231,8 +231,12 @@ export function stepLadders(spec, state, perfs, ctx) {
     if (i < 0) i = 0;
     const floorIdx = Math.max(0, steps.findIndex(s => s.id === (ctx.floor?.[exId] ?? steps[0].id)));
 
-    // A long absence regresses rather than pretending nothing happened.
-    const gap = cur.lastDay ? daysBetween(cur.lastDay, ctx.day) : 0;
+    // A long absence regresses rather than pretending nothing happened. Days
+    // spent in Recovery or Away mode are not an absence: Settings promises that
+    // nothing is taken away while you are ill or travelling, and the ladders
+    // have to keep that promise too.
+    const paused = cur.lastDay ? (ctx.pausedDays?.(cur.lastDay, ctx.day) ?? 0) : 0;
+    const gap = cur.lastDay ? Math.max(0, daysBetween(cur.lastDay, ctx.day) - paused) : 0;
     let { qualifying, fails, sessionsAtStep } = cur;
     if (gap > 14) { i = Math.max(floorIdx, i - 2); qualifying = 0; fails = 0; sessionsAtStep = 0; }
     else if (gap > 7) { i = Math.max(floorIdx, i - 1); qualifying = 0; fails = 0; sessionsAtStep = 0; }
@@ -265,29 +269,49 @@ export function stepLadders(spec, state, perfs, ctx) {
         slips.push({ exercise_id: exId, step_id: steps[i].id, day: ctx.day });
       }
     }
-    next[exId] = { step_id: steps[i].id, qualifying, fails, sessionsAtStep, lastDay: ctx.day };
+    // Spread `cur` first so bookkeeping other passes leave on the record (the
+    // day a pain pair last stepped it back) survives the session.
+    next[exId] = { ...cur, step_id: steps[i].id, qualifying, fails, sessionsAtStep, lastDay: ctx.day };
   }
   return { ladders: next, climbs, slips };
 }
 
+/** A flag the pain sheet files as "Real" or "Sharp"; a twinge is only noted. */
+export const PAIN_ACTS_AT = 3;
+
 /**
- * Pain flags regress a ladder on their own: two in seven days steps it back.
- * This deliberately ignores the placement floor. The floor stops one bad session
- * from undoing the quiz, but pain is a safety signal — if it hurts twice, the
- * user goes down a rung whatever the quiz said.
+ * Pain flags regress a ladder on their own: real pain on two different days
+ * inside a week steps it back. This deliberately ignores the placement floor.
+ * The floor stops one bad session from undoing the quiz, but pain is a safety
+ * signal — if it hurts twice, the user goes down a rung whatever the quiz said.
+ *
+ * Three things keep this honest. A twinge (level 1-2) is noted, never acted
+ * on, because that is what the sheet tells the user. Two flags on the same day
+ * are one incident, not two. And a pair that has already stepped a ladder back
+ * cannot do so again at the next session — the record remembers the day of the
+ * newest flag it acted on, and only a newer flag can reopen the question.
  */
 export function applyPainRegressions(spec, state, painFlags, ctx) {
   const next = { ...state };
   const slips = [];
   const byEx = {};
-  for (const f of painFlags) if (f.daysAgo <= 7 && f.exercise_id) (byEx[f.exercise_id] ??= []).push(f);
+  for (const f of painFlags) {
+    if (f.daysAgo > 7 || !f.exercise_id) continue;
+    if ((f.level ?? PAIN_ACTS_AT) < PAIN_ACTS_AT) continue;
+    (byEx[f.exercise_id] ??= []).push(f);
+  }
   for (const [exId, flags] of Object.entries(byEx)) {
-    if (flags.length < 2 || !next[exId]) continue;
+    const days = [...new Set(flags.map(f => f.day).filter(Boolean))].sort();
+    if (days.length < 2 || !next[exId]) continue;
+    const newest = days[days.length - 1];
+    if (next[exId].pain_regressed_on && newest <= next[exId].pain_regressed_on) continue;
     const steps = ctx.steps?.[exId] ?? resolveSteps(spec.byExercise?.[exId] ?? {}, ctx.equipment);
     const i = steps.findIndex(s => s.id === next[exId].step_id);
     if (i > 0) {
-      next[exId] = { ...next[exId], step_id: steps[i - 1].id, qualifying: 0, fails: 0, sessionsAtStep: 0 };
+      next[exId] = { ...next[exId], step_id: steps[i - 1].id, qualifying: 0, fails: 0, sessionsAtStep: 0, pain_regressed_on: newest };
       slips.push({ exercise_id: exId, step_id: steps[i - 1].id, reason: 'pain', day: ctx.day });
+    } else {
+      next[exId] = { ...next[exId], pain_regressed_on: newest };
     }
   }
   return { ladders: next, slips };
@@ -606,10 +630,13 @@ function buildRows(ex, step, sets, item, last, { vestLb, cardio, startIndex = 1 
     const i = startIndex + n;
     for (const part of parts) {
       for (const side of sides) {
-        // A cardio row is judged against the minutes this block actually asks
-        // for, not the ladder step's own duration.
-        const A = cardio?.minutes ?? part?.A ?? step.A;
-        const B = cardio?.minutes ?? part?.B ?? step.B;
+        // A timed cardio row is judged against the minutes this block actually
+        // asks for, not the ladder step's own duration. An interval row is
+        // judged in ROUNDS: reading its 19-minute block length as 19 rounds
+        // tripled its XP and passed its climb rule on the first try.
+        const timed = unit === 'min' && cardio?.minutes != null;
+        const A = timed ? cardio.minutes : (part?.A ?? step.A);
+        const B = timed ? cardio.minutes : (part?.B ?? step.B);
         const key = `${i}|${side ?? ''}|${part?.key ?? ''}`;
         rows.push({
           exercise_id: ex.id, step_id: step.id, set_index: i,
@@ -620,7 +647,11 @@ function buildRows(ex, step, sets, item, last, { vestLb, cardio, startIndex = 1 
           implement_id: step.implement_id, vest_lb: vestLb || undefined,
           minutes: cardio?.minutes ?? (unit === 'min' ? (part?.A ?? step.A) : undefined),
           mph: cardio?.mph, incline: cardio?.incline,
-          rounds: cardio?.rounds, work_sec: cardio?.work_sec, rest_sec: cardio?.rest_sec ?? item.rest_sec,
+          rounds: cardio?.rounds, work_sec: cardio?.work_sec,
+          // The rest between sets. An interval step's own work/rest clock lives
+          // on `work_sec`/`interval_rest_sec`; it is not the pause between rows.
+          interval_rest_sec: cardio?.rounds ? cardio.rest_sec : undefined,
+          rest_sec: item.rest_sec ?? 60,
           counts_for_progression: item.counts_for_progression !== false,
           prescribed: true,
         });
@@ -661,6 +692,16 @@ export function describeAdvance(step, spec = null) {
   const extra = (a.requires ?? []).map(r => describeRule(r, '', spec)).filter(Boolean);
   const main = describeRule(a, times, spec);
   return [main, ...extra].filter(Boolean).join(', ');
+}
+
+/**
+ * One entry gate in plain words, for the home card: "Hinge and deadlift at
+ * "20 lb dumbbell RDL"". Returns null for a rule that has no wording.
+ */
+export function describeGate(rule, spec = null) {
+  if (!rule) return null;
+  const text = describeRule(rule, '', spec);
+  return text ? text.replace(/^./, c => c.toUpperCase()) : null;
 }
 
 function describeRule(a, times = '', spec = null) {
